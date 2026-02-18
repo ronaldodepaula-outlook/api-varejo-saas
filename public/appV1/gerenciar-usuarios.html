@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Usuários - NexusFlow</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- NexusFlow CSS -->
+    <link href="assets/css/nexusflow.css" rel="stylesheet">
+    
+    <style>
+        .user-avatar-large {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: var(--white);
+        }
+        
+        .user-info h6 {
+            margin-bottom: 0.25rem;
+            color: var(--text-dark);
+        }
+        
+        .user-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        
+        .filter-section {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 2rem;
+        }
+        
+        .stats-row {
+            background: linear-gradient(135deg, var(--primary-blue), #2980b9);
+            color: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+        
+        .role-badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+        }
+        
+        .last-activity {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="main-wrapper">
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="bi bi-diagram-3"></i>
+                    </div>
+                    <div class="logo-text">NexusFlow</div>
+                </div>
+            </div>
+            
+            <div class="sidebar-nav">
+                <!-- Dashboard -->
+                <div class="nav-section">
+                    <div class="nav-item">
+                        <a href="admin-geral.html" class="nav-link" id="dashboardLink">
+                            <i class="bi bi-speedometer2 nav-icon"></i>
+                            <span class="nav-text">Dashboard</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Gestão (Dinâmica baseada no papel) -->
+                <div class="nav-section" id="managementSection">
+                    <div class="nav-header">
+                        <span class="nav-header-text">Gestão</span>
+                    </div>
+                    <div class="nav-item" id="companiesNavItem">
+                        <a href="gerenciar-empresas.html" class="nav-link">
+                            <i class="bi bi-building nav-icon"></i>
+                            <span class="nav-text">Empresas</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="gerenciar-usuarios.html" class="nav-link active">
+                            <i class="bi bi-people nav-icon"></i>
+                            <span class="nav-text">Usuários</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="gerenciar-filiais.html" class="nav-link">
+                            <i class="bi bi-geo-alt nav-icon"></i>
+                            <span class="nav-text">Filiais</span>
+                        </a>
+                    </div>
+                    <div class="nav-item" id="plansNavItem">
+                        <a href="planos-assinaturas.html" class="nav-link">
+                            <i class="bi bi-credit-card nav-icon"></i>
+                            <span class="nav-text">Planos & Assinaturas</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Sistema -->
+                <div class="nav-section">
+                    <div class="nav-header">
+                        <span class="nav-header-text">Sistema</span>
+                    </div>
+                    <div class="nav-item">
+                        <a href="perfil.html" class="nav-link">
+                            <i class="bi bi-person-circle nav-icon"></i>
+                            <span class="nav-text">Meu Perfil</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="bi bi-gear nav-icon"></i>
+                            <span class="nav-text">Configurações</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="main-header">
+                <div class="header-left">
+                    <button class="sidebar-toggle" type="button">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb breadcrumb-custom">
+                            <li class="breadcrumb-item"><a href="#" id="breadcrumbDashboard">Dashboard</a></li>
+                            <li class="breadcrumb-item active">Gerenciar Usuários</li>
+                        </ol>
+                    </nav>
+                </div>
+                
+                <div class="header-right">
+                    <!-- Notificações -->
+                    <div class="dropdown">
+                        <button class="btn btn-link text-dark position-relative" type="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-bell" style="font-size: 1.25rem;"></i>
+                            <span class="badge bg-primary position-absolute translate-middle rounded-pill" style="font-size: 0.6rem; top: 8px; right: 8px;">3</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><h6 class="dropdown-header">Notificações</h6></li>
+                            <li><a class="dropdown-item" href="#">Novo usuário cadastrado</a></li>
+                            <li><a class="dropdown-item" href="#">Usuário inativo há 30 dias</a></li>
+                            <li><a class="dropdown-item" href="#">Permissão alterada</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-center" href="#">Ver todas</a></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Informações da Empresa (se admin empresa) -->
+                    <div class="d-none d-md-block me-3" id="companyInfo">
+                        <small class="text-muted">Empresa:</small>
+                        <strong class="ms-1 company-name">Empresa Exemplo Ltda</strong>
+                    </div>
+                    
+                    <!-- Dropdown do Usuário -->
+                    <div class="dropdown user-dropdown">
+                        <div class="user-avatar" data-bs-toggle="dropdown" aria-expanded="false" id="userAvatar">
+                            A
+                        </div>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><h6 class="dropdown-header" id="userName">Admin Sistema</h6></li>
+                            <li><small class="dropdown-header text-muted" id="userEmail">admin@nexusflow.com</small></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="perfil.html"><i class="bi bi-person me-2"></i>Meu Perfil</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Configurações</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#" data-action="logout"><i class="bi bi-box-arrow-right me-2"></i>Sair</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Área de Conteúdo -->
+            <div class="content-area">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1 class="page-title">Gerenciar Usuários</h1>
+                        <p class="page-subtitle" id="pageSubtitle">Administre todos os usuários do sistema</p>
+                    </div>
+                    <div>
+                        <button class="btn btn-outline-primary me-2" onclick="exportUsers()">
+                            <i class="bi bi-download me-2"></i>Exportar
+                        </button>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newUserModal">
+                            <i class="bi bi-person-plus me-2"></i>Novo Usuário
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Estatísticas -->
+                <div class="stats-row">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="stat-item">
+                                <div class="stat-value" id="totalUsers">3.847</div>
+                                <div class="stat-label">Total de Usuários</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-item">
+                                <div class="stat-value" id="activeUsers">3.621</div>
+                                <div class="stat-label">Usuários Ativos</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-item">
+                                <div class="stat-value" id="pendingUsers">156</div>
+                                <div class="stat-label">Pendentes</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-item">
+                                <div class="stat-value" id="inactiveUsers">70</div>
+                                <div class="stat-label">Inativos</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Filtros -->
+                <div class="filter-section">
+                    <div class="row align-items-end">
+                        <div class="col-md-3">
+                            <label class="form-label">Buscar usuário</label>
+                            <input type="text" class="form-control" id="searchUser" placeholder="Nome ou e-mail...">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Status</label>
+                            <select class="form-select" id="filterStatus">
+                                <option value="">Todos</option>
+                                <option value="active">Ativo</option>
+                                <option value="pending">Pendente</option>
+                                <option value="inactive">Inativo</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Papel</label>
+                            <select class="form-select" id="filterRole">
+                                <option value="">Todos</option>
+                                <option value="super_admin">Super Admin</option>
+                                <option value="admin_empresa">Admin Empresa</option>
+                                <option value="gerente">Gerente</option>
+                                <option value="operador">Operador</option>
+                                <option value="visualizador">Visualizador</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2" id="companyFilterCol">
+                            <label class="form-label">Empresa</label>
+                            <select class="form-select" id="filterCompany">
+                                <option value="">Todas</option>
+                                <option value="1">Tech Inovação Ltda</option>
+                                <option value="2">Construtora Vanguarda</option>
+                                <option value="3">Moda & Fashion</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-primary" onclick="applyFilters()">
+                                    <i class="bi bi-funnel me-2"></i>Filtrar
+                                </button>
+                                <button class="btn btn-outline-secondary" onclick="clearFilters()">
+                                    <i class="bi bi-x-circle me-2"></i>Limpar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tabela de Usuários -->
+                <div class="card-custom">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-custom mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Usuário</th>
+                                        <th>Papel</th>
+                                        <th id="companyColumn">Empresa</th>
+                                        <th>Filial</th>
+                                        <th>Status</th>
+                                        <th>Última Atividade</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usersTable">
+                                    <!-- Usuário 1 -->
+                                    <tr class="user-item" data-status="active" data-role="admin_empresa" data-company="1">
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="user-avatar-large bg-primary me-3">
+                                                    JS
+                                                </div>
+                                                <div class="user-info">
+                                                    <h6>João Silva</h6>
+                                                    <div class="user-meta">joao@techinnovacao.com</div>
+                                                    <div class="user-meta">(11) 99999-9999</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-success role-badge">Admin Empresa</span>
+                                        </td>
+                                        <td class="company-cell">Tech Inovação Ltda</td>
+                                        <td>Matriz</td>
+                                        <td><span class="status-badge status-active">Ativo</span></td>
+                                        <td>
+                                            <div class="last-activity">
+                                                <div>Agora</div>
+                                                <small class="text-success">Online</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown">
+                                                    <i class="bi bi-three-dots-vertical"></i>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="#" onclick="viewUser(1)"><i class="bi bi-eye me-2"></i>Ver Detalhes</a></li>
+                                                    <li><a class="dropdown-item" href="#" onclick="editUser(1)"><i class="bi bi-pencil me-2"></i>Editar</a></li>
+                                                    <li><a class="dropdown-item" href="#" onclick="resetPassword(1)"><i class="bi bi-key me-2"></i>Resetar Senha</a></li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li><a class="dropdown-item text-warning" href="#" onclick="suspendUser(1)"><i class="bi bi-pause me-2"></i>Suspender</a></li>
+                                                    <li><a class="dropdown-item text-danger" href="#" onclick="deleteUser(1)"><i class="bi bi-trash me-2"></i>Excluir</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    
+                                    <!-- Usuário 2 -->
+                                    <tr class="user-item" data-status="active" data-role="gerente" data-company="1">
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="user-avatar-large bg-success me-3">
+                                                    MS
+                                                </div>
+                                                <div class="user-info">
+                                                    <h6>Maria Santos</h6>
+                                                    <div class="user-meta">maria@techinnovacao.com</div>
+                                                    <div class="user-meta">(11) 88888-8888</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-info role-badge">Gerente</span>
+                                        </td>
+                                        <td class="company-cell">Tech Inovação Ltda</td>
+                                        <td>Filial SP</td>
+                                        <td><span class="status-badge status-active">Ativo</span></td>
+                                        <td>
+                                            <div class="last-activity">
+                                                <div>2 min atrás</div>
+                                                <small class="text-success">Online</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown">
+                                                    <i class="bi bi-three-dots-vertical"></i>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="#" onclick="viewUser(2)"><i class="bi bi-eye me-2"></i>Ver Detalhes</a></li>
+                                                    <li><a class="dropdown-item" href="#" onclick="editUser(2)"><i class="bi bi-pencil me-2"></i>Editar</a></li>
+                                                    <li><a class="dropdown-item" href="#" onclick="resetPassword(2)"><i class="bi bi-key me-2"></i>Resetar Senha</a></li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li><a class="dropdown-item text-warning" href="#" onclick="suspendUser(2)"><i class="bi bi-pause me-2"></i>Suspender</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    
+                                    <!-- Usuário 3 -->
+                                    <tr class="user-item" data-status="pending" data-role="operador" data-company="2">
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="user-avatar-large bg-warning me-3">
+                                                    CO
+                                                </div>
+                                                <div class="user-info">
+                                                    <h6>Carlos Oliveira</h6>
+                                                    <div class="user-meta">carlos@vanguarda.com</div>
+                                                    <div class="user-meta">(21) 77777-7777</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-secondary role-badge">Operador</span>
+                                        </td>
+                                        <td class="company-cell">Construtora Vanguarda</td>
+                                        <td>Matriz</td>
+                                        <td><span class="status-badge status-pending">Pendente</span></td>
+                                        <td>
+                                            <div class="last-activity">
+                                                <div>Nunca</div>
+                                                <small class="text-muted">Aguardando ativação</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown">
+                                                    <i class="bi bi-three-dots-vertical"></i>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="#" onclick="activateUser(3)"><i class="bi bi-check-circle me-2"></i>Ativar</a></li>
+                                                    <li><a class="dropdown-item" href="#" onclick="editUser(3)"><i class="bi bi-pencil me-2"></i>Editar</a></li>
+                                                    <li><a class="dropdown-item" href="#" onclick="resendInvite(3)"><i class="bi bi-envelope me-2"></i>Reenviar Convite</a></li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li><a class="dropdown-item text-danger" href="#" onclick="deleteUser(3)"><i class="bi bi-trash me-2"></i>Excluir</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    
+                                    <!-- Usuário 4 -->
+                                    <tr class="user-item" data-status="inactive" data-role="visualizador" data-company="3">
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="user-avatar-large bg-secondary me-3">
+                                                    AC
+                                                </div>
+                                                <div class="user-info">
+                                                    <h6>Ana Costa</h6>
+                                                    <div class="user-meta">ana@modafashion.com</div>
+                                                    <div class="user-meta">(11) 66666-6666</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-light text-dark role-badge">Visualizador</span>
+                                        </td>
+                                        <td class="company-cell">Moda & Fashion</td>
+                                        <td>Filial Shopping</td>
+                                        <td><span class="status-badge status-inactive">Inativo</span></td>
+                                        <td>
+                                            <div class="last-activity">
+                                                <div>30 dias atrás</div>
+                                                <small class="text-muted">Offline</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown">
+                                                    <i class="bi bi-three-dots-vertical"></i>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="#" onclick="reactivateUser(4)"><i class="bi bi-arrow-clockwise me-2"></i>Reativar</a></li>
+                                                    <li><a class="dropdown-item" href="#" onclick="viewUser(4)"><i class="bi bi-eye me-2"></i>Ver Detalhes</a></li>
+                                                    <li><a class="dropdown-item" href="#" onclick="editUser(4)"><i class="bi bi-pencil me-2"></i>Editar</a></li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li><a class="dropdown-item text-danger" href="#" onclick="deleteUser(4)"><i class="bi bi-trash me-2"></i>Excluir</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Paginação -->
+                <nav aria-label="Paginação" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1">Anterior</a>
+                        </li>
+                        <li class="page-item active">
+                            <a class="page-link" href="#">1</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">2</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">3</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">Próximo</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Modal Novo Usuário -->
+    <div class="modal fade" id="newUserModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Novo Usuário</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="newUserForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Nome Completo</label>
+                                    <input type="text" class="form-control" name="name" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">E-mail</label>
+                                    <input type="email" class="form-control" name="email" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Telefone</label>
+                                    <input type="tel" class="form-control" name="phone">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Papel</label>
+                                    <select class="form-select" name="role" required>
+                                        <option value="">Selecione</option>
+                                        <option value="admin_empresa" id="adminEmpresaOption">Admin Empresa</option>
+                                        <option value="gerente">Gerente</option>
+                                        <option value="operador">Operador</option>
+                                        <option value="visualizador">Visualizador</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6" id="companySelectCol">
+                                <div class="mb-3">
+                                    <label class="form-label">Empresa</label>
+                                    <select class="form-select" name="company" required>
+                                        <option value="">Selecione</option>
+                                        <option value="1">Tech Inovação Ltda</option>
+                                        <option value="2">Construtora Vanguarda</option>
+                                        <option value="3">Moda & Fashion</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Filial</label>
+                                    <select class="form-select" name="branch">
+                                        <option value="">Selecione</option>
+                                        <option value="matriz">Matriz</option>
+                                        <option value="filial_sp">Filial SP</option>
+                                        <option value="filial_rj">Filial RJ</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Departamento</label>
+                            <input type="text" class="form-control" name="department" placeholder="Ex: Vendas, TI, Administrativo...">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="sendInvite" id="sendInvite" checked>
+                                <label class="form-check-label" for="sendInvite">
+                                    Enviar convite por e-mail
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Observações</label>
+                            <textarea class="form-control" name="notes" rows="3" placeholder="Informações adicionais..."></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" form="newUserForm" class="btn btn-primary">Criar Usuário</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- NexusFlow JS -->
+    <script src="assets/js/nexusflow.js"></script>
+    
+    <script>
+        // Verificar papel do usuário e ajustar interface
+        document.addEventListener('DOMContentLoaded', function() {
+            const userRole = localStorage.getItem('userRole') || 'super_admin';
+            
+            if (userRole === 'admin_empresa') {
+                // Ajustar interface para admin empresa
+                document.getElementById('dashboardLink').href = 'admin-empresa.html';
+                document.getElementById('breadcrumbDashboard').href = 'admin-empresa.html';
+                document.getElementById('pageSubtitle').textContent = 'Administre os usuários da sua empresa';
+                document.getElementById('userName').textContent = 'João Silva';
+                document.getElementById('userEmail').textContent = 'joao@exemplo.com';
+                document.getElementById('userAvatar').textContent = 'J';
+                
+                // Ocultar elementos específicos do super admin
+                document.getElementById('companiesNavItem').style.display = 'none';
+                document.getElementById('plansNavItem').style.display = 'none';
+                document.getElementById('companyFilterCol').style.display = 'none';
+                document.getElementById('companyColumn').style.display = 'none';
+                document.getElementById('companySelectCol').style.display = 'none';
+                document.getElementById('adminEmpresaOption').style.display = 'none';
+                
+                // Ocultar coluna empresa na tabela
+                document.querySelectorAll('.company-cell').forEach(cell => {
+                    cell.style.display = 'none';
+                });
+                
+                // Ajustar estatísticas para empresa
+                document.getElementById('totalUsers').textContent = '47';
+                document.getElementById('activeUsers').textContent = '44';
+                document.getElementById('pendingUsers').textContent = '2';
+                document.getElementById('inactiveUsers').textContent = '1';
+            }
+        });
+        
+        // Funções específicas da página
+        function viewUser(id) {
+            nexusFlow.showNotification(`Visualizando usuário ${id}`, 'info');
+        }
+        
+        function editUser(id) {
+            nexusFlow.showNotification(`Editando usuário ${id}`, 'info');
+        }
+        
+        function resetPassword(id) {
+            if (confirm('Tem certeza que deseja resetar a senha deste usuário?')) {
+                nexusFlow.showNotification('E-mail de reset de senha enviado!', 'success');
+            }
+        }
+        
+        function activateUser(id) {
+            if (confirm('Tem certeza que deseja ativar este usuário?')) {
+                nexusFlow.showNotification('Usuário ativado com sucesso!', 'success');
+                updateUserStatus(id, 'active');
+            }
+        }
+        
+        function suspendUser(id) {
+            if (confirm('Tem certeza que deseja suspender este usuário?')) {
+                nexusFlow.showNotification('Usuário suspenso.', 'warning');
+                updateUserStatus(id, 'suspended');
+            }
+        }
+        
+        function reactivateUser(id) {
+            if (confirm('Tem certeza que deseja reativar este usuário?')) {
+                nexusFlow.showNotification('Usuário reativado com sucesso!', 'success');
+                updateUserStatus(id, 'active');
+            }
+        }
+        
+        function deleteUser(id) {
+            if (confirm('Tem certeza que deseja excluir este usuário? Esta ação não pode ser desfeita.')) {
+                nexusFlow.showNotification('Usuário excluído.', 'danger');
+                // Remover da interface
+                const userRow = document.querySelector(`[onclick="deleteUser(${id})"]`).closest('tr');
+                if (userRow) {
+                    userRow.remove();
+                }
+            }
+        }
+        
+        function resendInvite(id) {
+            nexusFlow.showNotification('Convite reenviado por e-mail!', 'success');
+        }
+        
+        function updateUserStatus(id, status) {
+            // Simular atualização de status na interface
+            console.log(`Atualizando usuário ${id} para status ${status}`);
+        }
+        
+        function exportUsers() {
+            nexusFlow.showNotification('Exportando dados dos usuários...', 'info');
+            setTimeout(() => {
+                nexusFlow.showNotification('Exportação concluída!', 'success');
+            }, 2000);
+        }
+        
+        function applyFilters() {
+            const search = document.getElementById('searchUser').value.toLowerCase();
+            const status = document.getElementById('filterStatus').value;
+            const role = document.getElementById('filterRole').value;
+            const company = document.getElementById('filterCompany').value;
+            
+            const users = document.querySelectorAll('.user-item');
+            
+            users.forEach(user => {
+                const userName = user.querySelector('h6').textContent.toLowerCase();
+                const userEmail = user.querySelector('.user-meta').textContent.toLowerCase();
+                const userStatus = user.dataset.status;
+                const userRole = user.dataset.role;
+                const userCompany = user.dataset.company;
+                
+                let show = true;
+                
+                if (search && !userName.includes(search) && !userEmail.includes(search)) {
+                    show = false;
+                }
+                
+                if (status && userStatus !== status) {
+                    show = false;
+                }
+                
+                if (role && userRole !== role) {
+                    show = false;
+                }
+                
+                if (company && userCompany !== company) {
+                    show = false;
+                }
+                
+                user.style.display = show ? 'table-row' : 'none';
+            });
+            
+            nexusFlow.showNotification('Filtros aplicados!', 'info');
+        }
+        
+        function clearFilters() {
+            document.getElementById('searchUser').value = '';
+            document.getElementById('filterStatus').value = '';
+            document.getElementById('filterRole').value = '';
+            document.getElementById('filterCompany').value = '';
+            
+            document.querySelectorAll('.user-item').forEach(user => {
+                user.style.display = 'table-row';
+            });
+            
+            nexusFlow.showNotification('Filtros limpos!', 'info');
+        }
+        
+        // Busca em tempo real
+        document.getElementById('searchUser').addEventListener('input', function() {
+            applyFilters();
+        });
+        
+        // Verificar autenticação
+        if (!localStorage.getItem('authToken')) {
+            window.location.href = 'index.html';
+        }
+        
+        // Verificar permissões
+        const userRole = localStorage.getItem('userRole');
+        if (userRole !== 'super_admin' && userRole !== 'admin_empresa') {
+            nexusFlow.showNotification('Acesso negado. Apenas administradores podem acessar esta página.', 'danger');
+            setTimeout(() => {
+                window.location.href = 'usuario.html';
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

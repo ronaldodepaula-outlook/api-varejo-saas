@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil - NexusFlow</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- NexusFlow CSS -->
+    <link href="assets/css/nexusflow.css" rel="stylesheet">
+    
+    <style>
+        .profile-header {
+            background: linear-gradient(135deg, var(--primary-blue), #2980b9);
+            color: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .profile-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform: translate(50%, -50%);
+        }
+        
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--white);
+            color: var(--primary-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            position: relative;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+        
+        .profile-avatar:hover {
+            transform: scale(1.05);
+        }
+        
+        .profile-avatar .avatar-upload {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--success-green);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            border: 3px solid var(--white);
+        }
+        
+        .profile-info h2 {
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .profile-meta {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+        
+        .profile-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+        
+        .profile-stat {
+            text-align: center;
+        }
+        
+        .profile-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+        
+        .profile-stat-label {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+        
+        .settings-section {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 1.5rem;
+        }
+        
+        .settings-section h5 {
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border-light);
+        }
+        
+        .form-floating .form-control:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+        
+        .form-floating .form-control:focus ~ label {
+            color: var(--primary-blue);
+        }
+        
+        .activity-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .activity-icon.login {
+            background: rgba(52, 152, 219, 0.1);
+            color: var(--primary-blue);
+        }
+        
+        .activity-icon.update {
+            background: rgba(46, 204, 113, 0.1);
+            color: var(--success-green);
+        }
+        
+        .activity-icon.security {
+            background: rgba(243, 156, 18, 0.1);
+            color: var(--warning-orange);
+        }
+        
+        .activity-content {
+            flex-grow: 1;
+        }
+        
+        .activity-title {
+            font-weight: 500;
+            color: var(--text-dark);
+            margin-bottom: 0.25rem;
+        }
+        
+        .activity-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        
+        .notification-item {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+        
+        .notification-content {
+            flex-grow: 1;
+        }
+        
+        .notification-title {
+            font-weight: 500;
+            color: var(--text-dark);
+            margin-bottom: 0.25rem;
+        }
+        
+        .notification-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        
+        .security-item {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        .security-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .security-content {
+            flex-grow: 1;
+        }
+        
+        .security-title {
+            font-weight: 500;
+            color: var(--text-dark);
+            margin-bottom: 0.25rem;
+        }
+        
+        .security-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        
+        .security-status {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        
+        .security-status.active {
+            background: rgba(46, 204, 113, 0.1);
+            color: var(--success-green);
+        }
+        
+        .security-status.inactive {
+            background: rgba(231, 76, 60, 0.1);
+            color: var(--danger-red);
+        }
+        
+        .password-strength {
+            height: 4px;
+            border-radius: 2px;
+            margin-top: 0.5rem;
+            background: var(--border-light);
+            overflow: hidden;
+        }
+        
+        .password-strength-bar {
+            height: 100%;
+            transition: all var(--transition-fast);
+            border-radius: 2px;
+        }
+        
+        .password-strength-bar.weak {
+            width: 25%;
+            background: var(--danger-red);
+        }
+        
+        .password-strength-bar.medium {
+            width: 50%;
+            background: var(--warning-orange);
+        }
+        
+        .password-strength-bar.strong {
+            width: 75%;
+            background: var(--primary-blue);
+        }
+        
+        .password-strength-bar.very-strong {
+            width: 100%;
+            background: var(--success-green);
+        }
+        
+        .theme-option {
+            border: 2px solid var(--border-light);
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            text-align: center;
+        }
+        
+        .theme-option:hover {
+            border-color: var(--primary-blue);
+        }
+        
+        .theme-option.active {
+            border-color: var(--primary-blue);
+            background: rgba(52, 152, 219, 0.05);
+        }
+        
+        .theme-preview {
+            width: 100%;
+            height: 60px;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .theme-preview.light {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        }
+        
+        .theme-preview.dark {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+        }
+        
+        .theme-preview.auto {
+            background: linear-gradient(135deg, #f8f9fa 50%, #2c3e50 50%);
+        }
+    </style>
+</head>
+<body>
+    <div class="main-wrapper">
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="bi bi-diagram-3"></i>
+                    </div>
+                    <div class="logo-text">NexusFlow</div>
+                </div>
+            </div>
+            
+            <div class="sidebar-nav">
+                <!-- Dashboard -->
+                <div class="nav-section">
+                    <div class="nav-item">
+                        <a href="#" class="nav-link" id="dashboardLink">
+                            <i class="bi bi-speedometer2 nav-icon"></i>
+                            <span class="nav-text">Dashboard</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Navegação baseada no papel do usuário -->
+                <div class="nav-section" data-role="super_admin">
+                    <div class="nav-header">
+                        <span class="nav-header-text">Administração</span>
+                    </div>
+                    <div class="nav-item">
+                        <a href="gerenciar-empresas.html" class="nav-link">
+                            <i class="bi bi-building nav-icon"></i>
+                            <span class="nav-text">Empresas</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="gerenciar-usuarios.html" class="nav-link">
+                            <i class="bi bi-people nav-icon"></i>
+                            <span class="nav-text">Usuários</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="planos-assinaturas.html" class="nav-link">
+                            <i class="bi bi-credit-card nav-icon"></i>
+                            <span class="nav-text">Planos & Assinaturas</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="nav-section" data-role="admin_empresa">
+                    <div class="nav-header">
+                        <span class="nav-header-text">Minha Empresa</span>
+                    </div>
+                    <div class="nav-item">
+                        <a href="gerenciar-usuarios.html" class="nav-link">
+                            <i class="bi bi-people nav-icon"></i>
+                            <span class="nav-text">Usuários</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="gerenciar-filiais.html" class="nav-link">
+                            <i class="bi bi-geo-alt nav-icon"></i>
+                            <span class="nav-text">Filiais</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Operacional -->
+                <div class="nav-section">
+                    <div class="nav-header">
+                        <span class="nav-header-text">Operacional</span>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="bi bi-graph-up nav-icon"></i>
+                            <span class="nav-text">Relatórios</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="bi bi-bar-chart nav-icon"></i>
+                            <span class="nav-text">Analytics</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Configurações -->
+                <div class="nav-section">
+                    <div class="nav-header">
+                        <span class="nav-header-text">Configurações</span>
+                    </div>
+                    <div class="nav-item">
+                        <a href="perfil.html" class="nav-link active">
+                            <i class="bi bi-person-circle nav-icon"></i>
+                            <span class="nav-text">Meu Perfil</span>
+                        </a>
+                    </div>
+                    <div class="nav-item" data-role="admin_empresa,super_admin">
+                        <a href="#" class="nav-link">
+                            <i class="bi bi-building-gear nav-icon"></i>
+                            <span class="nav-text">Empresa</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="main-header">
+                <div class="header-left">
+                    <button class="sidebar-toggle" type="button">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb breadcrumb-custom">
+                            <li class="breadcrumb-item"><a href="#" id="breadcrumbDashboard">Dashboard</a></li>
+                            <li class="breadcrumb-item active">Meu Perfil</li>
+                        </ol>
+                    </nav>
+                </div>
+                
+                <div class="header-right">
+                    <!-- Notificações -->
+                    <div class="dropdown">
+                        <button class="btn btn-link text-dark position-relative" type="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-bell" style="font-size: 1.25rem;"></i>
+                            <span class="badge bg-info position-absolute translate-middle rounded-pill" style="font-size: 0.6rem; top: 8px; right: 8px;">3</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><h6 class="dropdown-header">Notificações</h6></li>
+                            <li><a class="dropdown-item" href="#">Perfil atualizado</a></li>
+                            <li><a class="dropdown-item" href="#">Nova sessão iniciada</a></li>
+                            <li><a class="dropdown-item" href="#">Senha alterada</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-center" href="#">Ver todas</a></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Dropdown do Usuário -->
+                    <div class="dropdown user-dropdown">
+                        <div class="user-avatar" data-bs-toggle="dropdown" aria-expanded="false" id="headerUserAvatar">
+                            J
+                        </div>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><h6 class="dropdown-header" id="headerUserName">João Silva</h6></li>
+                            <li><small class="dropdown-header text-muted" id="headerUserEmail">joao@exemplo.com</small></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="perfil.html"><i class="bi bi-person me-2"></i>Meu Perfil</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Configurações</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#" data-action="logout"><i class="bi bi-box-arrow-right me-2"></i>Sair</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Área de Conteúdo -->
+            <div class="content-area">
+                <!-- Cabeçalho do Perfil -->
+                <div class="profile-header">
+                    <div class="row align-items-center">
+                        <div class="col-md-auto">
+                            <div class="profile-avatar" onclick="triggerAvatarUpload()">
+                                <span id="profileAvatarText">J</span>
+                                <div class="avatar-upload">
+                                    <i class="bi bi-camera"></i>
+                                </div>
+                            </div>
+                            <input type="file" id="avatarUpload" accept="image/*" style="display: none;">
+                        </div>
+                        <div class="col-md">
+                            <div class="profile-info">
+                                <h2 id="profileName">João Silva</h2>
+                                <div class="profile-meta">
+                                    <div><i class="bi bi-envelope me-2"></i><span id="profileEmail">joao@exemplo.com</span></div>
+                                    <div><i class="bi bi-building me-2"></i><span id="profileCompany">Empresa Exemplo Ltda</span></div>
+                                    <div><i class="bi bi-shield-check me-2"></i><span id="profileRole">Administrador da Empresa</span></div>
+                                </div>
+                                
+                                <div class="profile-stats">
+                                    <div class="profile-stat">
+                                        <div class="profile-stat-value" id="profileDaysActive">127</div>
+                                        <div class="profile-stat-label">Dias Ativo</div>
+                                    </div>
+                                    <div class="profile-stat">
+                                        <div class="profile-stat-value" id="profileLastLogin">Hoje</div>
+                                        <div class="profile-stat-label">Último Login</div>
+                                    </div>
+                                    <div class="profile-stat">
+                                        <div class="profile-stat-value" id="profileSessions">24</div>
+                                        <div class="profile-stat-label">Sessões</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tabs de Configurações -->
+                <ul class="nav nav-tabs mb-4" id="profileTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="personal-tab" data-bs-toggle="tab" data-bs-target="#personal" type="button" role="tab">
+                            <i class="bi bi-person me-2"></i>Dados Pessoais
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="security-tab" data-bs-toggle="tab" data-bs-target="#security" type="button" role="tab">
+                            <i class="bi bi-shield-lock me-2"></i>Segurança
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="notifications-tab" data-bs-toggle="tab" data-bs-target="#notifications" type="button" role="tab">
+                            <i class="bi bi-bell me-2"></i>Notificações
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="preferences-tab" data-bs-toggle="tab" data-bs-target="#preferences" type="button" role="tab">
+                            <i class="bi bi-gear me-2"></i>Preferências
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="activity-tab" data-bs-toggle="tab" data-bs-target="#activity" type="button" role="tab">
+                            <i class="bi bi-clock-history me-2"></i>Atividade
+                        </button>
+                    </li>
+                </ul>
+                
+                <!-- Conteúdo das Tabs -->
+                <div class="tab-content" id="profileTabContent">
+                    <!-- Tab Dados Pessoais -->
+                    <div class="tab-pane fade show active" id="personal" role="tabpanel">
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <div class="settings-section">
+                                    <h5><i class="bi bi-person-circle me-2"></i>Informações Pessoais</h5>
+                                    
+                                    <form id="personalInfoForm">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-floating mb-3">
+                                                    <input type="text" class="form-control" id="firstName" name="firstName" value="João" required>
+                                                    <label for="firstName">Nome</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-floating mb-3">
+                                                    <input type="text" class="form-control" id="lastName" name="lastName" value="Silva" required>
+                                                    <label for="lastName">Sobrenome</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-floating mb-3">
+                                            <input type="email" class="form-control" id="email" name="email" value="joao@exemplo.com" required>
+                                            <label for="email">E-mail</label>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-floating mb-3">
+                                                    <input type="tel" class="form-control" id="phone" name="phone" value="(11) 99999-9999">
+                                                    <label for="phone">Telefone</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-floating mb-3">
+                                                    <input type="date" class="form-control" id="birthDate" name="birthDate" value="1985-03-15">
+                                                    <label for="birthDate">Data de Nascimento</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" id="position" name="position" value="Gerente de TI">
+                                            <label for="position">Cargo</label>
+                                        </div>
+                                        
+                                        <div class="form-floating mb-3">
+                                            <textarea class="form-control" id="bio" name="bio" style="height: 100px;" placeholder="Conte um pouco sobre você...">Profissional experiente em tecnologia da informação com mais de 10 anos de experiência em gestão de equipes e projetos.</textarea>
+                                            <label for="bio">Biografia</label>
+                                        </div>
+                                        
+                                        <div class="d-flex justify-content-end">
+                                            <button type="button" class="btn btn-outline-secondary me-2" onclick="resetPersonalForm()">Cancelar</button>
+                                            <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-4">
+                                <div class="settings-section">
+                                    <h5><i class="bi bi-info-circle me-2"></i>Informações da Conta</h5>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">ID do Usuário</label>
+                                        <div class="form-control-plaintext">#USR-001234</div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Data de Cadastro</label>
+                                        <div class="form-control-plaintext">15 de Janeiro, 2024</div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Status da Conta</label>
+                                        <div><span class="status-badge status-active">Ativa</span></div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Último Login</label>
+                                        <div class="form-control-plaintext">Hoje às 14:30</div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Fuso Horário</label>
+                                        <div class="form-control-plaintext">GMT-3 (Brasília)</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tab Segurança -->
+                    <div class="tab-pane fade" id="security" role="tabpanel">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="settings-section">
+                                    <h5><i class="bi bi-key me-2"></i>Alterar Senha</h5>
+                                    
+                                    <form id="passwordForm">
+                                        <div class="form-floating mb-3">
+                                            <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
+                                            <label for="currentPassword">Senha Atual</label>
+                                        </div>
+                                        
+                                        <div class="form-floating mb-3">
+                                            <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                                            <label for="newPassword">Nova Senha</label>
+                                            <div class="password-strength">
+                                                <div class="password-strength-bar" id="passwordStrengthBar"></div>
+                                            </div>
+                                            <small class="text-muted mt-1 d-block">A senha deve ter pelo menos 8 caracteres</small>
+                                        </div>
+                                        
+                                        <div class="form-floating mb-3">
+                                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                                            <label for="confirmPassword">Confirmar Nova Senha</label>
+                                        </div>
+                                        
+                                        <div class="d-flex justify-content-end">
+                                            <button type="submit" class="btn btn-primary">Alterar Senha</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                
+                                <div class="settings-section">
+                                    <h5><i class="bi bi-shield-check me-2"></i>Autenticação de Dois Fatores</h5>
+                                    
+                                    <div class="security-item">
+                                        <div class="security-content">
+                                            <div class="security-title">Autenticação por SMS</div>
+                                            <div class="security-desc">Receba códigos de verificação por SMS</div>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="security-status inactive">Inativo</span>
+                                            <button class="btn btn-sm btn-outline-primary" onclick="enableSMS2FA()">Ativar</button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="security-item">
+                                        <div class="security-content">
+                                            <div class="security-title">Aplicativo Autenticador</div>
+                                            <div class="security-desc">Use Google Authenticator ou similar</div>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="security-status active">Ativo</span>
+                                            <button class="btn btn-sm btn-outline-danger" onclick="disableApp2FA()">Desativar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-6">
+                                <div class="settings-section">
+                                    <h5><i class="bi bi-device-hdd me-2"></i>Sessões Ativas</h5>
+                                    
+                                    <div class="security-item">
+                                        <div class="security-content">
+                                            <div class="security-title">
+                                                <i class="bi bi-laptop me-2 text-primary"></i>
+                                                Windows - Chrome
+                                            </div>
+                                            <div class="security-desc">
+                                                São Paulo, Brasil • IP: 192.168.1.100<br>
+                                                <strong>Sessão atual</strong> • Ativo agora
+                                            </div>
+                                        </div>
+                                        <span class="security-status active">Atual</span>
+                                    </div>
+                                    
+                                    <div class="security-item">
+                                        <div class="security-content">
+                                            <div class="security-title">
+                                                <i class="bi bi-phone me-2 text-success"></i>
+                                                iPhone - Safari
+                                            </div>
+                                            <div class="security-desc">
+                                                São Paulo, Brasil • IP: 192.168.1.101<br>
+                                                Último acesso: 2 horas atrás
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-sm btn-outline-danger" onclick="terminateSession('mobile')">Encerrar</button>
+                                    </div>
+                                    
+                                    <div class="security-item">
+                                        <div class="security-content">
+                                            <div class="security-title">
+                                                <i class="bi bi-tablet me-2 text-info"></i>
+                                                iPad - Safari
+                                            </div>
+                                            <div class="security-desc">
+                                                Rio de Janeiro, Brasil • IP: 201.45.67.89<br>
+                                                Último acesso: 1 dia atrás
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-sm btn-outline-danger" onclick="terminateSession('tablet')">Encerrar</button>
+                                    </div>
+                                    
+                                    <div class="text-center mt-3">
+                                        <button class="btn btn-outline-danger" onclick="terminateAllSessions()">
+                                            <i class="bi bi-power me-2"></i>Encerrar Todas as Sessões
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tab Notificações -->
+                    <div class="tab-pane fade" id="notifications" role="tabpanel">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="settings-section">
+                                    <h5><i class="bi bi-envelope me-2"></i>Notificações por E-mail</h5>
+                                    
+                                    <div class="notification-item">
+                                        <div class="notification-content">
+                                            <div class="notification-title">Atualizações do Sistema</div>
+                                            <div class="notification-desc">Novos recursos e melhorias</div>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="emailUpdates" checked>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="notification-item">
+                                        <div class="notification-content">
+                                            <div class="notification-title">Alertas de Segurança</div>
+                                            <div class="notification-desc">Logins suspeitos e alterações de senha</div>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="emailSecurity" checked>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="notification-item">
+                                        <div class="notification-content">
+                                            <div class="notification-title">Relatórios Semanais</div>
+                                            <div class="notification-desc">Resumo de atividades da empresa</div>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="emailReports">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="notification-item">
+                                        <div class="notification-content">
+                                            <div class="notification-title">Marketing</div>
+                                            <div class="notification-desc">Dicas, novidades e promoções</div>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="emailMarketing">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-6">
+                                <div class="settings-section">
+                                    <h5><i class="bi bi-app-indicator me-2"></i>Notificações Push</h5>
+                                    
+                                    <div class="notification-item">
+                                        <div class="notification-content">
+                                            <div class="notification-title">Mensagens Importantes</div>
+                                            <div class="notification-desc">Alertas críticos do sistema</div>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="pushImportant" checked>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="notification-item">
+                                        <div class="notification-content">
+                                            <div class="notification-title">Atividade da Equipe</div>
+                                            <div class="notification-desc">Novos usuários e alterações</div>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="pushTeam" checked>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="notification-item">
+                                        <div class="notification-content">
+                                            <div class="notification-title">Lembretes</div>
+                                            <div class="notification-desc">Tarefas e compromissos</div>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="pushReminders">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="notification-item">
+                                        <div class="notification-content">
+                                            <div class="notification-title">Não Perturbe</div>
+                                            <div class="notification-desc">Silenciar notificações das 22h às 8h</div>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="doNotDisturb" checked>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="settings-section">
+                                    <h5><i class="bi bi-clock me-2"></i>Frequência</h5>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Resumo de Atividades</label>
+                                        <select class="form-select">
+                                            <option>Diário</option>
+                                            <option selected>Semanal</option>
+                                            <option>Mensal</option>
+                                            <option>Nunca</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Horário Preferido</label>
+                                        <select class="form-select">
+                                            <option>08:00</option>
+                                            <option selected>09:00</option>
+                                            <option>10:00</option>
+                                            <option>18:00</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-end mt-3">
+                            <button class="btn btn-primary" onclick="saveNotificationSettings()">Salvar Configurações</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Tab Preferências -->
+                    <div class="tab-pane fade" id="preferences" role="tabpanel">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="settings-section">
+                                    <h5><i class="bi bi-palette me-2"></i>Aparência</h5>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Tema</label>
+                                        <div class="row g-3">
+                                            <div class="col-4">
+                                                <div class="theme-option active" data-theme="light">
+                                                    <div class="theme-preview light"></div>
+                                                    <div class="fw-semibold">Claro</div>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="theme-option" data-theme="dark">
+                                                    <div class="theme-preview dark"></div>
+                                                    <div class="fw-semibold">Escuro</div>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="theme-option" data-theme="auto">
+                                                    <div class="theme-preview auto"></div>
+                                                    <div class="fw-semibold">Automático</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Cor de Destaque</label>
+                                        <div class="d-flex gap-2">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="accentColor" id="colorBlue" value="blue" checked>
+                                                <label class="form-check-label" for="colorBlue">
+                                                    <span class="badge" style="background: #3498DB;">Azul</span>
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="accentColor" id="colorGreen" value="green">
+                                                <label class="form-check-label" for="colorGreen">
+                                                    <span class="badge" style="background: #2ECC71;">Verde</span>
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="accentColor" id="colorPurple" value="purple">
+                                                <label class="form-check-label" for="colorPurple">
+                                                    <span class="badge" style="background: #9B59B6;">Roxo</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="settings-section">
+                                    <h5><i class="bi bi-globe me-2"></i>Localização</h5>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Idioma</label>
+                                        <select class="form-select">
+                                            <option selected>Português (Brasil)</option>
+                                            <option>English (US)</option>
+                                            <option>Español</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Fuso Horário</label>
+                                        <select class="form-select">
+                                            <option selected>GMT-3 (Brasília)</option>
+                                            <option>GMT-5 (New York)</option>
+                                            <option>GMT+0 (London)</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Formato de Data</label>
+                                        <select class="form-select">
+                                            <option selected>DD/MM/AAAA</option>
+                                            <option>MM/DD/AAAA</option>
+                                            <option>AAAA-MM-DD</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-6">
+                                <div class="settings-section">
+                                    <h5><i class="bi bi-layout-text-window me-2"></i>Interface</h5>
+                                    
+                                    <div class="notification-item">
+                                        <div class="notification-content">
+                                            <div class="notification-title">Sidebar Compacta</div>
+                                            <div class="notification-desc">Reduzir largura da barra lateral</div>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="compactSidebar">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="notification-item">
+                                        <div class="notification-content">
+                                            <div class="notification-title">Animações</div>
+                                            <div class="notification-desc">Efeitos de transição e movimento</div>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="animations" checked>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="notification-item">
+                                        <div class="notification-content">
+                                            <div class="notification-title">Sons do Sistema</div>
+                                            <div class="notification-desc">Feedback sonoro para ações</div>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="systemSounds">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Densidade da Interface</label>
+                                        <select class="form-select">
+                                            <option>Compacta</option>
+                                            <option selected>Confortável</option>
+                                            <option>Espaçosa</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Página Inicial</label>
+                                        <select class="form-select">
+                                            <option selected>Dashboard</option>
+                                            <option>Relatórios</option>
+                                            <option>Última página visitada</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="settings-section">
+                                    <h5><i class="bi bi-download me-2"></i>Dados & Privacidade</h5>
+                                    
+                                    <div class="d-grid gap-2">
+                                        <button class="btn btn-outline-primary" onclick="exportData()">
+                                            <i class="bi bi-download me-2"></i>Exportar Meus Dados
+                                        </button>
+                                        <button class="btn btn-outline-warning" onclick="clearCache()">
+                                            <i class="bi bi-trash me-2"></i>Limpar Cache Local
+                                        </button>
+                                        <button class="btn btn-outline-danger" onclick="deleteAccount()">
+                                            <i class="bi bi-person-x me-2"></i>Excluir Conta
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-end mt-3">
+                            <button class="btn btn-primary" onclick="savePreferences()">Salvar Preferências</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Tab Atividade -->
+                    <div class="tab-pane fade" id="activity" role="tabpanel">
+                        <div class="settings-section">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5><i class="bi bi-clock-history me-2"></i>Histórico de Atividades</h5>
+                                <div class="d-flex gap-2">
+                                    <select class="form-select form-select-sm" style="width: auto;">
+                                        <option>Últimos 7 dias</option>
+                                        <option>Últimos 30 dias</option>
+                                        <option>Últimos 90 dias</option>
+                                    </select>
+                                    <button class="btn btn-sm btn-outline-primary" onclick="exportActivity()">
+                                        <i class="bi bi-download"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="activity-item">
+                                <div class="activity-icon login">
+                                    <i class="bi bi-box-arrow-in-right"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-title">Login realizado</div>
+                                    <div class="activity-meta">Hoje às 14:30 • Windows - Chrome • IP: 192.168.1.100</div>
+                                </div>
+                            </div>
+                            
+                            <div class="activity-item">
+                                <div class="activity-icon update">
+                                    <i class="bi bi-person-check"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-title">Perfil atualizado</div>
+                                    <div class="activity-meta">Hoje às 13:45 • Alteração no telefone e biografia</div>
+                                </div>
+                            </div>
+                            
+                            <div class="activity-item">
+                                <div class="activity-icon security">
+                                    <i class="bi bi-shield-check"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-title">Autenticação de dois fatores ativada</div>
+                                    <div class="activity-meta">Ontem às 16:20 • Aplicativo autenticador configurado</div>
+                                </div>
+                            </div>
+                            
+                            <div class="activity-item">
+                                <div class="activity-icon login">
+                                    <i class="bi bi-phone"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-title">Login via dispositivo móvel</div>
+                                    <div class="activity-meta">Ontem às 09:15 • iPhone - Safari • IP: 192.168.1.101</div>
+                                </div>
+                            </div>
+                            
+                            <div class="activity-item">
+                                <div class="activity-icon update">
+                                    <i class="bi bi-key"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-title">Senha alterada</div>
+                                    <div class="activity-meta">3 dias atrás às 11:30 • Alteração bem-sucedida</div>
+                                </div>
+                            </div>
+                            
+                            <div class="activity-item">
+                                <div class="activity-icon login">
+                                    <i class="bi bi-tablet"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-title">Novo dispositivo autorizado</div>
+                                    <div class="activity-meta">1 semana atrás • iPad - Safari • Rio de Janeiro</div>
+                                </div>
+                            </div>
+                            
+                            <div class="text-center mt-4">
+                                <button class="btn btn-outline-primary" onclick="loadMoreActivity()">
+                                    <i class="bi bi-arrow-clockwise me-2"></i>Carregar Mais
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- NexusFlow JS -->
+    <script src="assets/js/nexusflow.js"></script>
+    
+    <script>
+        // Configurar navegação baseada no papel do usuário
+        document.addEventListener('DOMContentLoaded', function() {
+            const userRole = localStorage.getItem('userRole') || 'usuario';
+            
+            // Definir links do dashboard e breadcrumb
+            const dashboardLinks = {
+                'super_admin': 'admin-geral.html',
+                'admin_empresa': 'admin-empresa.html',
+                'usuario': 'usuario.html'
+            };
+            
+            const dashboardLink = dashboardLinks[userRole];
+            document.getElementById('dashboardLink').href = dashboardLink;
+            document.getElementById('breadcrumbDashboard').href = dashboardLink;
+            
+            // Mostrar/ocultar seções baseado no papel
+            document.querySelectorAll('[data-role]').forEach(element => {
+                const roles = element.dataset.role.split(',');
+                if (!roles.includes(userRole)) {
+                    element.style.display = 'none';
+                }
+            });
+            
+            // Carregar dados do usuário
+            loadUserData();
+        });
+        
+        function loadUserData() {
+            // Simular carregamento de dados do usuário
+            const userData = {
+                firstName: 'João',
+                lastName: 'Silva',
+                email: 'joao@exemplo.com',
+                company: 'Empresa Exemplo Ltda',
+                role: 'Administrador da Empresa',
+                avatar: 'J'
+            };
+            
+            // Atualizar interface
+            document.getElementById('profileName').textContent = `${userData.firstName} ${userData.lastName}`;
+            document.getElementById('profileEmail').textContent = userData.email;
+            document.getElementById('profileCompany').textContent = userData.company;
+            document.getElementById('profileRole').textContent = userData.role;
+            document.getElementById('profileAvatarText').textContent = userData.avatar;
+            
+            // Atualizar header
+            document.getElementById('headerUserName').textContent = `${userData.firstName} ${userData.lastName}`;
+            document.getElementById('headerUserEmail').textContent = userData.email;
+            document.getElementById('headerUserAvatar').textContent = userData.avatar;
+        }
+        
+        // Funções do formulário de dados pessoais
+        document.getElementById('personalInfoForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            nexusFlow.showNotification('Salvando informações pessoais...', 'info');
+            
+            setTimeout(() => {
+                nexusFlow.showNotification('Informações atualizadas com sucesso!', 'success');
+                loadUserData(); // Recarregar dados na interface
+            }, 2000);
+        });
+        
+        function resetPersonalForm() {
+            document.getElementById('personalInfoForm').reset();
+            loadUserData();
+        }
+        
+        // Funções de segurança
+        document.getElementById('passwordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (newPassword !== confirmPassword) {
+                nexusFlow.showNotification('As senhas não coincidem!', 'danger');
+                return;
+            }
+            
+            nexusFlow.showNotification('Alterando senha...', 'info');
+            
+            setTimeout(() => {
+                nexusFlow.showNotification('Senha alterada com sucesso!', 'success');
+                this.reset();
+            }, 2000);
+        });
+        
+        // Verificador de força da senha
+        document.getElementById('newPassword').addEventListener('input', function() {
+            const password = this.value;
+            const strengthBar = document.getElementById('passwordStrengthBar');
+            
+            let strength = 0;
+            if (password.length >= 8) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[a-z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+            
+            const classes = ['weak', 'medium', 'strong', 'very-strong'];
+            strengthBar.className = 'password-strength-bar';
+            
+            if (strength > 0) {
+                strengthBar.classList.add(classes[Math.min(strength - 1, 3)]);
+            }
+        });
+        
+        function enableSMS2FA() {
+            nexusFlow.showNotification('Configurando autenticação por SMS...', 'info');
+            setTimeout(() => {
+                nexusFlow.showNotification('SMS 2FA ativado!', 'success');
+            }, 2000);
+        }
+        
+        function disableApp2FA() {
+            if (confirm('Tem certeza que deseja desativar a autenticação por aplicativo?')) {
+                nexusFlow.showNotification('Desativando autenticação por aplicativo...', 'info');
+                setTimeout(() => {
+                    nexusFlow.showNotification('Autenticação por aplicativo desativada!', 'warning');
+                }, 2000);
+            }
+        }
+        
+        function terminateSession(device) {
+            if (confirm(`Tem certeza que deseja encerrar a sessão do ${device}?`)) {
+                nexusFlow.showNotification('Encerrando sessão...', 'info');
+                setTimeout(() => {
+                    nexusFlow.showNotification('Sessão encerrada!', 'success');
+                }, 1500);
+            }
+        }
+        
+        function terminateAllSessions() {
+            if (confirm('Tem certeza que deseja encerrar todas as outras sessões? Você precisará fazer login novamente em outros dispositivos.')) {
+                nexusFlow.showNotification('Encerrando todas as sessões...', 'info');
+                setTimeout(() => {
+                    nexusFlow.showNotification('Todas as sessões foram encerradas!', 'success');
+                }, 2000);
+            }
+        }
+        
+        // Funções de notificações
+        function saveNotificationSettings() {
+            nexusFlow.showNotification('Salvando configurações de notificação...', 'info');
+            setTimeout(() => {
+                nexusFlow.showNotification('Configurações salvas!', 'success');
+            }, 1500);
+        }
+        
+        // Funções de preferências
+        document.querySelectorAll('.theme-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.theme-option').forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        
+        function savePreferences() {
+            nexusFlow.showNotification('Salvando preferências...', 'info');
+            setTimeout(() => {
+                nexusFlow.showNotification('Preferências salvas!', 'success');
+            }, 1500);
+        }
+        
+        function exportData() {
+            nexusFlow.showNotification('Preparando exportação dos seus dados...', 'info');
+            setTimeout(() => {
+                nexusFlow.showNotification('Dados exportados! Verifique seus downloads.', 'success');
+            }, 3000);
+        }
+        
+        function clearCache() {
+            if (confirm('Tem certeza que deseja limpar o cache local? Isso pode afetar a performance temporariamente.')) {
+                nexusFlow.showNotification('Limpando cache...', 'info');
+                setTimeout(() => {
+                    nexusFlow.showNotification('Cache limpo!', 'success');
+                }, 2000);
+            }
+        }
+        
+        function deleteAccount() {
+            if (confirm('ATENÇÃO: Esta ação é irreversível! Tem certeza que deseja excluir sua conta permanentemente?')) {
+                if (confirm('Digite "EXCLUIR" para confirmar:') === 'EXCLUIR') {
+                    nexusFlow.showNotification('Processando exclusão da conta...', 'danger');
+                    setTimeout(() => {
+                        nexusFlow.showNotification('Conta excluída. Redirecionando...', 'danger');
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 2000);
+                    }, 3000);
+                }
+            }
+        }
+        
+        // Funções de atividade
+        function exportActivity() {
+            nexusFlow.showNotification('Exportando histórico de atividades...', 'info');
+            setTimeout(() => {
+                nexusFlow.showNotification('Histórico exportado!', 'success');
+            }, 2000);
+        }
+        
+        function loadMoreActivity() {
+            nexusFlow.showNotification('Carregando mais atividades...', 'info');
+            setTimeout(() => {
+                nexusFlow.showNotification('Mais atividades carregadas!', 'success');
+            }, 1500);
+        }
+        
+        // Upload de avatar
+        function triggerAvatarUpload() {
+            document.getElementById('avatarUpload').click();
+        }
+        
+        document.getElementById('avatarUpload').addEventListener('change', function(e) {
+            if (e.target.files.length > 0) {
+                nexusFlow.showNotification('Fazendo upload do avatar...', 'info');
+                setTimeout(() => {
+                    nexusFlow.showNotification('Avatar atualizado!', 'success');
+                }, 2000);
+            }
+        });
+        
+        // Verificar autenticação
+        if (!localStorage.getItem('authToken')) {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

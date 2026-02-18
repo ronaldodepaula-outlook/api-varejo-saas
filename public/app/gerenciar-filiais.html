@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Filiais - NexusFlow</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- NexusFlow CSS -->
+    <link href="assets/css/nexusflow.css" rel="stylesheet">
+    
+    <style>
+        .branch-card {
+            transition: all var(--transition-fast);
+            border: 1px solid var(--border-light);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .branch-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+        
+        .branch-card.matriz {
+            border-left: 4px solid var(--success-green);
+        }
+        
+        .branch-card.filial {
+            border-left: 4px solid var(--primary-blue);
+        }
+        
+        .branch-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--white);
+        }
+        
+        .branch-info h6 {
+            margin-bottom: 0.25rem;
+            color: var(--text-dark);
+        }
+        
+        .branch-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        
+        .filter-section {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 2rem;
+        }
+        
+        .stats-row {
+            background: linear-gradient(135deg, var(--primary-blue), #2980b9);
+            color: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+        
+        .branch-type-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 0.7rem;
+            padding: 0.25rem 0.5rem;
+        }
+        
+        .address-info {
+            background: var(--bg-light);
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin-top: 1rem;
+        }
+        
+        .contact-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .contact-info:last-child {
+            margin-bottom: 0;
+        }
+        
+        .contact-info i {
+            width: 16px;
+            margin-right: 0.5rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="main-wrapper">
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="bi bi-diagram-3"></i>
+                    </div>
+                    <div class="logo-text">NexusFlow</div>
+                </div>
+            </div>
+            
+            <div class="sidebar-nav">
+                <!-- Dashboard -->
+                <div class="nav-section">
+                    <div class="nav-item">
+                        <a href="admin-empresa.html" class="nav-link" id="dashboardLink">
+                            <i class="bi bi-speedometer2 nav-icon"></i>
+                            <span class="nav-text">Dashboard</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Gestão da Empresa -->
+                <div class="nav-section">
+                    <div class="nav-header">
+                        <span class="nav-header-text">Minha Empresa</span>
+                    </div>
+                    <div class="nav-item">
+                        <a href="gerenciar-usuarios.html" class="nav-link">
+                            <i class="bi bi-people nav-icon"></i>
+                            <span class="nav-text">Usuários</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="gerenciar-filiais.html" class="nav-link active">
+                            <i class="bi bi-geo-alt nav-icon"></i>
+                            <span class="nav-text">Filiais</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="bi bi-diagram-3 nav-icon"></i>
+                            <span class="nav-text">Departamentos</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Operacional -->
+                <div class="nav-section">
+                    <div class="nav-header">
+                        <span class="nav-header-text">Operacional</span>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="bi bi-graph-up nav-icon"></i>
+                            <span class="nav-text">Relatórios</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="bi bi-bar-chart nav-icon"></i>
+                            <span class="nav-text">Analytics</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Configurações -->
+                <div class="nav-section">
+                    <div class="nav-header">
+                        <span class="nav-header-text">Configurações</span>
+                    </div>
+                    <div class="nav-item">
+                        <a href="perfil.html" class="nav-link">
+                            <i class="bi bi-person-circle nav-icon"></i>
+                            <span class="nav-text">Meu Perfil</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="bi bi-building-gear nav-icon"></i>
+                            <span class="nav-text">Empresa</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="main-header">
+                <div class="header-left">
+                    <button class="sidebar-toggle" type="button">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb breadcrumb-custom">
+                            <li class="breadcrumb-item"><a href="admin-empresa.html">Dashboard</a></li>
+                            <li class="breadcrumb-item active">Gerenciar Filiais</li>
+                        </ol>
+                    </nav>
+                </div>
+                
+                <div class="header-right">
+                    <!-- Notificações -->
+                    <div class="dropdown">
+                        <button class="btn btn-link text-dark position-relative" type="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-bell" style="font-size: 1.25rem;"></i>
+                            <span class="badge bg-info position-absolute translate-middle rounded-pill" style="font-size: 0.6rem; top: 8px; right: 8px;">2</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><h6 class="dropdown-header">Notificações</h6></li>
+                            <li><a class="dropdown-item" href="#">Nova filial criada</a></li>
+                            <li><a class="dropdown-item" href="#">Endereço atualizado</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-center" href="#">Ver todas</a></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Informações da Empresa -->
+                    <div class="d-none d-md-block me-3">
+                        <small class="text-muted">Empresa:</small>
+                        <strong class="ms-1 company-name">Empresa Exemplo Ltda</strong>
+                    </div>
+                    
+                    <!-- Dropdown do Usuário -->
+                    <div class="dropdown user-dropdown">
+                        <div class="user-avatar" data-bs-toggle="dropdown" aria-expanded="false">
+                            J
+                        </div>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><h6 class="dropdown-header">João Silva</h6></li>
+                            <li><small class="dropdown-header text-muted">joao@exemplo.com</small></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="perfil.html"><i class="bi bi-person me-2"></i>Meu Perfil</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-building-gear me-2"></i>Configurações da Empresa</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#" data-action="logout"><i class="bi bi-box-arrow-right me-2"></i>Sair</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Área de Conteúdo -->
+            <div class="content-area">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1 class="page-title">Gerenciar Filiais</h1>
+                        <p class="page-subtitle">Administre todas as filiais da sua empresa</p>
+                    </div>
+                    <div>
+                        <button class="btn btn-outline-primary me-2" onclick="exportBranches()">
+                            <i class="bi bi-download me-2"></i>Exportar
+                        </button>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newBranchModal">
+                            <i class="bi bi-plus-circle me-2"></i>Nova Filial
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Estatísticas -->
+                <div class="stats-row">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="stat-item">
+                                <div class="stat-value">4</div>
+                                <div class="stat-label">Total de Filiais</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-item">
+                                <div class="stat-value">1</div>
+                                <div class="stat-label">Matriz</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-item">
+                                <div class="stat-value">3</div>
+                                <div class="stat-label">Filiais Ativas</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-item">
+                                <div class="stat-value">47</div>
+                                <div class="stat-label">Total de Usuários</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Filtros -->
+                <div class="filter-section">
+                    <div class="row align-items-end">
+                        <div class="col-md-4">
+                            <label class="form-label">Buscar filial</label>
+                            <input type="text" class="form-control" id="searchBranch" placeholder="Nome ou cidade...">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Tipo</label>
+                            <select class="form-select" id="filterType">
+                                <option value="">Todos</option>
+                                <option value="matriz">Matriz</option>
+                                <option value="filial">Filial</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Estado</label>
+                            <select class="form-select" id="filterState">
+                                <option value="">Todos</option>
+                                <option value="SP">São Paulo</option>
+                                <option value="RJ">Rio de Janeiro</option>
+                                <option value="MG">Minas Gerais</option>
+                                <option value="PR">Paraná</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Status</label>
+                            <select class="form-select" id="filterStatus">
+                                <option value="">Todos</option>
+                                <option value="active">Ativa</option>
+                                <option value="inactive">Inativa</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-primary" onclick="applyFilters()">
+                                    <i class="bi bi-funnel"></i>
+                                </button>
+                                <button class="btn btn-outline-secondary" onclick="clearFilters()">
+                                    <i class="bi bi-x-circle"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Lista de Filiais -->
+                <div class="row" id="branchesList">
+                    <!-- Matriz -->
+                    <div class="col-xl-6 col-lg-6 mb-4 branch-item" data-type="matriz" data-state="SP" data-status="active">
+                        <div class="card-custom branch-card matriz">
+                            <span class="badge bg-success branch-type-badge">MATRIZ</span>
+                            <div class="card-body">
+                                <div class="d-flex align-items-start mb-3">
+                                    <div class="branch-icon bg-success me-3">
+                                        <i class="bi bi-building"></i>
+                                    </div>
+                                    <div class="branch-info flex-grow-1">
+                                        <h6>Matriz - São Paulo</h6>
+                                        <div class="branch-meta">
+                                            <div><strong>Código:</strong> MTZ-001</div>
+                                            <div><strong>Responsável:</strong> João Silva</div>
+                                        </div>
+                                    </div>
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown">
+                                            <i class="bi bi-three-dots-vertical"></i>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="#" onclick="viewBranch(1)"><i class="bi bi-eye me-2"></i>Ver Detalhes</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="editBranch(1)"><i class="bi bi-pencil me-2"></i>Editar</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="viewUsers(1)"><i class="bi bi-people me-2"></i>Ver Usuários</a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item" href="#" onclick="generateReport(1)"><i class="bi bi-file-earmark-text me-2"></i>Relatório</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                <div class="row text-center mb-3">
+                                    <div class="col-4">
+                                        <div class="fw-semibold text-primary">24</div>
+                                        <small class="text-muted">Usuários</small>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="fw-semibold text-success">8</div>
+                                        <small class="text-muted">Departamentos</small>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="fw-semibold text-info">95%</div>
+                                        <small class="text-muted">Atividade</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="address-info">
+                                    <div class="contact-info">
+                                        <i class="bi bi-geo-alt"></i>
+                                        <span>Av. Paulista, 1000 - Bela Vista, São Paulo - SP</span>
+                                    </div>
+                                    <div class="contact-info">
+                                        <i class="bi bi-telephone"></i>
+                                        <span>(11) 3456-7890</span>
+                                    </div>
+                                    <div class="contact-info">
+                                        <i class="bi bi-envelope"></i>
+                                        <span>matriz@exemplo.com</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <span class="status-badge status-active">Ativa</span>
+                                    <small class="text-muted">Criada em: 01/01/2024</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Filial SP -->
+                    <div class="col-xl-6 col-lg-6 mb-4 branch-item" data-type="filial" data-state="SP" data-status="active">
+                        <div class="card-custom branch-card filial">
+                            <span class="badge bg-primary branch-type-badge">FILIAL</span>
+                            <div class="card-body">
+                                <div class="d-flex align-items-start mb-3">
+                                    <div class="branch-icon bg-primary me-3">
+                                        <i class="bi bi-shop"></i>
+                                    </div>
+                                    <div class="branch-info flex-grow-1">
+                                        <h6>Filial Shopping SP</h6>
+                                        <div class="branch-meta">
+                                            <div><strong>Código:</strong> FIL-002</div>
+                                            <div><strong>Responsável:</strong> Maria Santos</div>
+                                        </div>
+                                    </div>
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown">
+                                            <i class="bi bi-three-dots-vertical"></i>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="#" onclick="viewBranch(2)"><i class="bi bi-eye me-2"></i>Ver Detalhes</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="editBranch(2)"><i class="bi bi-pencil me-2"></i>Editar</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="viewUsers(2)"><i class="bi bi-people me-2"></i>Ver Usuários</a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item text-warning" href="#" onclick="deactivateBranch(2)"><i class="bi bi-pause me-2"></i>Desativar</a></li>
+                                            <li><a class="dropdown-item text-danger" href="#" onclick="deleteBranch(2)"><i class="bi bi-trash me-2"></i>Excluir</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                <div class="row text-center mb-3">
+                                    <div class="col-4">
+                                        <div class="fw-semibold text-primary">12</div>
+                                        <small class="text-muted">Usuários</small>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="fw-semibold text-success">4</div>
+                                        <small class="text-muted">Departamentos</small>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="fw-semibold text-info">78%</div>
+                                        <small class="text-muted">Atividade</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="address-info">
+                                    <div class="contact-info">
+                                        <i class="bi bi-geo-alt"></i>
+                                        <span>Shopping Center Norte - Santana, São Paulo - SP</span>
+                                    </div>
+                                    <div class="contact-info">
+                                        <i class="bi bi-telephone"></i>
+                                        <span>(11) 2345-6789</span>
+                                    </div>
+                                    <div class="contact-info">
+                                        <i class="bi bi-envelope"></i>
+                                        <span>shopping@exemplo.com</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <span class="status-badge status-active">Ativa</span>
+                                    <small class="text-muted">Criada em: 15/02/2024</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Filial RJ -->
+                    <div class="col-xl-6 col-lg-6 mb-4 branch-item" data-type="filial" data-state="RJ" data-status="active">
+                        <div class="card-custom branch-card filial">
+                            <span class="badge bg-primary branch-type-badge">FILIAL</span>
+                            <div class="card-body">
+                                <div class="d-flex align-items-start mb-3">
+                                    <div class="branch-icon bg-primary me-3">
+                                        <i class="bi bi-shop"></i>
+                                    </div>
+                                    <div class="branch-info flex-grow-1">
+                                        <h6>Filial Rio de Janeiro</h6>
+                                        <div class="branch-meta">
+                                            <div><strong>Código:</strong> FIL-003</div>
+                                            <div><strong>Responsável:</strong> Carlos Oliveira</div>
+                                        </div>
+                                    </div>
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown">
+                                            <i class="bi bi-three-dots-vertical"></i>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="#" onclick="viewBranch(3)"><i class="bi bi-eye me-2"></i>Ver Detalhes</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="editBranch(3)"><i class="bi bi-pencil me-2"></i>Editar</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="viewUsers(3)"><i class="bi bi-people me-2"></i>Ver Usuários</a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item text-warning" href="#" onclick="deactivateBranch(3)"><i class="bi bi-pause me-2"></i>Desativar</a></li>
+                                            <li><a class="dropdown-item text-danger" href="#" onclick="deleteBranch(3)"><i class="bi bi-trash me-2"></i>Excluir</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                <div class="row text-center mb-3">
+                                    <div class="col-4">
+                                        <div class="fw-semibold text-primary">8</div>
+                                        <small class="text-muted">Usuários</small>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="fw-semibold text-success">3</div>
+                                        <small class="text-muted">Departamentos</small>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="fw-semibold text-info">65%</div>
+                                        <small class="text-muted">Atividade</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="address-info">
+                                    <div class="contact-info">
+                                        <i class="bi bi-geo-alt"></i>
+                                        <span>Av. Copacabana, 500 - Copacabana, Rio de Janeiro - RJ</span>
+                                    </div>
+                                    <div class="contact-info">
+                                        <i class="bi bi-telephone"></i>
+                                        <span>(21) 3456-7890</span>
+                                    </div>
+                                    <div class="contact-info">
+                                        <i class="bi bi-envelope"></i>
+                                        <span>rj@exemplo.com</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <span class="status-badge status-active">Ativa</span>
+                                    <small class="text-muted">Criada em: 10/03/2024</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Filial BH -->
+                    <div class="col-xl-6 col-lg-6 mb-4 branch-item" data-type="filial" data-state="MG" data-status="active">
+                        <div class="card-custom branch-card filial">
+                            <span class="badge bg-primary branch-type-badge">FILIAL</span>
+                            <div class="card-body">
+                                <div class="d-flex align-items-start mb-3">
+                                    <div class="branch-icon bg-primary me-3">
+                                        <i class="bi bi-shop"></i>
+                                    </div>
+                                    <div class="branch-info flex-grow-1">
+                                        <h6>Filial Belo Horizonte</h6>
+                                        <div class="branch-meta">
+                                            <div><strong>Código:</strong> FIL-004</div>
+                                            <div><strong>Responsável:</strong> Ana Costa</div>
+                                        </div>
+                                    </div>
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown">
+                                            <i class="bi bi-three-dots-vertical"></i>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="#" onclick="viewBranch(4)"><i class="bi bi-eye me-2"></i>Ver Detalhes</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="editBranch(4)"><i class="bi bi-pencil me-2"></i>Editar</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="viewUsers(4)"><i class="bi bi-people me-2"></i>Ver Usuários</a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item text-warning" href="#" onclick="deactivateBranch(4)"><i class="bi bi-pause me-2"></i>Desativar</a></li>
+                                            <li><a class="dropdown-item text-danger" href="#" onclick="deleteBranch(4)"><i class="bi bi-trash me-2"></i>Excluir</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                <div class="row text-center mb-3">
+                                    <div class="col-4">
+                                        <div class="fw-semibold text-primary">3</div>
+                                        <small class="text-muted">Usuários</small>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="fw-semibold text-success">2</div>
+                                        <small class="text-muted">Departamentos</small>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="fw-semibold text-info">45%</div>
+                                        <small class="text-muted">Atividade</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="address-info">
+                                    <div class="contact-info">
+                                        <i class="bi bi-geo-alt"></i>
+                                        <span>Av. Afonso Pena, 1500 - Centro, Belo Horizonte - MG</span>
+                                    </div>
+                                    <div class="contact-info">
+                                        <i class="bi bi-telephone"></i>
+                                        <span>(31) 3456-7890</span>
+                                    </div>
+                                    <div class="contact-info">
+                                        <i class="bi bi-envelope"></i>
+                                        <span>bh@exemplo.com</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <span class="status-badge status-active">Ativa</span>
+                                    <small class="text-muted">Criada em: 25/03/2024</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Modal Nova Filial -->
+    <div class="modal fade" id="newBranchModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nova Filial</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="newBranchForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Nome da Filial</label>
+                                    <input type="text" class="form-control" name="name" required placeholder="Ex: Filial Centro">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Código</label>
+                                    <input type="text" class="form-control" name="code" required placeholder="Ex: FIL-005">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Tipo</label>
+                                    <select class="form-select" name="type" required>
+                                        <option value="">Selecione</option>
+                                        <option value="filial">Filial</option>
+                                        <option value="matriz">Matriz</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Responsável</label>
+                                    <select class="form-select" name="manager" required>
+                                        <option value="">Selecione um usuário</option>
+                                        <option value="1">João Silva</option>
+                                        <option value="2">Maria Santos</option>
+                                        <option value="3">Carlos Oliveira</option>
+                                        <option value="4">Ana Costa</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Telefone</label>
+                                    <input type="tel" class="form-control" name="phone" required placeholder="(11) 99999-9999">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">E-mail</label>
+                                    <input type="email" class="form-control" name="email" required placeholder="filial@exemplo.com">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Endereço Completo</label>
+                            <input type="text" class="form-control" name="address" required placeholder="Rua, número, bairro, cidade - estado">
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">CEP</label>
+                                    <input type="text" class="form-control" name="zipcode" placeholder="00000-000">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">Cidade</label>
+                                    <input type="text" class="form-control" name="city" required placeholder="São Paulo">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">Estado</label>
+                                    <select class="form-select" name="state" required>
+                                        <option value="">Selecione</option>
+                                        <option value="SP">São Paulo</option>
+                                        <option value="RJ">Rio de Janeiro</option>
+                                        <option value="MG">Minas Gerais</option>
+                                        <option value="PR">Paraná</option>
+                                        <option value="RS">Rio Grande do Sul</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Observações</label>
+                            <textarea class="form-control" name="notes" rows="3" placeholder="Informações adicionais sobre a filial..."></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" form="newBranchForm" class="btn btn-primary">Criar Filial</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- NexusFlow JS -->
+    <script src="assets/js/nexusflow.js"></script>
+    
+    <script>
+        // Funções específicas da página
+        function viewBranch(id) {
+            nexusFlow.showNotification(`Visualizando filial ${id}`, 'info');
+        }
+        
+        function editBranch(id) {
+            nexusFlow.showNotification(`Editando filial ${id}`, 'info');
+        }
+        
+        function viewUsers(id) {
+            window.location.href = `gerenciar-usuarios.html?branch=${id}`;
+        }
+        
+        function generateReport(id) {
+            nexusFlow.showNotification('Gerando relatório da filial...', 'info');
+            setTimeout(() => {
+                nexusFlow.showNotification('Relatório gerado com sucesso!', 'success');
+            }, 2000);
+        }
+        
+        function deactivateBranch(id) {
+            if (confirm('Tem certeza que deseja desativar esta filial?')) {
+                nexusFlow.showNotification('Filial desativada.', 'warning');
+                updateBranchStatus(id, 'inactive');
+            }
+        }
+        
+        function deleteBranch(id) {
+            if (confirm('Tem certeza que deseja excluir esta filial? Esta ação não pode ser desfeita.')) {
+                nexusFlow.showNotification('Filial excluída.', 'danger');
+                // Remover da interface
+                const branchCard = document.querySelector(`[onclick="deleteBranch(${id})"]`).closest('.branch-item');
+                if (branchCard) {
+                    branchCard.remove();
+                }
+            }
+        }
+        
+        function updateBranchStatus(id, status) {
+            // Simular atualização de status na interface
+            console.log(`Atualizando filial ${id} para status ${status}`);
+        }
+        
+        function exportBranches() {
+            nexusFlow.showNotification('Exportando dados das filiais...', 'info');
+            setTimeout(() => {
+                nexusFlow.showNotification('Exportação concluída!', 'success');
+            }, 2000);
+        }
+        
+        function applyFilters() {
+            const search = document.getElementById('searchBranch').value.toLowerCase();
+            const type = document.getElementById('filterType').value;
+            const state = document.getElementById('filterState').value;
+            const status = document.getElementById('filterStatus').value;
+            
+            const branches = document.querySelectorAll('.branch-item');
+            
+            branches.forEach(branch => {
+                const branchName = branch.querySelector('h6').textContent.toLowerCase();
+                const branchType = branch.dataset.type;
+                const branchState = branch.dataset.state;
+                const branchStatus = branch.dataset.status;
+                
+                let show = true;
+                
+                if (search && !branchName.includes(search)) {
+                    show = false;
+                }
+                
+                if (type && branchType !== type) {
+                    show = false;
+                }
+                
+                if (state && branchState !== state) {
+                    show = false;
+                }
+                
+                if (status && branchStatus !== status) {
+                    show = false;
+                }
+                
+                branch.style.display = show ? 'block' : 'none';
+            });
+            
+            nexusFlow.showNotification('Filtros aplicados!', 'info');
+        }
+        
+        function clearFilters() {
+            document.getElementById('searchBranch').value = '';
+            document.getElementById('filterType').value = '';
+            document.getElementById('filterState').value = '';
+            document.getElementById('filterStatus').value = '';
+            
+            document.querySelectorAll('.branch-item').forEach(branch => {
+                branch.style.display = 'block';
+            });
+            
+            nexusFlow.showNotification('Filtros limpos!', 'info');
+        }
+        
+        // Busca em tempo real
+        document.getElementById('searchBranch').addEventListener('input', function() {
+            applyFilters();
+        });
+        
+        // Submissão do formulário
+        document.getElementById('newBranchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            nexusFlow.showNotification('Criando nova filial...', 'info');
+            
+            setTimeout(() => {
+                nexusFlow.showNotification('Filial criada com sucesso!', 'success');
+                
+                // Fechar modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('newBranchModal'));
+                modal.hide();
+                
+                // Limpar formulário
+                this.reset();
+                
+                // Aqui você adicionaria a nova filial à interface
+            }, 2000);
+        });
+        
+        // Verificar autenticação
+        if (!localStorage.getItem('authToken')) {
+            window.location.href = 'index.html';
+        }
+        
+        // Verificar permissões (admin empresa ou super admin)
+        const userRole = localStorage.getItem('userRole');
+        if (userRole !== 'super_admin' && userRole !== 'admin_empresa') {
+            nexusFlow.showNotification('Acesso negado. Apenas administradores podem acessar esta página.', 'danger');
+            setTimeout(() => {
+                window.location.href = 'usuario.html';
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

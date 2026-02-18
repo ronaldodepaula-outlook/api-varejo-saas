@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - NexusFlow</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- NexusFlow CSS -->
+    <link href="assets/css/nexusflow.css" rel="stylesheet">
+</head>
+<body>
+    <div class="main-wrapper">
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="bi bi-diagram-3"></i>
+                    </div>
+                    <div class="logo-text">NexusFlow</div>
+                </div>
+            </div>
+            
+            <div class="sidebar-nav">
+                <!-- Dashboard -->
+                <div class="nav-section">
+                    <div class="nav-item">
+                        <a href="usuario.html" class="nav-link active">
+                            <i class="bi bi-speedometer2 nav-icon"></i>
+                            <span class="nav-text">Dashboard</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Minhas Atividades -->
+                <div class="nav-section">
+                    <div class="nav-header">
+                        <span class="nav-header-text">Minhas Atividades</span>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="bi bi-list-task nav-icon"></i>
+                            <span class="nav-text">Tarefas</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="bi bi-calendar-event nav-icon"></i>
+                            <span class="nav-text">Agenda</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="bi bi-clock-history nav-icon"></i>
+                            <span class="nav-text">Histórico</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Ferramentas -->
+                <div class="nav-section">
+                    <div class="nav-header">
+                        <span class="nav-header-text">Ferramentas</span>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="bi bi-file-earmark-text nav-icon"></i>
+                            <span class="nav-text">Documentos</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="bi bi-graph-up nav-icon"></i>
+                            <span class="nav-text">Relatórios</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="bi bi-chat-dots nav-icon"></i>
+                            <span class="nav-text">Mensagens</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Configurações -->
+                <div class="nav-section">
+                    <div class="nav-header">
+                        <span class="nav-header-text">Configurações</span>
+                    </div>
+                    <div class="nav-item">
+                        <a href="perfil.html" class="nav-link">
+                            <i class="bi bi-person-circle nav-icon"></i>
+                            <span class="nav-text">Meu Perfil</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="bi bi-gear nav-icon"></i>
+                            <span class="nav-text">Preferências</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="bi bi-question-circle nav-icon"></i>
+                            <span class="nav-text">Ajuda</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="main-header">
+                <div class="header-left">
+                    <button class="sidebar-toggle" type="button">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb breadcrumb-custom">
+                            <li class="breadcrumb-item active">Dashboard</li>
+                        </ol>
+                    </nav>
+                </div>
+                
+                <div class="header-right">
+                    <!-- Notificações -->
+                    <div class="dropdown">
+                        <button class="btn btn-link text-dark position-relative" type="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-bell" style="font-size: 1.25rem;"></i>
+                            <span class="badge bg-primary position-absolute translate-middle rounded-pill" style="font-size: 0.6rem; top: 8px; right: 8px;">2</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><h6 class="dropdown-header">Notificações</h6></li>
+                            <li><a class="dropdown-item" href="#">Nova tarefa atribuída</a></li>
+                            <li><a class="dropdown-item" href="#">Reunião em 30 minutos</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-center" href="#">Ver todas</a></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Informações da Empresa -->
+                    <div class="d-none d-md-block me-3">
+                        <small class="text-muted">Empresa:</small>
+                        <strong class="ms-1 company-name">Empresa Exemplo Ltda</strong>
+                    </div>
+                    
+                    <!-- Dropdown do Usuário -->
+                    <div class="dropdown user-dropdown">
+                        <div class="user-avatar" data-bs-toggle="dropdown" aria-expanded="false">
+                            M
+                        </div>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><h6 class="dropdown-header user-name">Maria Santos</h6></li>
+                            <li><small class="dropdown-header text-muted user-email">maria@exemplo.com</small></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="perfil.html"><i class="bi bi-person me-2"></i>Meu Perfil</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Preferências</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#" data-action="logout"><i class="bi bi-box-arrow-right me-2"></i>Sair</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Área de Conteúdo -->
+            <div class="content-area">
+                <!-- Saudação -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card-custom" style="background: linear-gradient(135deg, var(--primary-blue), #2980b9); color: white;">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-md-8">
+                                        <h2 class="mb-2">Olá, Maria! 👋</h2>
+                                        <p class="mb-0 opacity-75">Bem-vinda de volta! Aqui está um resumo das suas atividades hoje.</p>
+                                    </div>
+                                    <div class="col-md-4 text-end">
+                                        <div class="h4 mb-1" id="currentTime"></div>
+                                        <div class="opacity-75" id="currentDate"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Métricas Pessoais -->
+                <div class="row mb-4">
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="metric-card primary">
+                            <div class="metric-icon primary">
+                                <i class="bi bi-list-task"></i>
+                            </div>
+                            <div class="metric-value">8</div>
+                            <div class="metric-label">Tarefas Pendentes</div>
+                            <div class="metric-change negative">
+                                <i class="bi bi-arrow-up"></i> +2 desde ontem
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="metric-card success">
+                            <div class="metric-icon success">
+                                <i class="bi bi-check-circle"></i>
+                            </div>
+                            <div class="metric-value">15</div>
+                            <div class="metric-label">Tarefas Concluídas</div>
+                            <div class="metric-change positive">
+                                <i class="bi bi-arrow-up"></i> Esta semana
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="metric-card warning">
+                            <div class="metric-icon warning">
+                                <i class="bi bi-calendar-event"></i>
+                            </div>
+                            <div class="metric-value">3</div>
+                            <div class="metric-label">Reuniões Hoje</div>
+                            <div class="metric-change">
+                                <i class="bi bi-clock"></i> Próxima às 14:00
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="metric-card danger">
+                            <div class="metric-icon danger">
+                                <i class="bi bi-chat-dots"></i>
+                            </div>
+                            <div class="metric-value">5</div>
+                            <div class="metric-label">Mensagens</div>
+                            <div class="metric-change positive">
+                                <i class="bi bi-envelope"></i> 2 não lidas
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Conteúdo Principal -->
+                <div class="row">
+                    <!-- Tarefas Recentes -->
+                    <div class="col-xl-6 mb-4">
+                        <div class="card-custom">
+                            <div class="card-header-custom d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Minhas Tarefas</h5>
+                                <button class="btn btn-sm btn-primary" onclick="addNewTask()">
+                                    <i class="bi bi-plus"></i> Nova Tarefa
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div class="task-list">
+                                    <div class="task-item">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="task1">
+                                            <label class="form-check-label" for="task1">
+                                                <div class="task-title">Revisar relatório mensal</div>
+                                                <div class="task-meta">
+                                                    <span class="badge bg-danger">Urgente</span>
+                                                    <small class="text-muted ms-2">Vence hoje</small>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="task-item">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="task2">
+                                            <label class="form-check-label" for="task2">
+                                                <div class="task-title">Preparar apresentação para cliente</div>
+                                                <div class="task-meta">
+                                                    <span class="badge bg-warning">Média</span>
+                                                    <small class="text-muted ms-2">Vence amanhã</small>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="task-item">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="task3" checked>
+                                            <label class="form-check-label completed" for="task3">
+                                                <div class="task-title">Atualizar dados do sistema</div>
+                                                <div class="task-meta">
+                                                    <span class="badge bg-success">Concluída</span>
+                                                    <small class="text-muted ms-2">Hoje</small>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="task-item">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="task4">
+                                            <label class="form-check-label" for="task4">
+                                                <div class="task-title">Responder e-mails pendentes</div>
+                                                <div class="task-meta">
+                                                    <span class="badge bg-info">Baixa</span>
+                                                    <small class="text-muted ms-2">Esta semana</small>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="task-item">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="task5">
+                                            <label class="form-check-label" for="task5">
+                                                <div class="task-title">Organizar arquivos do projeto</div>
+                                                <div class="task-meta">
+                                                    <span class="badge bg-secondary">Normal</span>
+                                                    <small class="text-muted ms-2">Próxima semana</small>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="text-center mt-3">
+                                    <a href="#" class="btn btn-outline-primary btn-sm">Ver todas as tarefas</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Agenda e Atividades -->
+                    <div class="col-xl-6 mb-4">
+                        <div class="card-custom">
+                            <div class="card-header-custom">
+                                <h5 class="mb-0">Agenda de Hoje</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="agenda-list">
+                                    <div class="agenda-item">
+                                        <div class="agenda-time">09:00</div>
+                                        <div class="agenda-content">
+                                            <div class="agenda-title">Reunião de equipe</div>
+                                            <div class="agenda-location">
+                                                <i class="bi bi-geo-alt me-1"></i>Sala de reuniões A
+                                            </div>
+                                        </div>
+                                        <div class="agenda-status">
+                                            <span class="badge bg-success">Concluída</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="agenda-item current">
+                                        <div class="agenda-time">11:30</div>
+                                        <div class="agenda-content">
+                                            <div class="agenda-title">Revisão de projeto</div>
+                                            <div class="agenda-location">
+                                                <i class="bi bi-camera-video me-1"></i>Videoconferência
+                                            </div>
+                                        </div>
+                                        <div class="agenda-status">
+                                            <span class="badge bg-primary">Em andamento</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="agenda-item">
+                                        <div class="agenda-time">14:00</div>
+                                        <div class="agenda-content">
+                                            <div class="agenda-title">Apresentação para cliente</div>
+                                            <div class="agenda-location">
+                                                <i class="bi bi-building me-1"></i>Escritório do cliente
+                                            </div>
+                                        </div>
+                                        <div class="agenda-status">
+                                            <span class="badge bg-warning">Próxima</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="agenda-item">
+                                        <div class="agenda-time">16:30</div>
+                                        <div class="agenda-content">
+                                            <div class="agenda-title">Análise de resultados</div>
+                                            <div class="agenda-location">
+                                                <i class="bi bi-laptop me-1"></i>Home office
+                                            </div>
+                                        </div>
+                                        <div class="agenda-status">
+                                            <span class="badge bg-secondary">Agendada</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Gráfico de Produtividade -->
+                <div class="row">
+                    <div class="col-12 mb-4">
+                        <div class="card-custom">
+                            <div class="card-header-custom d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Minha Produtividade</h5>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <input type="radio" class="btn-check" name="productivityPeriod" id="prod7" checked>
+                                    <label class="btn btn-outline-primary" for="prod7">7 dias</label>
+                                    
+                                    <input type="radio" class="btn-check" name="productivityPeriod" id="prod30">
+                                    <label class="btn btn-outline-primary" for="prod30">30 dias</label>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="productivityChart" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- NexusFlow JS -->
+    <script src="assets/js/nexusflow.js"></script>
+    
+    <script>
+        // Atualizar data e hora
+        function updateDateTime() {
+            const now = new Date();
+            const timeOptions = { hour: '2-digit', minute: '2-digit' };
+            const dateOptions = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            
+            document.getElementById('currentTime').textContent = now.toLocaleTimeString('pt-BR', timeOptions);
+            document.getElementById('currentDate').textContent = now.toLocaleDateString('pt-BR', dateOptions);
+        }
+        
+        // Atualizar a cada minuto
+        updateDateTime();
+        setInterval(updateDateTime, 60000);
+        
+        // Configurar gráfico de produtividade
+        document.addEventListener('DOMContentLoaded', function() {
+            const productivityCtx = document.getElementById('productivityChart').getContext('2d');
+            const productivityChart = new Chart(productivityCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+                    datasets: [{
+                        label: 'Tarefas Concluídas',
+                        data: [5, 3, 7, 4, 6, 2, 1],
+                        borderColor: '#3498DB',
+                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }, {
+                        label: 'Horas Trabalhadas',
+                        data: [8, 7.5, 8.5, 8, 9, 4, 2],
+                        borderColor: '#2ECC71',
+                        backgroundColor: 'rgba(46, 204, 113, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+        
+        // Estilos para tarefas e agenda
+        const taskStyles = `
+            .task-list {
+                max-height: 400px;
+                overflow-y: auto;
+            }
+            
+            .task-item {
+                padding: 1rem 0;
+                border-bottom: 1px solid var(--border-light);
+            }
+            
+            .task-item:last-child {
+                border-bottom: none;
+            }
+            
+            .task-title {
+                font-weight: 500;
+                color: var(--text-dark);
+                margin-bottom: 0.5rem;
+            }
+            
+            .task-meta {
+                display: flex;
+                align-items: center;
+            }
+            
+            .form-check-label.completed .task-title {
+                text-decoration: line-through;
+                color: var(--text-muted);
+            }
+            
+            .agenda-list {
+                max-height: 400px;
+                overflow-y: auto;
+            }
+            
+            .agenda-item {
+                display: flex;
+                align-items: center;
+                padding: 1rem 0;
+                border-bottom: 1px solid var(--border-light);
+            }
+            
+            .agenda-item:last-child {
+                border-bottom: none;
+            }
+            
+            .agenda-item.current {
+                background: rgba(52, 152, 219, 0.05);
+                border-radius: 8px;
+                margin: 0 -1rem;
+                padding: 1rem;
+            }
+            
+            .agenda-time {
+                font-weight: 600;
+                color: var(--primary-blue);
+                min-width: 60px;
+                margin-right: 1rem;
+            }
+            
+            .agenda-content {
+                flex: 1;
+            }
+            
+            .agenda-title {
+                font-weight: 500;
+                color: var(--text-dark);
+                margin-bottom: 0.25rem;
+            }
+            
+            .agenda-location {
+                font-size: 0.9rem;
+                color: var(--text-muted);
+            }
+            
+            .agenda-status {
+                margin-left: 1rem;
+            }
+        `;
+        
+        // Adicionar estilos
+        const style = document.createElement('style');
+        style.textContent = taskStyles;
+        document.head.appendChild(style);
+        
+        // Funções específicas da página
+        function addNewTask() {
+            const taskTitle = prompt('Digite o título da nova tarefa:');
+            if (taskTitle) {
+                nexusFlow.showNotification('Tarefa adicionada com sucesso!', 'success');
+                // Aqui você adicionaria a tarefa à lista
+            }
+        }
+        
+        // Marcar tarefas como concluídas
+        document.querySelectorAll('.task-item input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const label = this.nextElementSibling;
+                if (this.checked) {
+                    label.classList.add('completed');
+                    nexusFlow.showNotification('Tarefa marcada como concluída!', 'success');
+                } else {
+                    label.classList.remove('completed');
+                }
+            });
+        });
+        
+        // Verificar autenticação
+        if (!localStorage.getItem('authToken')) {
+            window.location.href = 'index.html';
+        }
+        
+        // Definir papel como usuário operacional
+        localStorage.setItem('userRole', 'usuario_operacional');
+    </script>
+</body>
+</html>

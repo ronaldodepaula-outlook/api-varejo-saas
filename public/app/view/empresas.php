@@ -1,0 +1,627 @@
+ <style>
+        .company-card {
+            transition: all var(--transition-fast);
+            border: 1px solid var(--border-light);
+        }
+        
+        .company-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+        
+        .company-logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: var(--white);
+        }
+        
+        .company-info h6 {
+            margin-bottom: 0.25rem;
+            color: var(--text-dark);
+        }
+        
+        .company-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        
+        .filter-section {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 2rem;
+        }
+        
+        .stats-row {
+            background: linear-gradient(135deg, var(--primary-blue), #2980b9);
+            color: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+    </style>
+
+    <main class="main-content">
+            <!-- Header -->
+            <header class="main-header">
+                <div class="header-left">
+                    <button class="sidebar-toggle" type="button">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb breadcrumb-custom">
+                            <li class="breadcrumb-item"><a href="admin-geral.html">Dashboard</a></li>
+                            <li class="breadcrumb-item active">Gerenciar Empresas</li>
+                        </ol>
+                    </nav>
+                </div>
+                
+                <div class="header-right">
+                    <!-- Notificações -->
+                    <div class="dropdown">
+                        <button class="btn btn-link text-dark position-relative" type="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-bell" style="font-size: 1.25rem;"></i>
+                            <span class="badge bg-danger position-absolute translate-middle rounded-pill" style="font-size: 0.6rem; top: 8px; right: 8px;">5</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><h6 class="dropdown-header">Notificações</h6></li>
+                            <li><a class="dropdown-item" href="#">Nova empresa cadastrada</a></li>
+                            <li><a class="dropdown-item" href="#">Licença expirando</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-center" href="#">Ver todas</a></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Dropdown do Usuário -->
+                    <div class="dropdown user-dropdown">
+                        <div class="user-avatar" data-bs-toggle="dropdown" aria-expanded="false">
+                            A
+                        </div>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><h6 class="dropdown-header">Admin Sistema</h6></li>
+                            <li><small class="dropdown-header text-muted">admin@nexusflow.com</small></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="perfil.html"><i class="bi bi-person me-2"></i>Meu Perfil</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Configurações</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#" data-action="logout"><i class="bi bi-box-arrow-right me-2"></i>Sair</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Área de Conteúdo -->
+            <div class="content-area">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1 class="page-title">Gerenciar Empresas</h1>
+                        <p class="page-subtitle">Administre todas as empresas cadastradas no sistema</p>
+                    </div>
+                    <div>
+                        <button class="btn btn-outline-primary me-2" onclick="exportCompanies()">
+                            <i class="bi bi-download me-2"></i>Exportar
+                        </button>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newCompanyModal">
+                            <i class="bi bi-plus-circle me-2"></i>Nova Empresa
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Estatísticas -->
+                <div class="stats-row">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="stat-item">
+                                <div class="stat-value">247</div>
+                                <div class="stat-label">Total de Empresas</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-item">
+                                <div class="stat-value">234</div>
+                                <div class="stat-label">Empresas Ativas</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-item">
+                                <div class="stat-value">13</div>
+                                <div class="stat-label">Pendentes</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-item">
+                                <div class="stat-value">23</div>
+                                <div class="stat-label">Licenças Expirando</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Filtros -->
+                <div class="filter-section">
+                    <div class="row align-items-end">
+                        <div class="col-md-3">
+                            <label class="form-label">Buscar empresa</label>
+                            <input type="text" class="form-control" id="searchCompany" placeholder="Nome ou e-mail...">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Status</label>
+                            <select class="form-select" id="filterStatus">
+                                <option value="">Todos</option>
+                                <option value="active">Ativa</option>
+                                <option value="pending">Pendente</option>
+                                <option value="inactive">Inativa</option>
+                                <option value="expired">Expirada</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Segmento</label>
+                            <select class="form-select" id="filterSegment">
+                                <option value="">Todos</option>
+                                <option value="varejo">Varejo</option>
+                                <option value="tecnologia">Tecnologia</option>
+                                <option value="construcao">Construção</option>
+                                <option value="financeiro">Financeiro</option>
+                                <option value="marketing">Marketing</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Plano</label>
+                            <select class="form-select" id="filterPlan">
+                                <option value="">Todos</option>
+                                <option value="trial">Trial</option>
+                                <option value="basic">Básico</option>
+                                <option value="professional">Professional</option>
+                                <option value="enterprise">Enterprise</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-primary" onclick="applyFilters()">
+                                    <i class="bi bi-funnel me-2"></i>Filtrar
+                                </button>
+                                <button class="btn btn-outline-secondary" onclick="clearFilters()">
+                                    <i class="bi bi-x-circle me-2"></i>Limpar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Lista de Empresas -->
+                <div class="row" id="companiesList">
+                    <!-- Empresa 1 -->
+                    <div class="col-xl-4 col-lg-6 mb-4 company-item" data-status="active" data-segment="tecnologia" data-plan="professional">
+                        <div class="card-custom company-card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-start mb-3">
+                                    <div class="company-logo bg-primary me-3">
+                                        TI
+                                    </div>
+                                    <div class="company-info flex-grow-1">
+                                        <h6>Tech Inovação Ltda</h6>
+                                        <div class="company-meta">
+                                            <div><i class="bi bi-envelope me-1"></i>tech@inovacao.com</div>
+                                            <div><i class="bi bi-telephone me-1"></i>(11) 3456-7890</div>
+                                            <div><i class="bi bi-geo-alt me-1"></i>São Paulo, SP</div>
+                                        </div>
+                                    </div>
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown">
+                                            <i class="bi bi-three-dots-vertical"></i>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="#" onclick="viewCompany(1)"><i class="bi bi-eye me-2"></i>Ver Detalhes</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="editCompany(1)"><i class="bi bi-pencil me-2"></i>Editar</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="manageUsers(1)"><i class="bi bi-people me-2"></i>Usuários</a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item text-warning" href="#" onclick="suspendCompany(1)"><i class="bi bi-pause me-2"></i>Suspender</a></li>
+                                            <li><a class="dropdown-item text-danger" href="#" onclick="deleteCompany(1)"><i class="bi bi-trash me-2"></i>Excluir</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                <div class="row text-center mb-3">
+                                    <div class="col-4">
+                                        <div class="fw-semibold text-primary">24</div>
+                                        <small class="text-muted">Usuários</small>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="fw-semibold text-success">3</div>
+                                        <small class="text-muted">Filiais</small>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="fw-semibold text-info">89%</div>
+                                        <small class="text-muted">Uso</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="badge bg-info">Tecnologia</span>
+                                        <span class="badge bg-success ms-1">Professional</span>
+                                    </div>
+                                    <span class="status-badge status-active">Ativa</span>
+                                </div>
+                                
+                                <div class="mt-2">
+                                    <small class="text-muted">Cadastrada em: 15/03/2024</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Empresa 2 -->
+                    <div class="col-xl-4 col-lg-6 mb-4 company-item" data-status="pending" data-segment="construcao" data-plan="trial">
+                        <div class="card-custom company-card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-start mb-3">
+                                    <div class="company-logo bg-warning me-3">
+                                        CV
+                                    </div>
+                                    <div class="company-info flex-grow-1">
+                                        <h6>Construtora Vanguarda</h6>
+                                        <div class="company-meta">
+                                            <div><i class="bi bi-envelope me-1"></i>contato@vanguarda.com</div>
+                                            <div><i class="bi bi-telephone me-1"></i>(21) 2345-6789</div>
+                                            <div><i class="bi bi-geo-alt me-1"></i>Rio de Janeiro, RJ</div>
+                                        </div>
+                                    </div>
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown">
+                                            <i class="bi bi-three-dots-vertical"></i>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="#" onclick="viewCompany(2)"><i class="bi bi-eye me-2"></i>Ver Detalhes</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="approveCompany(2)"><i class="bi bi-check-circle me-2"></i>Aprovar</a></li>
+                                            <li><a class="dropdown-item text-danger" href="#" onclick="rejectCompany(2)"><i class="bi bi-x-circle me-2"></i>Rejeitar</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                <div class="row text-center mb-3">
+                                    <div class="col-4">
+                                        <div class="fw-semibold text-primary">1</div>
+                                        <small class="text-muted">Usuários</small>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="fw-semibold text-success">1</div>
+                                        <small class="text-muted">Filiais</small>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="fw-semibold text-info">0%</div>
+                                        <small class="text-muted">Uso</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="badge bg-warning">Construção</span>
+                                        <span class="badge bg-secondary ms-1">Trial</span>
+                                    </div>
+                                    <span class="status-badge status-pending">Pendente</span>
+                                </div>
+                                
+                                <div class="mt-2">
+                                    <small class="text-muted">Cadastrada em: Hoje</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Empresa 3 -->
+                    <div class="col-xl-4 col-lg-6 mb-4 company-item" data-status="active" data-segment="varejo" data-plan="basic">
+                        <div class="card-custom company-card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-start mb-3">
+                                    <div class="company-logo bg-success me-3">
+                                        MF
+                                    </div>
+                                    <div class="company-info flex-grow-1">
+                                        <h6>Moda & Fashion</h6>
+                                        <div class="company-meta">
+                                            <div><i class="bi bi-envelope me-1"></i>vendas@modafashion.com</div>
+                                            <div><i class="bi bi-telephone me-1"></i>(11) 9876-5432</div>
+                                            <div><i class="bi bi-geo-alt me-1"></i>São Paulo, SP</div>
+                                        </div>
+                                    </div>
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown">
+                                            <i class="bi bi-three-dots-vertical"></i>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="#" onclick="viewCompany(3)"><i class="bi bi-eye me-2"></i>Ver Detalhes</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="editCompany(3)"><i class="bi bi-pencil me-2"></i>Editar</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="manageUsers(3)"><i class="bi bi-people me-2"></i>Usuários</a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item text-warning" href="#" onclick="suspendCompany(3)"><i class="bi bi-pause me-2"></i>Suspender</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                <div class="row text-center mb-3">
+                                    <div class="col-4">
+                                        <div class="fw-semibold text-primary">8</div>
+                                        <small class="text-muted">Usuários</small>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="fw-semibold text-success">2</div>
+                                        <small class="text-muted">Filiais</small>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="fw-semibold text-info">45%</div>
+                                        <small class="text-muted">Uso</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="badge bg-secondary">Varejo</span>
+                                        <span class="badge bg-primary ms-1">Básico</span>
+                                    </div>
+                                    <span class="status-badge status-active">Ativa</span>
+                                </div>
+                                
+                                <div class="mt-2">
+                                    <small class="text-muted">Cadastrada em: 10/03/2024</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Paginação -->
+                <nav aria-label="Paginação">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1">Anterior</a>
+                        </li>
+                        <li class="page-item active">
+                            <a class="page-link" href="#">1</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">2</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">3</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">Próximo</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </main>
+
+         <!-- Modal Nova Empresa -->
+    <div class="modal fade" id="newCompanyModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nova Empresa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="newCompanyForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Nome da Empresa</label>
+                                    <input type="text" class="form-control" name="name" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">CNPJ</label>
+                                    <input type="text" class="form-control" name="cnpj" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">E-mail</label>
+                                    <input type="email" class="form-control" name="email" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Telefone</label>
+                                    <input type="tel" class="form-control" name="phone" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Segmento</label>
+                                    <select class="form-select" name="segment" required>
+                                        <option value="">Selecione</option>
+                                        <option value="varejo">Varejo</option>
+                                        <option value="tecnologia">Tecnologia</option>
+                                        <option value="construcao">Construção</option>
+                                        <option value="financeiro">Financeiro</option>
+                                        <option value="marketing">Marketing</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Plano Inicial</label>
+                                    <select class="form-select" name="plan" required>
+                                        <option value="">Selecione</option>
+                                        <option value="trial">Trial (3 meses grátis)</option>
+                                        <option value="basic">Básico</option>
+                                        <option value="professional">Professional</option>
+                                        <option value="enterprise">Enterprise</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Endereço</label>
+                            <input type="text" class="form-control" name="address" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Observações</label>
+                            <textarea class="form-control" name="notes" rows="3" placeholder="Informações adicionais..."></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" form="newCompanyForm" class="btn btn-primary">Criar Empresa</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- NexusFlow JS -->
+    <script src="assets/js/nexusflow.js"></script>
+    
+    <script>
+        // Funções específicas da página
+        function viewCompany(id) {
+            nexusFlow.showNotification(`Visualizando empresa ${id}`, 'info');
+        }
+        
+        function editCompany(id) {
+            nexusFlow.showNotification(`Editando empresa ${id}`, 'info');
+        }
+        
+        function manageUsers(id) {
+            window.location.href = `gerenciar-usuarios.html?company=${id}`;
+        }
+        
+        function approveCompany(id) {
+            if (confirm('Tem certeza que deseja aprovar esta empresa?')) {
+                nexusFlow.showNotification('Empresa aprovada com sucesso!', 'success');
+                // Atualizar status na interface
+                updateCompanyStatus(id, 'active');
+            }
+        }
+        
+        function rejectCompany(id) {
+            if (confirm('Tem certeza que deseja rejeitar esta empresa?')) {
+                nexusFlow.showNotification('Empresa rejeitada.', 'warning');
+                updateCompanyStatus(id, 'rejected');
+            }
+        }
+        
+        function suspendCompany(id) {
+            if (confirm('Tem certeza que deseja suspender esta empresa?')) {
+                nexusFlow.showNotification('Empresa suspensa.', 'warning');
+                updateCompanyStatus(id, 'suspended');
+            }
+        }
+        
+        function deleteCompany(id) {
+            if (confirm('Tem certeza que deseja excluir esta empresa? Esta ação não pode ser desfeita.')) {
+                nexusFlow.showNotification('Empresa excluída.', 'danger');
+                // Remover da interface
+                const companyCard = document.querySelector(`[onclick="deleteCompany(${id})"]`).closest('.company-item');
+                if (companyCard) {
+                    companyCard.remove();
+                }
+            }
+        }
+        
+        function updateCompanyStatus(id, status) {
+            // Simular atualização de status na interface
+            console.log(`Atualizando empresa ${id} para status ${status}`);
+        }
+        
+        function exportCompanies() {
+            nexusFlow.showNotification('Exportando dados das empresas...', 'info');
+            setTimeout(() => {
+                nexusFlow.showNotification('Exportação concluída!', 'success');
+            }, 2000);
+        }
+        
+        function applyFilters() {
+            const search = document.getElementById('searchCompany').value.toLowerCase();
+            const status = document.getElementById('filterStatus').value;
+            const segment = document.getElementById('filterSegment').value;
+            const plan = document.getElementById('filterPlan').value;
+            
+            const companies = document.querySelectorAll('.company-item');
+            
+            companies.forEach(company => {
+                const companyName = company.querySelector('h6').textContent.toLowerCase();
+                const companyStatus = company.dataset.status;
+                const companySegment = company.dataset.segment;
+                const companyPlan = company.dataset.plan;
+                
+                let show = true;
+                
+                if (search && !companyName.includes(search)) {
+                    show = false;
+                }
+                
+                if (status && companyStatus !== status) {
+                    show = false;
+                }
+                
+                if (segment && companySegment !== segment) {
+                    show = false;
+                }
+                
+                if (plan && companyPlan !== plan) {
+                    show = false;
+                }
+                
+                company.style.display = show ? 'block' : 'none';
+            });
+            
+            nexusFlow.showNotification('Filtros aplicados!', 'info');
+        }
+        
+        function clearFilters() {
+            document.getElementById('searchCompany').value = '';
+            document.getElementById('filterStatus').value = '';
+            document.getElementById('filterSegment').value = '';
+            document.getElementById('filterPlan').value = '';
+            
+            document.querySelectorAll('.company-item').forEach(company => {
+                company.style.display = 'block';
+            });
+            
+            nexusFlow.showNotification('Filtros limpos!', 'info');
+        }
+        
+        // Busca em tempo real
+        document.getElementById('searchCompany').addEventListener('input', function() {
+            applyFilters();
+        });
+        
+    </script>

@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validação de E-mail - NexusFlow</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- NexusFlow CSS -->
+    <link href="assets/css/nexusflow.css" rel="stylesheet">
+    
+    <style>
+        .validation-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--warning-orange), #e67e22);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin: 0 auto 1.5rem;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .validation-steps {
+            background: var(--light-gray);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .validation-step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background: var(--white);
+            border-radius: 6px;
+            border-left: 4px solid var(--border-light);
+        }
+        
+        .validation-step.completed {
+            border-left-color: var(--success-green);
+        }
+        
+        .validation-step.active {
+            border-left-color: var(--warning-orange);
+            background: rgba(243, 156, 18, 0.05);
+        }
+        
+        .step-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--border-light);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .step-icon.completed {
+            background: var(--success-green);
+        }
+        
+        .step-icon.active {
+            background: var(--warning-orange);
+        }
+        
+        .step-text {
+            flex: 1;
+        }
+        
+        .email-display {
+            background: rgba(52, 152, 219, 0.1);
+            border: 1px solid rgba(52, 152, 219, 0.3);
+            border-radius: 6px;
+            padding: 0.75rem;
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            color: var(--primary-blue);
+            text-align: center;
+            margin: 1rem 0;
+        }
+        
+        .resend-timer {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            text-align: center;
+            margin: 1rem 0;
+        }
+        
+        .verification-code {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .code-input {
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+            border: 2px solid var(--border-light);
+            border-radius: 8px;
+            transition: all var(--transition-fast);
+        }
+        
+        .code-input:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+            outline: none;
+        }
+        
+        .code-input.filled {
+            border-color: var(--success-green);
+            background: rgba(46, 204, 113, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container d-flex align-items-center justify-content-center p-4">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="validation-icon">
+                    <i class="bi bi-envelope-check"></i>
+                </div>
+                <h4 class="mb-0">Validação de E-mail</h4>
+                <p class="mb-0 opacity-75">Confirme seu e-mail para ativar sua conta</p>
+            </div>
+            
+            <div class="auth-body">
+                <div class="text-center mb-4">
+                    <p class="mb-2">Enviamos um código de verificação para:</p>
+                    <div class="email-display" id="emailDisplay">
+                        carregando...
+                    </div>
+                </div>
+                
+                <div class="validation-steps">
+                    <div class="validation-step completed">
+                        <div class="step-icon completed">
+                            <i class="bi bi-check"></i>
+                        </div>
+                        <div class="step-text">
+                            <strong>Conta criada</strong><br>
+                            <small class="text-muted">Seus dados foram salvos com sucesso</small>
+                        </div>
+                    </div>
+                    
+                    <div class="validation-step active" id="emailStep">
+                        <div class="step-icon active">
+                            <i class="bi bi-envelope"></i>
+                        </div>
+                        <div class="step-text">
+                            <strong>Verificação de e-mail</strong><br>
+                            <small class="text-muted">Digite o código enviado por e-mail</small>
+                        </div>
+                    </div>
+                    
+                    <div class="validation-step" id="activationStep">
+                        <div class="step-icon">
+                            <i class="bi bi-check-circle"></i>
+                        </div>
+                        <div class="step-text">
+                            <strong>Ativação da conta</strong><br>
+                            <small class="text-muted">Sua conta será ativada automaticamente</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <form id="verificationForm">
+                    <div class="text-center mb-3">
+                        <label class="form-label fw-semibold">Digite o código de 6 dígitos:</label>
+                    </div>
+                    
+                    <div class="verification-code">
+                        <input type="text" class="code-input" maxlength="1" data-index="0">
+                        <input type="text" class="code-input" maxlength="1" data-index="1">
+                        <input type="text" class="code-input" maxlength="1" data-index="2">
+                        <input type="text" class="code-input" maxlength="1" data-index="3">
+                        <input type="text" class="code-input" maxlength="1" data-index="4">
+                        <input type="text" class="code-input" maxlength="1" data-index="5">
+                    </div>
+                    
+                    <div class="d-grid mb-3">
+                        <button type="submit" class="btn btn-primary" disabled id="verifyBtn">
+                            <i class="bi bi-shield-check me-2"></i>
+                            Verificar Código
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="text-center">
+                    <div class="resend-timer" id="resendTimer">
+                        Reenviar código em <span id="countdown">60</span> segundos
+                    </div>
+                    
+                    <button type="button" class="btn btn-link text-decoration-none" id="resendBtn" style="display: none;" onclick="resendCode()">
+                        <i class="bi bi-arrow-clockwise me-2"></i>
+                        Reenviar código
+                    </button>
+                    
+                    <div class="mt-3">
+                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="changeEmail()">
+                            <i class="bi bi-pencil me-2"></i>
+                            Alterar e-mail
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="auth-footer">
+                <p class="mb-0 text-center">
+                    <small class="text-muted">
+                        Não recebeu o e-mail? Verifique sua caixa de spam ou 
+                        <a href="#" class="text-decoration-none" onclick="contactSupport()">entre em contato</a>
+                    </small>
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- NexusFlow JS -->
+    <script src="assets/js/nexusflow.js"></script>
+    
+    <script>
+        let countdownTimer;
+        let countdownSeconds = 60;
+        let generatedCode = '123456'; // Código simulado para demonstração
+        
+        // Carregar dados do registro
+        const registrationData = JSON.parse(localStorage.getItem('registrationData') || '{}');
+        const userEmail = registrationData.adminEmail || 'usuario@exemplo.com';
+        
+        document.getElementById('emailDisplay').textContent = userEmail;
+        
+        // Iniciar countdown
+        startCountdown();
+        
+        // Configurar inputs do código
+        const codeInputs = document.querySelectorAll('.code-input');
+        
+        codeInputs.forEach((input, index) => {
+            input.addEventListener('input', function(e) {
+                const value = e.target.value.replace(/[^0-9]/g, '');
+                e.target.value = value;
+                
+                if (value) {
+                    e.target.classList.add('filled');
+                    // Mover para o próximo campo
+                    if (index < codeInputs.length - 1) {
+                        codeInputs[index + 1].focus();
+                    }
+                } else {
+                    e.target.classList.remove('filled');
+                }
+                
+                checkCodeComplete();
+            });
+            
+            input.addEventListener('keydown', function(e) {
+                // Backspace - voltar para campo anterior
+                if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                    codeInputs[index - 1].focus();
+                }
+                
+                // Setas de navegação
+                if (e.key === 'ArrowLeft' && index > 0) {
+                    codeInputs[index - 1].focus();
+                }
+                if (e.key === 'ArrowRight' && index < codeInputs.length - 1) {
+                    codeInputs[index + 1].focus();
+                }
+            });
+            
+            input.addEventListener('paste', function(e) {
+                e.preventDefault();
+                const pastedData = e.clipboardData.getData('text').replace(/[^0-9]/g, '');
+                
+                for (let i = 0; i < Math.min(pastedData.length, codeInputs.length - index); i++) {
+                    codeInputs[index + i].value = pastedData[i];
+                    codeInputs[index + i].classList.add('filled');
+                }
+                
+                checkCodeComplete();
+            });
+        });
+        
+        function checkCodeComplete() {
+            const code = Array.from(codeInputs).map(input => input.value).join('');
+            const verifyBtn = document.getElementById('verifyBtn');
+            
+            if (code.length === 6) {
+                verifyBtn.disabled = false;
+            } else {
+                verifyBtn.disabled = true;
+            }
+        }
+        
+        function startCountdown() {
+            countdownSeconds = 60;
+            const countdownElement = document.getElementById('countdown');
+            const resendTimer = document.getElementById('resendTimer');
+            const resendBtn = document.getElementById('resendBtn');
+            
+            resendTimer.style.display = 'block';
+            resendBtn.style.display = 'none';
+            
+            countdownTimer = setInterval(() => {
+                countdownSeconds--;
+                countdownElement.textContent = countdownSeconds;
+                
+                if (countdownSeconds <= 0) {
+                    clearInterval(countdownTimer);
+                    resendTimer.style.display = 'none';
+                    resendBtn.style.display = 'block';
+                }
+            }, 1000);
+        }
+        
+        function resendCode() {
+            nexusFlow.showNotification('Código reenviado com sucesso!', 'success');
+            generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
+            console.log('Novo código gerado:', generatedCode);
+            startCountdown();
+        }
+        
+        function changeEmail() {
+            const newEmail = prompt('Digite o novo e-mail:', userEmail);
+            if (newEmail && nexusFlow.isValidEmail(newEmail)) {
+                document.getElementById('emailDisplay').textContent = newEmail;
+                nexusFlow.showNotification('E-mail alterado! Novo código enviado.', 'success');
+                resendCode();
+            } else if (newEmail) {
+                nexusFlow.showNotification('E-mail inválido. Tente novamente.', 'danger');
+            }
+        }
+        
+        function contactSupport() {
+            nexusFlow.showNotification('Redirecionando para suporte...', 'info');
+            // Aqui você pode redirecionar para uma página de suporte ou abrir um chat
+        }
+        
+        // Submit do formulário de verificação
+        document.getElementById('verificationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const code = Array.from(codeInputs).map(input => input.value).join('');
+            const verifyBtn = document.getElementById('verifyBtn');
+            
+            nexusFlow.setButtonLoading(verifyBtn, true);
+            
+            // Simular verificação
+            setTimeout(() => {
+                if (code === generatedCode) {
+                    // Código correto
+                    nexusFlow.setButtonLoading(verifyBtn, false);
+                    
+                    // Atualizar passos
+                    document.getElementById('emailStep').classList.remove('active');
+                    document.getElementById('emailStep').classList.add('completed');
+                    document.getElementById('emailStep').querySelector('.step-icon').innerHTML = '<i class="bi bi-check"></i>';
+                    document.getElementById('emailStep').querySelector('.step-icon').classList.remove('active');
+                    document.getElementById('emailStep').querySelector('.step-icon').classList.add('completed');
+                    
+                    document.getElementById('activationStep').classList.add('active');
+                    document.getElementById('activationStep').querySelector('.step-icon').classList.add('active');
+                    
+                    nexusFlow.showNotification('E-mail verificado com sucesso!', 'success');
+                    
+                    // Simular ativação da conta
+                    setTimeout(() => {
+                        document.getElementById('activationStep').classList.remove('active');
+                        document.getElementById('activationStep').classList.add('completed');
+                        document.getElementById('activationStep').querySelector('.step-icon').innerHTML = '<i class="bi bi-check"></i>';
+                        document.getElementById('activationStep').querySelector('.step-icon').classList.remove('active');
+                        document.getElementById('activationStep').querySelector('.step-icon').classList.add('completed');
+                        
+                        nexusFlow.showNotification('Conta ativada! Redirecionando...', 'success');
+                        
+                        // Salvar dados de autenticação
+                        localStorage.setItem('authToken', 'jwt-token-' + Date.now());
+                        localStorage.setItem('userRole', 'admin_empresa');
+                        localStorage.setItem('userEmail', userEmail);
+                        localStorage.removeItem('registrationData');
+                        
+                        setTimeout(() => {
+                            window.location.href = 'admin-empresa.html';
+                        }, 2000);
+                        
+                    }, 1500);
+                    
+                } else {
+                    // Código incorreto
+                    nexusFlow.setButtonLoading(verifyBtn, false);
+                    nexusFlow.showNotification('Código incorreto. Tente novamente.', 'danger');
+                    
+                    // Limpar campos e destacar erro
+                    codeInputs.forEach(input => {
+                        input.value = '';
+                        input.classList.remove('filled');
+                        input.style.borderColor = 'var(--alert-red)';
+                        
+                        setTimeout(() => {
+                            input.style.borderColor = '';
+                        }, 2000);
+                    });
+                    
+                    codeInputs[0].focus();
+                }
+            }, 1500);
+        });
+        
+        // Focar no primeiro campo ao carregar
+        codeInputs[0].focus();
+        
+        // Mostrar código gerado no console para demonstração
+        console.log('Código de verificação (para demonstração):', generatedCode);
+        nexusFlow.showNotification(`Código de demonstração: ${generatedCode}`, 'info');
+    </script>
+</body>
+</html>

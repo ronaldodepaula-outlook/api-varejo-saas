@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Empresas - NexusFlow</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- NexusFlow CSS -->
+    <link href="../../assets/css/nexusflow.css" rel="stylesheet">
+    
+    <style>
+        .company-card {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            transition: all var(--transition-fast);
+            overflow: hidden;
+        }
+        
+        .company-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+        
+        .company-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .company-logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            background: var(--primary-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: 600;
+            font-size: 1.25rem;
+        }
+        
+        .company-info {
+            flex: 1;
+            margin-left: 1rem;
+        }
+        
+        .company-name {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.25rem;
+        }
+        
+        .company-segment {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        
+        .company-body {
+            padding: 1.5rem;
+        }
+        
+        .company-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        
+        .company-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+        
+        .filter-section {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 2rem;
+        }
+        
+        .search-box {
+            position: relative;
+        }
+        
+        .search-box .form-control {
+            padding-left: 2.5rem;
+        }
+        
+        .search-box .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+        
+        .license-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .license-trial {
+            background: rgba(243, 156, 18, 0.1);
+            color: var(--warning-orange);
+        }
+        
+        .license-active {
+            background: rgba(46, 204, 113, 0.1);
+            color: var(--success-green);
+        }
+        
+        .license-expired {
+            background: rgba(231, 76, 60, 0.1);
+            color: var(--alert-red);
+        }
+        
+        .license-pending {
+            background: rgba(127, 140, 141, 0.1);
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="main-wrapper">
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="bi bi-diagram-3"></i>
+                    </div>
+                    <div class="logo-text">NexusFlow</div>
+                </div>
+            </div>
+            
+            <div class="sidebar-nav">
+                <!-- Navegação Principal -->
+                <div class="nav-section">
+                    <div class="nav-item">
+                        <a href="../dashboard.html" class="nav-link">
+                            <i class="bi bi-speedometer2 nav-icon"></i>
+                            <span class="nav-text">Dashboard</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Gestão de Empresas (Super Admin) -->
+                <div class="nav-section" data-role="super_admin">
+                    <div class="nav-header">
+                        <span class="nav-header-text">Administração Geral</span>
+                    </div>
+                    <div class="nav-item">
+                        <a href="companies.html" class="nav-link active">
+                            <i class="bi bi-building nav-icon"></i>
+                            <span class="nav-text">Empresas</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="system-users.html" class="nav-link">
+                            <i class="bi bi-people nav-icon"></i>
+                            <span class="nav-text">Usuários do Sistema</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="billing.html" class="nav-link">
+                            <i class="bi bi-credit-card nav-icon"></i>
+                            <span class="nav-text">Faturamento</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Operacional -->
+                <div class="nav-section">
+                    <div class="nav-header">
+                        <span class="nav-header-text">Operacional</span>
+                    </div>
+                    <div class="nav-item">
+                        <a href="../reports.html" class="nav-link">
+                            <i class="bi bi-graph-up nav-icon"></i>
+                            <span class="nav-text">Relatórios</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="../analytics.html" class="nav-link">
+                            <i class="bi bi-bar-chart nav-icon"></i>
+                            <span class="nav-text">Analytics</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Configurações -->
+                <div class="nav-section">
+                    <div class="nav-header">
+                        <span class="nav-header-text">Sistema</span>
+                    </div>
+                    <div class="nav-item">
+                        <a href="../user/profile.html" class="nav-link">
+                            <i class="bi bi-person-circle nav-icon"></i>
+                            <span class="nav-text">Meu Perfil</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="../support.html" class="nav-link">
+                            <i class="bi bi-question-circle nav-icon"></i>
+                            <span class="nav-text">Suporte</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="main-header">
+                <div class="header-left">
+                    <button class="sidebar-toggle" type="button">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb breadcrumb-custom">
+                            <li class="breadcrumb-item"><a href="../dashboard.html">Dashboard</a></li>
+                            <li class="breadcrumb-item active">Empresas</li>
+                        </ol>
+                    </nav>
+                </div>
+                
+                <div class="header-right">
+                    <!-- Notificações -->
+                    <div class="dropdown">
+                        <button class="btn btn-link text-dark" type="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-bell" style="font-size: 1.25rem;"></i>
+                            <span class="badge bg-danger position-absolute translate-middle rounded-pill" style="font-size: 0.6rem; top: 8px; right: 8px;">3</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><h6 class="dropdown-header">Notificações</h6></li>
+                            <li><a class="dropdown-item" href="#">Nova empresa cadastrada</a></li>
+                            <li><a class="dropdown-item" href="#">Licença expirando em 5 dias</a></li>
+                            <li><a class="dropdown-item" href="#">Relatório mensal disponível</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-center" href="#">Ver todas</a></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Dropdown do Usuário -->
+                    <div class="dropdown user-dropdown">
+                        <div class="user-avatar" data-bs-toggle="dropdown" aria-expanded="false">
+                            A
+                        </div>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><h6 class="dropdown-header">Admin Sistema</h6></li>
+                            <li><small class="dropdown-header text-muted">admin@nexusflow.com</small></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="../user/profile.html"><i class="bi bi-person me-2"></i>Meu Perfil</a></li>
+                            <li><a class="dropdown-item" href="../settings.html"><i class="bi bi-gear me-2"></i>Configurações</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="../auth/login.html"><i class="bi bi-box-arrow-right me-2"></i>Sair</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Área de Conteúdo -->
+            <div class="content-area">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1 class="page-title">Gestão de Empresas</h1>
+                        <p class="page-subtitle">Administre todas as empresas cadastradas no sistema</p>
+                    </div>
+                    <div>
+                        <button class="btn btn-outline-primary me-2" data-action="export" data-target="companies">
+                            <i class="bi bi-download me-2"></i>Exportar Lista
+                        </button>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newCompanyModal">
+                            <i class="bi bi-plus-circle me-2"></i>Nova Empresa
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Filtros -->
+                <div class="filter-section">
+                    <div class="row align-items-end">
+                        <div class="col-md-4">
+                            <label class="form-label">Buscar Empresa</label>
+                            <div class="search-box">
+                                <input type="text" class="form-control" id="searchCompany" placeholder="Nome, CNPJ ou e-mail...">
+                                <i class="bi bi-search search-icon"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-2">
+                            <label class="form-label">Segmento</label>
+                            <select class="form-select" id="filterSegment">
+                                <option value="">Todos</option>
+                                <option value="varejo">Varejo</option>
+                                <option value="industria">Indústria</option>
+                                <option value="construcao">Construção</option>
+                                <option value="financeiro">Financeiro</option>
+                                <option value="marketing">Marketing</option>
+                                <option value="tecnologia">Tecnologia</option>
+                                <option value="saude">Saúde</option>
+                                <option value="educacao">Educação</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-2">
+                            <label class="form-label">Status da Licença</label>
+                            <select class="form-select" id="filterLicense">
+                                <option value="">Todos</option>
+                                <option value="trial">Trial</option>
+                                <option value="active">Ativa</option>
+                                <option value="expired">Expirada</option>
+                                <option value="pending">Pendente</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-2">
+                            <label class="form-label">Estado</label>
+                            <select class="form-select" id="filterState">
+                                <option value="">Todos</option>
+                                <option value="SP">São Paulo</option>
+                                <option value="RJ">Rio de Janeiro</option>
+                                <option value="MG">Minas Gerais</option>
+                                <option value="RS">Rio Grande do Sul</option>
+                                <option value="PR">Paraná</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-2">
+                            <button class="btn btn-outline-secondary w-100" onclick="clearFilters()">
+                                <i class="bi bi-x-circle me-2"></i>Limpar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Lista de Empresas -->
+                <div class="row" id="companiesList">
+                    <!-- Empresa 1 -->
+                    <div class="col-xl-4 col-md-6 mb-3">
+                        <div class="company-card">
+                            <div class="company-header">
+                                <div class="d-flex align-items-center">
+                                    <div class="company-logo">TC</div>
+                                    <div class="company-info">
+                                        <div class="company-name">TechCorp Solutions</div>
+                                        <div class="company-segment">Tecnologia</div>
+                                    </div>
+                                    <div class="license-badge license-active">Ativa</div>
+                                </div>
+                            </div>
+                            <div class="company-body">
+                                <div class="company-stats">
+                                    <div class="stat-item">
+                                        <div class="stat-value">24</div>
+                                        <div class="stat-label">Usuários</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-value">3</div>
+                                        <div class="stat-label">Filiais</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-value">SP</div>
+                                        <div class="stat-label">Estado</div>
+                                    </div>
+                                </div>
+                                <div class="mb-2">
+                                    <small class="text-muted">
+                                        <i class="bi bi-envelope me-1"></i>contato@techcorp.com.br
+                                    </small>
+                                </div>
+                                <div class="mb-3">
+                                    <small class="text-muted">
+                                        <i class="bi bi-calendar me-1"></i>Cadastrada em 15/03/2024
+                                    </small>
+                                </div>
+                                <div class="company-actions">
+                                    <button class="btn btn-sm btn-outline-primary" onclick="viewCompany(1)">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success" onclick="editCompany(1)">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-warning" onclick="manageUsers(1)">
+                                        <i class="bi bi-people"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" onclick="suspendCompany(1)">
+                                        <i class="bi bi-pause"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Empresa 2 -->
+                    <div class="col-xl-4 col-md-6 mb-3">
+                        <div class="company-card">
+                            <div class="company-header">
+                                <div class="d-flex align-items-center">
+                                    <div class="company-logo">VR</div>
+                                    <div class="company-info">
+                                        <div class="company-name">Varejo Rápido Ltda</div>
+                                        <div class="company-segment">Varejo</div>
+                                    </div>
+                                    <div class="license-badge license-trial">Trial</div>
+                                </div>
+                            </div>
+                            <div class="company-body">
+                                <div class="company-stats">
+                                    <div class="stat-item">
+                                        <div class="stat-value">8</div>
+                                        <div class="stat-label">Usuários</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-value">1</div>
+                                        <div class="stat-label">Filiais</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-value">RJ</div>
+                                        <div class="stat-label">Estado</div>
+                                    </div>
+                                </div>
+                                <div class="mb-2">
+                                    <small class="text-muted">
+                                        <i class="bi bi-envelope me-1"></i>admin@varejorapido.com.br
+                                    </small>
+                                </div>
+                                <div class="mb-3">
+                                    <small class="text-muted">
+                                        <i class="bi bi-calendar me-1"></i>Cadastrada em 28/09/2024
+                                    </small>
+                                </div>
+                                <div class="company-actions">
+                                    <button class="btn btn-sm btn-outline-primary" onclick="viewCompany(2)">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success" onclick="editCompany(2)">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-warning" onclick="manageUsers(2)">
+                                        <i class="bi bi-people"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-info" onclick="convertTrial(2)">
+                                        <i class="bi bi-arrow-up"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Empresa 3 -->
+                    <div class="col-xl-4 col-md-6 mb-3">
+                        <div class="company-card">
+                            <div class="company-header">
+                                <div class="d-flex align-items-center">
+                                    <div class="company-logo">CI</div>
+                                    <div class="company-info">
+                                        <div class="company-name">Construtora Inovação</div>
+                                        <div class="company-segment">Construção</div>
+                                    </div>
+                                    <div class="license-badge license-expired">Expirada</div>
+                                </div>
+                            </div>
+                            <div class="company-body">
+                                <div class="company-stats">
+                                    <div class="stat-item">
+                                        <div class="stat-value">15</div>
+                                        <div class="stat-label">Usuários</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-value">2</div>
+                                        <div class="stat-label">Filiais</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-value">MG</div>
+                                        <div class="stat-label">Estado</div>
+                                    </div>
+                                </div>
+                                <div class="mb-2">
+                                    <small class="text-muted">
+                                        <i class="bi bi-envelope me-1"></i>contato@construtorainovacao.com.br
+                                    </small>
+                                </div>
+                                <div class="mb-3">
+                                    <small class="text-muted">
+                                        <i class="bi bi-calendar me-1"></i>Cadastrada em 10/01/2024
+                                    </small>
+                                </div>
+                                <div class="company-actions">
+                                    <button class="btn btn-sm btn-outline-primary" onclick="viewCompany(3)">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success" onclick="editCompany(3)">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-warning" onclick="renewLicense(3)">
+                                        <i class="bi bi-arrow-clockwise"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" onclick="suspendCompany(3)">
+                                        <i class="bi bi-pause"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Mais empresas seriam carregadas dinamicamente -->
+                </div>
+                
+                <!-- Paginação -->
+                <nav aria-label="Paginação de empresas">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1">Anterior</a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">Próximo</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Modal Nova Empresa -->
+    <div class="modal fade" id="newCompanyModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nova Empresa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="newCompanyForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Nome da Empresa</label>
+                                    <input type="text" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">CNPJ</label>
+                                    <input type="text" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">E-mail</label>
+                                    <input type="email" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Segmento</label>
+                                    <select class="form-select" required>
+                                        <option value="">Selecione</option>
+                                        <option value="varejo">Varejo</option>
+                                        <option value="industria">Indústria</option>
+                                        <option value="construcao">Construção</option>
+                                        <option value="financeiro">Financeiro</option>
+                                        <option value="marketing">Marketing</option>
+                                        <option value="tecnologia">Tecnologia</option>
+                                        <option value="saude">Saúde</option>
+                                        <option value="educacao">Educação</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Endereço</label>
+                            <input type="text" class="form-control" required>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="mb-3">
+                                    <label class="form-label">Cidade</label>
+                                    <input type="text" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">Estado</label>
+                                    <select class="form-select" required>
+                                        <option value="">Selecione</option>
+                                        <option value="SP">São Paulo</option>
+                                        <option value="RJ">Rio de Janeiro</option>
+                                        <option value="MG">Minas Gerais</option>
+                                        <!-- Outros estados -->
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" form="newCompanyForm" class="btn btn-primary">Criar Empresa</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- NexusFlow JS -->
+    <script src="../../assets/js/nexusflow.js"></script>
+    
+    <script>
+        // Funções específicas da página
+        function viewCompany(id) {
+            console.log('Visualizar empresa:', id);
+            // Implementar visualização detalhada
+        }
+        
+        function editCompany(id) {
+            console.log('Editar empresa:', id);
+            // Implementar edição
+        }
+        
+        function manageUsers(id) {
+            console.log('Gerenciar usuários da empresa:', id);
+            // Redirecionar para gestão de usuários
+        }
+        
+        function suspendCompany(id) {
+            if (confirm('Tem certeza que deseja suspender esta empresa?')) {
+                console.log('Suspender empresa:', id);
+                // Implementar suspensão
+            }
+        }
+        
+        function convertTrial(id) {
+            console.log('Converter trial para licença paga:', id);
+            // Implementar conversão
+        }
+        
+        function renewLicense(id) {
+            console.log('Renovar licença da empresa:', id);
+            // Implementar renovação
+        }
+        
+        function clearFilters() {
+            document.getElementById('searchCompany').value = '';
+            document.getElementById('filterSegment').value = '';
+            document.getElementById('filterLicense').value = '';
+            document.getElementById('filterState').value = '';
+            // Recarregar lista
+        }
+        
+        // Filtros em tempo real
+        document.getElementById('searchCompany').addEventListener('input', function() {
+            // Implementar busca em tempo real
+        });
+        
+        // Verificar autenticação e permissões
+        if (!localStorage.getItem('authToken')) {
+            window.location.href = '../auth/login.html';
+        }
+    </script>
+</body>
+</html>
