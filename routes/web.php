@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PasswordResetController;
+use App\Http\Controllers\ApiDocsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,6 +18,10 @@ use App\Http\Controllers\PasswordResetController;
 Route::get('/', function () {
     return view('welcome');
 });
+
+// Swagger UI (documentação da API)
+Route::get('/docs', [ApiDocsController::class, 'swagger']);
+Route::get('/api/openapi.json', [ApiDocsController::class, 'openapi']);
 
 
 // Página para resetar senha via token

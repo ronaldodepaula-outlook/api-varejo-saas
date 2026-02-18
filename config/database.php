@@ -2,6 +2,11 @@
 
 use Illuminate\Support\Str;
 
+$mysqlHost = env('DB_HOST', '127.0.0.1');
+if (in_array($mysqlHost, ['localhost', '127.0.0.1'], true)) {
+    $mysqlHost = env('DB_HOST_REMOTE', $mysqlHost);
+}
+
 return [
 
     /*
@@ -46,7 +51,7 @@ return [
         'mysql' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST', '69.6.213.165'),
+            'host' => $mysqlHost,
             'port' => env('DB_PORT', '3306'),
             'database' => env('DB_DATABASE', 'forge'),
             'username' => env('DB_USERNAME', 'forge'),
