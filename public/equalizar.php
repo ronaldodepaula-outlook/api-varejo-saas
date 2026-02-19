@@ -1,4 +1,5 @@
 <?php
+ob_start();
 // Equalizar Laravel em ambiente shared (HostGator)
 // Uso via navegador: /equalizar.php?key=SUA_CHAVE
 // Uso via CLI: php public/equalizar.php
