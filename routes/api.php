@@ -80,10 +80,10 @@ Route::prefix('v1')->group(function () {
     Route::post('password/resetar-senha', [PasswordResetController::class, 'resetarSenha']);
 
     // Rotas legadas
-    Route::post('password/email', [PasswordResetController::class, 'sendResetLinkEmail']);
+    Route::post('password/email', [PasswordResetController::class, 'solicitarReset']);
     Route::post('password/reset/{token}', [PasswordUpdateController::class, 'reset']);
-    Route::post('esqueci-senha', [PasswordResetController::class, 'sendResetLink']);
-    Route::post('redefinir-senha', [PasswordResetController::class, 'resetPassword']);
+    Route::post('esqueci-senha', [PasswordResetController::class, 'solicitarReset']);
+    Route::post('redefinir-senha', [PasswordResetController::class, 'resetarSenha']);
 });
 
 Route::post('password/solicitar-reset', [PasswordResetController::class, 'solicitarReset']);

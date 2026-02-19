@@ -1,377 +1,344 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Usuario;
+use App\Models\PasswordResetToken;
 use App\Models\PasswordReset;
-use App\Http\Controllers\EmailController;
 use Illuminate\Support\Str;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Carbon;
 
 class PasswordResetController extends Controller
 {
-    /**
-     * Solicita o reset de senha (envia e-mail com token)
-     */
+    public function test()
+    {
+        return response()->json(['message' => 'PasswordResetController carregado com sucesso.']);
+    }
+
     public function solicitarReset(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email'
-        ]);
-
+        $request->validate(['email' => 'required|email']);
         $email = $request->input('email');
-        $usuario = Usuario::where('email', $email)->first();
 
+        $usuario = Usuario::where('email', $email)->first();
         if (!$usuario) {
             return response()->json(['erro' => 'E-mail não encontrado.'], 404);
         }
 
-        // Cria token único
-        $token = Str::random(64);
+        $now = Carbon::now();
+        $tokenTtlMinutes = 60 * 24;
 
-        // Grava ou atualiza token na tabela password_resets
-        PasswordReset::updateOrCreate(
-            ['email' => $email],
-            ['token' => $token, 'created_at' => Carbon::now()]
-        );
+        // tenta reutilizar token ainda válido para evitar mismatch com o que foi enviado ao usuário
+        $existing = null;
+        if (class_exists(PasswordReset::class)) {
+            $existing = PasswordReset::where('email', $email)->first();
+        }
+        if (!$existing) {
+            $existing = PasswordResetToken::where('email', $email)->first();
+        }
 
-        // Monta link para a criação da nova senha
-        $link = url("/resetar-senha.php?token={$token}&email={$email}");
+        $reuseToken = false;
+        if ($existing && !empty($existing->token) && !empty($existing->created_at)) {
+            $createdAt = $existing->created_at instanceof Carbon
+                ? $existing->created_at
+                : Carbon::parse($existing->created_at);
+            if ($createdAt->diffInMinutes($now) < $tokenTtlMinutes) {
+                $reuseToken = true;
+            }
+        }
 
-        // Obtém o template do e-mail
-        $mensagem = $this->getEmailTemplate($usuario->nome, $link);
-
-        // Envia e-mail
-        $envio = EmailController::enviarEmail($email, 'Redefinição de Senha - NexusFlow', $mensagem);
-
-        if ($envio['status']) {
-            return response()->json(['mensagem' => 'E-mail de redefinição enviado.'], 200);
+        if ($reuseToken) {
+            $token = $existing->token;
         } else {
-            return response()->json(['erro' => $envio['mensagem']], 500);
+            $token = Str::random(64);
+            if ($existing) {
+                $existing->token = $token;
+                $existing->created_at = $now;
+                $existing->save();
+            } else {
+                // tenta atualizar em duas possíveis tabelas/modelos que o projeto usa
+                if (class_exists(PasswordReset::class)) {
+                    PasswordReset::updateOrCreate(
+                        ['email' => $email],
+                        ['token' => $token, 'created_at' => $now]
+                    );
+                } else {
+                    PasswordResetToken::updateOrCreate(
+                        ['email' => $email],
+                        ['token' => $token, 'created_at' => $now]
+                    );
+                }
+            }
         }
+
+        $webBase = rtrim(env('WEB_URL', env('APP_URL', url('/'))), '/');
+        $link = $webBase . '/redefinir_senha.php?token=' . urlencode($token) . '&email=' . urlencode($email);
+        $emailHtml = $this->buildResetEmailHtml($link, $email);
+        $emailText = $this->buildResetEmailText($link);
+
+        // envio simplificado — o projeto tem helpers próprios para envio
+        if (!class_exists('App\\Helpers\\PHPMailerHelper')) {
+            \Log::error('PHPMailerHelper nao encontrado para envio de reset de senha.');
+            return response()->json(['erro' => 'Servico de e-mail nao configurado.'], 500);
+        }
+
+        $sendResult = \App\Helpers\PHPMailerHelper::send(
+            $email,
+            'Recuperacao de Senha',
+            $emailHtml,
+            $emailText
+        );
+        $sendOk = $sendResult === true || (is_array($sendResult) && ($sendResult['success'] ?? false));
+        if (!$sendOk) {
+            $detalhe = null;
+            $debugLog = null;
+            if (is_array($sendResult)) {
+                $detalhe = $sendResult['error'] ?? null;
+                $debugLog = $sendResult['debug'] ?? null;
+            } elseif (is_string($sendResult)) {
+                $detalhe = $sendResult;
+            }
+            \Log::error('Falha ao enviar e-mail de redefinicao.', [
+                'email' => $email,
+                'erro' => $detalhe ?? $sendResult,
+            ]);
+            $payload = ['erro' => 'Falha ao enviar e-mail de redefinição.'];
+            if (config('app.debug')) {
+                if ($detalhe) {
+                    $payload['detalhe'] = $detalhe;
+                }
+                if ($debugLog) {
+                    $payload['smtp_log'] = $debugLog;
+                }
+            }
+            return response()->json($payload, 500);
+        }
+
+        if (config('app.debug') && is_array($sendResult) && !empty($sendResult['debug'])) {
+            return response()->json([
+                'mensagem' => 'E-mail de redefinição enviado.',
+                'smtp_log' => $sendResult['debug'],
+            ], 200);
+        }
+
+        return response()->json(['mensagem' => 'E-mail de redefinição enviado.'], 200);
     }
 
-    /**
-     * Template de e-mail corrigido com UTF-8
-     */
-    private function getEmailTemplate($nomeUsuario, $linkReset)
-    {
-        // Codifica o nome do usuário para prevenir problemas
-        $nomeUsuarioSeguro = htmlspecialchars($nomeUsuario, ENT_QUOTES, 'UTF-8');
-        
-        return '<!DOCTYPE html>
-<html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redefinição de Senha - NexusFlow</title>
-    <style type="text/css">
-        /* Reset CSS */
-        body, table, td, a {
-            -webkit-text-size-adjust: 100%;
-            -ms-text-size-adjust: 100%;
-        }
-        table {
-            border-collapse: collapse;
-            mso-table-lspace: 0pt;
-            mso-table-rspace: 0pt;
-        }
-        img {
-            border: 0;
-            height: auto;
-            line-height: 100%;
-            outline: none;
-            text-decoration: none;
-            -ms-interpolation-mode: bicubic;
-        }
-        
-        /* Estilos principais */
-        body {
-            height: 100% !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            width: 100% !important;
-            background-color: #f6f6f6;
-            font-family: Arial, Helvetica, sans-serif;
-        }
-        
-        .container {
-            display: block;
-            margin: 0 auto !important;
-            max-width: 600px;
-            padding: 20px;
-        }
-        
-        .content {
-            background: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-        
-        .header {
-            background: #2563eb;
-            padding: 40px 30px;
-            text-align: center;
-        }
-        
-        .header h1 {
-            color: #ffffff;
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 28px;
-            font-weight: bold;
-            line-height: 1.2;
-            margin: 0;
-            padding: 0;
-        }
-        
-        .header p {
-            color: rgba(255,255,255,0.9);
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 16px;
-            line-height: 1.4;
-            margin: 10px 0 0 0;
-        }
-        
-        .body-content {
-            padding: 40px;
-        }
-        
-        .greeting {
-            font-size: 18px;
-            font-weight: bold;
-            color: #111827;
-            margin-bottom: 20px;
-        }
-        
-        .btn-primary {
-            background-color: #2563eb;
-            border-radius: 6px;
-            color: #ffffff !important;
-            display: inline-block;
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 16px;
-            font-weight: bold;
-            line-height: 1.2;
-            margin: 25px 0;
-            padding: 16px 32px;
-            text-decoration: none;
-            text-align: center;
-        }
-        
-        .link-box {
-            background-color: #f8f9fa;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            color: #64748b;
-            font-family: monospace;
-            font-size: 14px;
-            margin: 20px 0;
-            padding: 16px;
-            text-align: center;
-            word-break: break-all;
-        }
-        
-        .warning-box {
-            background-color: #fef3c7;
-            border: 1px solid #f59e0b;
-            border-radius: 6px;
-            color: #92400e;
-            margin: 20px 0;
-            padding: 16px;
-        }
-        
-        .footer {
-            background-color: #f8fafc;
-            border-top: 1px solid #e2e8f0;
-            padding: 30px;
-            text-align: center;
-        }
-        
-        .footer p {
-            color: #64748b;
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 14px;
-            line-height: 1.4;
-            margin: 0 0 10px 0;
-        }
-        
-        .text-center {
-            text-align: center;
-        }
-        
-        .text-muted {
-            color: #6b7280;
-        }
-        
-        .icon-large {
-            font-size: 48px;
-            margin-bottom: 20px;
-        }
-        
-        /* Responsividade */
-        @media only screen and (max-width: 600px) {
-            .container {
-                padding: 10px !important;
-                width: 100% !important;
-            }
-            
-            .body-content {
-                padding: 20px !important;
-            }
-            
-            .header {
-                padding: 30px 20px !important;
-            }
-            
-            .header h1 {
-                font-size: 24px !important;
-            }
-        }
-    </style>
-</head>
-<body>
-    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
-        <tr>
-            <td align="center" style="padding: 40px 20px;">
-                <div class="container">
-                    <div class="content">
-                        <!-- Header -->
-                        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
-                            <tr>
-                                <td class="header">
-                                    <div class="icon-large" style="color: white;">🔒</div>
-                                    <h1>Redefinição de Senha</h1>
-                                    <p>NexusFlow - Sistema de Gestão</p>
-                                </td>
-                            </tr>
-                        </table>
-                        
-                        <!-- Body Content -->
-                        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
-                            <tr>
-                                <td class="body-content">
-                                    <div class="greeting">Olá, ' . $nomeUsuarioSeguro . '!</div>
-                                    
-                                    <p>Recebemos uma solicitação para redefinir a senha da sua conta NexusFlow. Para criar uma nova senha, clique no botão abaixo:</p>
-                                    
-                                    <div class="text-center">
-                                        <a href="' . $linkReset . '" class="btn-primary" target="_blank">🔑 Redefinir Minha Senha</a>
-                                    </div>
-                                    
-                                    <p class="text-muted">Se o botão não funcionar, copie e cole o link abaixo no seu navegador:</p>
-                                    
-                                    <div class="link-box">' . $linkReset . '</div>
-                                    
-                                    <div class="warning-box">
-                                        <strong>⚠️ Importante:</strong> Este link é válido por <strong>60 minutos</strong>. 
-                                        Após este período, será necessário solicitar um novo link de redefinição.
-                                    </div>
-                                    
-                                    <p>Se você não solicitou a redefinição de senha, por favor ignore este e-mail. Sua senha atual permanecerá inalterada.</p>
-                                    
-                                    <p class="text-muted" style="font-size: 14px;">
-                                        <strong>Dica de segurança:</strong> Utilize uma senha forte, com letras maiúsculas e minúsculas, números e caracteres especiais.
-                                    </p>
-                                </td>
-                            </tr>
-                        </table>
-                        
-                        <!-- Footer -->
-                        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
-                            <tr>
-                                <td class="footer">
-                                    <p><strong>NexusFlow © ' . date('Y') . '</strong><br/>Sistema de Gestão Multi-Empresas</p>
-                                    <p style="font-size: 12px; color: #94a3b8;">
-                                        Este é um e-mail automático, por favor não responda.<br/>
-                                        Caso tenha alguma dúvida, entre em contato com nosso suporte.
-                                    </p>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </td>
-        </tr>
-    </table>
-</body>
-</html>';
-    }
-
-    /**
-     * Valida token e retorna dados para criar nova senha
-     */
     public function validarToken(Request $request)
     {
-        $request->validate([
-            'token' => 'required|string',
-            'email' => 'required|email'
-        ]);
-
-        $reset = PasswordReset::where('email', $request->email)
-                                ->where('token', $request->token)
-                                ->first();
-
-        if (!$reset) {
-            return response()->json(['erro' => 'Token inválido ou expirado.'], 404);
+        $token = $request->input('token');
+        if (!$token) {
+            return response()->json(['valid' => false], 400);
         }
-
-        // Checar validade do token (60 minutos)
-        $validade = Carbon::parse($reset->created_at)->addMinutes(60);
-        if (Carbon::now()->gt($validade)) {
-            // Remove token expirado
-            $reset->delete();
-            return response()->json(['erro' => 'Token expirado. Solicite um novo.'], 403);
+        $email = $request->input('email');
+        $record = null;
+        if (class_exists(PasswordReset::class)) {
+            $query = PasswordReset::where('token', $token);
+            if ($email) {
+                $query->where('email', $email);
+            }
+            $record = $query->first();
         }
-
-        return response()->json([
-            'mensagem' => 'Token válido.',
-            'email' => $reset->email,
-            'token' => $reset->token
-        ], 200);
+        if (!$record) {
+            $query = PasswordResetToken::where('token', $token);
+            if ($email) {
+                $query->where('email', $email);
+            }
+            $record = $query->first();
+        }
+        if (!$record && $email) {
+            $emailRecord = null;
+            if (class_exists(PasswordReset::class)) {
+                $emailRecord = PasswordReset::where('email', $email)->first();
+            }
+            if (!$emailRecord) {
+                $emailRecord = PasswordResetToken::where('email', $email)->first();
+            }
+            if ($emailRecord && !empty($emailRecord->token) && Hash::check($token, $emailRecord->token)) {
+                $record = $emailRecord;
+            }
+        }
+        if (!$record) {
+            return response()->json(['valid' => false], 404);
+        }
+        if (empty($record->created_at)) {
+            $record->delete();
+            return response()->json(['valid' => false], 404);
+        }
+        $createdAt = $record->created_at instanceof Carbon
+            ? $record->created_at
+            : Carbon::parse($record->created_at);
+        if ($createdAt->diffInMinutes(Carbon::now()) >= (60 * 24)) {
+            $record->delete();
+            return response()->json(['valid' => false], 404);
+        }
+        return response()->json(['valid' => true]);
     }
 
-    /**
-     * Altera a senha do usuário
-     */
     public function resetarSenha(Request $request)
     {
+        if (!$request->filled('password') && $request->filled('senha')) {
+            $request->merge([
+                'password' => $request->input('senha'),
+                'password_confirmation' => $request->input('senha_confirmation'),
+            ]);
+        }
+
         $request->validate([
-            'email' => 'required|email',
             'token' => 'required|string',
-            'senha' => 'required|min:6|confirmed'
+            'email' => 'required|email',
+            'password' => 'required|string|min:6|confirmed'
         ]);
 
-        // Busca token na tabela
-        $reset = PasswordReset::where('email', $request->email)
-                                ->where('token', $request->token)
-                                ->first();
+        $now = Carbon::now();
+        $tokenTtlMinutes = 60 * 24;
 
-        if (!$reset) {
-            return response()->json(['erro' => 'Token inválido ou expirado.'], 404);
+        $token = $request->input('token');
+        $email = $request->input('email');
+
+        $record = null;
+        if (class_exists(PasswordReset::class)) {
+            $record = PasswordReset::where('email', $email)->where('token', $token)->first();
+        }
+        if (!$record) {
+            $record = PasswordResetToken::where('email', $email)->where('token', $token)->first();
+        }
+        if (!$record) {
+            // fallback: token armazenado como hash
+            $emailRecord = null;
+            if (class_exists(PasswordReset::class)) {
+                $emailRecord = PasswordReset::where('email', $email)->first();
+            }
+            if (!$emailRecord) {
+                $emailRecord = PasswordResetToken::where('email', $email)->first();
+            }
+            if ($emailRecord && !empty($emailRecord->token) && Hash::check($token, $emailRecord->token)) {
+                $record = $emailRecord;
+            }
+        }
+        if (!$record) {
+            return response()->json(['erro' => 'Token inválido ou expirado.'], 400);
         }
 
-        // Verifica se o token ainda é válido
-        $validade = Carbon::parse($reset->created_at)->addMinutes(60);
-        if (Carbon::now()->gt($validade)) {
-            $reset->delete();
-            return response()->json(['erro' => 'Token expirado. Solicite um novo.'], 403);
+        if (empty($record->created_at)) {
+            $record->delete();
+            return response()->json(['erro' => 'Token inválido ou expirado.'], 400);
         }
 
-        // Atualiza senha
-        $usuario = Usuario::where('email', $request->email)->first();
+        $createdAt = $record->created_at instanceof Carbon
+            ? $record->created_at
+            : Carbon::parse($record->created_at);
+        if ($createdAt->diffInMinutes($now) >= $tokenTtlMinutes) {
+            $record->delete();
+            return response()->json(['erro' => 'Token inválido ou expirado.'], 400);
+        }
+
+        $usuario = Usuario::where('email', $email)->first();
         if (!$usuario) {
             return response()->json(['erro' => 'Usuário não encontrado.'], 404);
         }
 
-        $usuario->senha = Hash::make($request->senha);
+        $usuario->senha = Hash::make($request->input('password'));
         $usuario->save();
 
-        // Remove o token após uso
-        $reset->delete();
+        // remove token
+        $record->delete();
 
-        return response()->json(['mensagem' => 'Senha alterada com sucesso!'], 200);
+        return response()->json(['mensagem' => 'Senha redefinida com sucesso.']);
+    }
+
+    // Web compatibility: mostra formulário simples ou redireciona
+    public function showResetForm($token)
+    {
+        return response()->json(['token' => $token]);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        return $this->resetarSenha($request);
+    }
+
+    private function buildResetEmailHtml(string $link, string $email): string
+    {
+        $appName = config('app.name', 'NexusFlow');
+        $year = date('Y');
+        $emailSafe = htmlspecialchars($email, ENT_QUOTES, 'UTF-8');
+        $linkSafe = htmlspecialchars($link, ENT_QUOTES, 'UTF-8');
+
+        return <<<HTML
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Redefinir senha</title>
+</head>
+<body style="margin:0; padding:0; background:#f8fafc; font-family:Arial, sans-serif; color:#0f172a;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc; padding:24px 0;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="640" cellpadding="0" cellspacing="0" style="background:#ffffff; border-radius:16px; overflow:hidden; box-shadow:0 12px 30px rgba(15,23,42,0.08);">
+          <tr>
+            <td style="background:linear-gradient(135deg,#2563eb 0%,#0ea5e9 100%); padding:24px 32px; color:#fff;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td style="width:48px;">
+                    <div style="width:44px; height:44px; background:#ffffff; border-radius:12px; display:flex; align-items:center; justify-content:center; color:#2563eb; font-weight:700; font-size:20px;">
+                      N
+                    </div>
+                  </td>
+                  <td style="padding-left:12px;">
+                    <div style="font-size:20px; font-weight:700; line-height:1;">{$appName}</div>
+                    <div style="font-size:13px; opacity:0.9;">Recuperacao de senha</div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:32px;">
+              <h1 style="margin:0 0 12px 0; font-size:22px; color:#0f172a;">Redefinir sua senha</h1>
+              <p style="margin:0 0 16px 0; font-size:15px; color:#475569; line-height:1.5;">
+                Recebemos sua solicitacao de recuperacao de senha para o e-mail <strong>{$emailSafe}</strong>.
+              </p>
+              <p style="margin:0 0 22px 0; font-size:15px; color:#475569; line-height:1.5;">
+                Clique no botao abaixo para criar uma nova senha. O link tem validade de <strong>24 horas</strong>.
+              </p>
+              <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 22px 0;">
+                <tr>
+                  <td align="center" bgcolor="#2563eb" style="border-radius:10px;">
+                    <a href="{$linkSafe}" style="display:inline-block; padding:12px 22px; color:#ffffff; text-decoration:none; font-weight:600; font-size:15px;">
+                      Redefinir senha
+                    </a>
+                  </td>
+                </tr>
+              </table>
+              <p style="margin:0 0 8px 0; font-size:13px; color:#64748b;">
+                Se voce nao solicitou esta alteracao, ignore este e-mail.
+              </p>
+              <p style="margin:0; font-size:13px; color:#94a3b8;">
+                Ou copie e cole este link no navegador:<br>
+                <span style="color:#2563eb; word-break:break-all;">{$linkSafe}</span>
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td style="background:#f1f5f9; padding:16px 32px; font-size:12px; color:#64748b;">
+              © {$year} {$appName}. Todos os direitos reservados.
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+HTML;
+    }
+
+    private function buildResetEmailText(string $link): string
+    {
+        return "Recuperacao de senha\n\nClique no link para redefinir sua senha (validade 24h):\n{$link}\n\nSe voce nao solicitou esta alteracao, ignore este e-mail.";
     }
 }

@@ -6,6 +6,7 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -45,5 +46,21 @@ class Handler extends ExceptionHandler
         }
 
         return response()->json(['message' => 'Unauthenticated.'], 401);
+    }
+
+    /**
+     * Forcar resposta JSON para validacoes em rotas de API,
+     * mesmo quando o header Accept nao estiver como application/json.
+     */
+    protected function invalid($request, ValidationException $exception)
+    {
+        if ($request->expectsJson() || $request->is('api/*')) {
+            return response()->json([
+                'message' => 'Dados invalidos.',
+                'errors' => $exception->errors(),
+            ], $exception->status);
+        }
+
+        return parent::invalid($request, $exception);
     }
 }

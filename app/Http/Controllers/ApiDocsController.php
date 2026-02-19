@@ -102,6 +102,11 @@ class ApiDocsController extends Controller
                     }
                 }
 
+                if ($tag === 'Senha') {
+                    $operation['description'] = ($operation['description'] ?? '') . ' Token com validade de 24 horas.';
+                    $operation['responses'] = $this->senhaResponses($uri, $operation['responses']);
+                }
+
                 $paths[$path][$methodLower] = $operation;
             }
         }
@@ -427,6 +432,93 @@ class ApiDocsController extends Controller
         }
 
         return null;
+    }
+
+    private function senhaResponses(string $uri, array $baseResponses): array
+    {
+        $path = '/' . ltrim($uri, '/');
+        $responses = $baseResponses;
+
+        if (strpos($path, 'password/validar-token') !== false) {
+            $responses['200'] = [
+                'description' => 'Token valido.',
+                'content' => [
+                    'application/json' => [
+                        'example' => ['valid' => true],
+                    ],
+                ],
+            ];
+            $responses['404'] = [
+                'description' => 'Token invalido ou expirado.',
+                'content' => [
+                    'application/json' => [
+                        'example' => ['valid' => false],
+                    ],
+                ],
+            ];
+            return $responses;
+        }
+
+        if (strpos($path, 'password/resetar-senha') !== false || strpos($path, 'redefinir-senha') !== false) {
+            $responses['200'] = [
+                'description' => 'Senha redefinida.',
+                'content' => [
+                    'application/json' => [
+                        'example' => ['mensagem' => 'Senha redefinida com sucesso.'],
+                    ],
+                ],
+            ];
+            $responses['400'] = [
+                'description' => 'Token invalido ou expirado.',
+                'content' => [
+                    'application/json' => [
+                        'example' => ['erro' => 'Token invalido ou expirado.'],
+                    ],
+                ],
+            ];
+            $responses['422'] = [
+                'description' => 'Dados invalidos.',
+                'content' => [
+                    'application/json' => [
+                        'example' => [
+                            'message' => 'Dados invalidos.',
+                            'errors' => ['password' => ['The password field is required.']],
+                        ],
+                    ],
+                ],
+            ];
+            return $responses;
+        }
+
+        if (strpos($path, 'esqueci-senha') !== false || strpos($path, 'password/solicitar-reset') !== false || strpos($path, 'password/email') !== false) {
+            $responses['200'] = [
+                'description' => 'E-mail de redefinicao enviado.',
+                'content' => [
+                    'application/json' => [
+                        'example' => ['mensagem' => 'E-mail de redefinicao enviado.'],
+                    ],
+                ],
+            ];
+            $responses['404'] = [
+                'description' => 'E-mail nao encontrado.',
+                'content' => [
+                    'application/json' => [
+                        'example' => ['erro' => 'E-mail nao encontrado.'],
+                    ],
+                ],
+            ];
+            $responses['500'] = [
+                'description' => 'Falha ao enviar e-mail.',
+                'content' => [
+                    'application/json' => [
+                        'example' => ['erro' => 'Falha ao enviar e-mail de redefinicao.'],
+                    ],
+                ],
+            ];
+            return $responses;
+        }
+
+        return $responses;
     }
 
     private function payloadExamples(): array
