@@ -1,0 +1,526 @@
+{
+  "info": {
+    "name": "Precificacao - SaaS MultiEmpresas",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "precificacao-001"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost", "description": "Base da API (ex: http://localhost)" },
+    { "key": "port", "value": "8000", "description": "Porta da API (ex: 8000)" },
+    { "key": "token", "value": "", "description": "Bearer token (obrigatorio nas rotas /api/v1)" },
+    { "key": "id_empresa", "value": "7", "description": "ID da empresa (obrigatorio se nao houver usuario autenticado)" },
+    { "key": "id_filial", "value": "12", "description": "ID da filial" },
+    { "key": "id_produto", "value": "96", "description": "ID do produto" },
+    { "key": "id_fornecedor", "value": "42", "description": "ID do fornecedor" },
+    { "key": "id_historico", "value": "1", "description": "ID do historico de precos" },
+    { "key": "id_atualizacao", "value": "1", "description": "ID do lote de atualizacao" },
+    { "key": "id_item", "value": "1", "description": "ID do item de atualizacao" },
+    { "key": "id_promocao", "value": "1", "description": "ID da promocao" },
+    { "key": "id_promocao_produto", "value": "1", "description": "ID do produto na promocao" },
+    { "key": "data_inicio", "value": "2026-02-01", "description": "Data inicial para filtros" },
+    { "key": "data_fim", "value": "2026-02-28", "description": "Data final para filtros" }
+  ],
+  "item": [
+    {
+      "name": "Historico - Listar",
+      "request": {
+        "description": "GET /api/v1/precificacao/historico\nQuery params:\n- id_empresa (opcional se autenticado)\n- id_produto (opcional)\n- tipo_alteracao (opcional: custo|venda|promocao)\n- data_inicio (opcional)\n- data_fim (opcional)",
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text", "description": "Token Bearer" }],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/precificacao/historico?id_empresa={{id_empresa}}&id_produto={{id_produto}}&data_inicio={{data_inicio}}&data_fim={{data_fim}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "precificacao", "historico"],
+          "query": [
+            { "key": "id_empresa", "value": "{{id_empresa}}", "description": "ID da empresa (opcional se autenticado)" },
+            { "key": "id_produto", "value": "{{id_produto}}", "description": "ID do produto (opcional)" },
+            { "key": "data_inicio", "value": "{{data_inicio}}", "description": "Data inicial (opcional)" },
+            { "key": "data_fim", "value": "{{data_fim}}", "description": "Data final (opcional)" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Historico - Obter",
+      "request": {
+        "description": "GET /api/v1/precificacao/historico/{id_historico}",
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/precificacao/historico/{{id_historico}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "precificacao", "historico", "{{id_historico}}"]
+        }
+      }
+    },
+    {
+      "name": "Historico - Criar",
+      "request": {
+        "description": "POST /api/v1/precificacao/historico\nBody:\n- id_empresa (opcional se autenticado)\n- id_produto (obrigatorio)\n- tipo_alteracao (custo|venda|promocao)\n- preco_anterior\n- preco_novo\n- motivo (opcional)\n- id_fornecedor (opcional)\n- id_usuario (opcional)\n- ip_origem (opcional)\n- data_alteracao (opcional)",
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id_empresa\": 7,\n  \"id_produto\": 96,\n  \"tipo_alteracao\": \"venda\",\n  \"preco_anterior\": 7.90,\n  \"preco_novo\": 8.50,\n  \"motivo\": \"Ajuste manual\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/precificacao/historico",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "precificacao", "historico"]
+        }
+      }
+    },
+    {
+      "name": "Historico - Atualizar",
+      "request": {
+        "description": "PUT /api/v1/precificacao/historico/{id_historico}\nBody: campos do historico a atualizar",
+        "method": "PUT",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": { "mode": "raw", "raw": "{\n  \"motivo\": \"Correcao de cadastro\"\n}" },
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/precificacao/historico/{{id_historico}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "precificacao", "historico", "{{id_historico}}"]
+        }
+      }
+    },
+    {
+      "name": "Historico - Excluir",
+      "request": {
+        "description": "DELETE /api/v1/precificacao/historico/{id_historico}",
+        "method": "DELETE",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/precificacao/historico/{{id_historico}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "precificacao", "historico", "{{id_historico}}"]
+        }
+      }
+    },
+    {
+      "name": "Atualizacoes - Listar",
+      "request": {
+        "description": "GET /api/v1/precificacao/atualizacoes\nQuery params:\n- id_empresa (opcional se autenticado)\n- id_filial (opcional)\n- status (opcional)\n- tipo_atualizacao (opcional)\n- id_fornecedor (opcional)\n- data_inicio (opcional)\n- data_fim (opcional)",
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/precificacao/atualizacoes?id_empresa={{id_empresa}}&id_filial={{id_filial}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "precificacao", "atualizacoes"],
+          "query": [
+            { "key": "id_empresa", "value": "{{id_empresa}}", "description": "ID da empresa (opcional se autenticado)" },
+            { "key": "id_filial", "value": "{{id_filial}}", "description": "ID da filial (opcional)" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Atualizacoes - Criar",
+      "request": {
+        "description": "POST /api/v1/precificacao/atualizacoes\nBody:\n- id_empresa (opcional se autenticado)\n- id_filial (obrigatorio)\n- numero_lote (opcional)\n- descricao (opcional)\n- tipo_atualizacao (custo_fornecedor|custo_avulso|venda_geral|promocao)\n- id_fornecedor (opcional)\n- data_atualizacao (obrigatorio)\n- status (opcional)\n- observacoes (opcional)\n- id_usuario_criador (opcional)",
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id_empresa\": 7,\n  \"id_filial\": 12,\n  \"numero_lote\": \"LOTE-20260220-01\",\n  \"descricao\": \"Reajuste de precos\",\n  \"tipo_atualizacao\": \"venda_geral\",\n  \"data_atualizacao\": \"2026-02-20\",\n  \"status\": \"rascunho\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/precificacao/atualizacoes",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "precificacao", "atualizacoes"]
+        }
+      }
+    },
+    {
+      "name": "Atualizacoes - Obter",
+      "request": {
+        "description": "GET /api/v1/precificacao/atualizacoes/{id_atualizacao}",
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/precificacao/atualizacoes/{{id_atualizacao}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "precificacao", "atualizacoes", "{{id_atualizacao}}"]
+        }
+      }
+    },
+    {
+      "name": "Atualizacoes - Atualizar",
+      "request": {
+        "description": "PUT /api/v1/precificacao/atualizacoes/{id_atualizacao}\nBody: campos do cabecalho a atualizar",
+        "method": "PUT",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": { "mode": "raw", "raw": "{\n  \"descricao\": \"Ajuste geral\",\n  \"status\": \"rascunho\"\n}" },
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/precificacao/atualizacoes/{{id_atualizacao}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "precificacao", "atualizacoes", "{{id_atualizacao}}"]
+        }
+      }
+    },
+    {
+      "name": "Atualizacoes - Excluir",
+      "request": {
+        "description": "DELETE /api/v1/precificacao/atualizacoes/{id_atualizacao}",
+        "method": "DELETE",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/precificacao/atualizacoes/{{id_atualizacao}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "precificacao", "atualizacoes", "{{id_atualizacao}}"]
+        }
+      }
+    },
+    {
+      "name": "Atualizacoes - Processar",
+      "request": {
+        "description": "POST /api/v1/precificacao/atualizacoes/{id_atualizacao}/processar",
+        "method": "POST",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/precificacao/atualizacoes/{{id_atualizacao}}/processar",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "precificacao", "atualizacoes", "{{id_atualizacao}}", "processar"]
+        }
+      }
+    },
+    {
+      "name": "Atualizacoes - Cancelar",
+      "request": {
+        "description": "POST /api/v1/precificacao/atualizacoes/{id_atualizacao}/cancelar",
+        "method": "POST",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/precificacao/atualizacoes/{{id_atualizacao}}/cancelar",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "precificacao", "atualizacoes", "{{id_atualizacao}}", "cancelar"]
+        }
+      }
+    },
+    {
+      "name": "Atualizacoes - Adicionar Item",
+      "request": {
+        "description": "POST /api/v1/precificacao/atualizacoes/{id_atualizacao}/itens\nBody:\n- id_produto (obrigatorio)\n- preco_custo_novo (opcional)\n- preco_venda_novo (opcional)\n- preco_custo_anterior (opcional)\n- preco_venda_anterior (opcional)\n- observacao (opcional)",
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id_produto\": 96,\n  \"preco_custo_novo\": 5.50,\n  \"preco_venda_novo\": 8.50,\n  \"observacao\": \"Reajuste 5%\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/precificacao/atualizacoes/{{id_atualizacao}}/itens",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "precificacao", "atualizacoes", "{{id_atualizacao}}", "itens"]
+        }
+      }
+    },
+    {
+      "name": "Atualizacoes - Atualizar Item",
+      "request": {
+        "description": "PUT /api/v1/precificacao/atualizacoes/{id_atualizacao}/itens/{id_item}",
+        "method": "PUT",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": { "mode": "raw", "raw": "{\n  \"preco_venda_novo\": 8.90\n}" },
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/precificacao/atualizacoes/{{id_atualizacao}}/itens/{{id_item}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "precificacao", "atualizacoes", "{{id_atualizacao}}", "itens", "{{id_item}}"]
+        }
+      }
+    },
+    {
+      "name": "Atualizacoes - Remover Item",
+      "request": {
+        "description": "DELETE /api/v1/precificacao/atualizacoes/{id_atualizacao}/itens/{id_item}",
+        "method": "DELETE",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/precificacao/atualizacoes/{{id_atualizacao}}/itens/{{id_item}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "precificacao", "atualizacoes", "{{id_atualizacao}}", "itens", "{{id_item}}"]
+        }
+      }
+    },
+    {
+      "name": "Promocoes - Listar",
+      "request": {
+        "description": "GET /api/v1/precificacao/promocoes\nQuery params:\n- id_empresa (opcional se autenticado)\n- id_filial (opcional)\n- status (opcional)\n- tipo_promocao (opcional)\n- data_inicio (opcional)\n- data_fim (opcional)",
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/precificacao/promocoes?id_empresa={{id_empresa}}&id_filial={{id_filial}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "precificacao", "promocoes"],
+          "query": [
+            { "key": "id_empresa", "value": "{{id_empresa}}", "description": "ID da empresa (opcional se autenticado)" },
+            { "key": "id_filial", "value": "{{id_filial}}", "description": "ID da filial (opcional)" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Promocoes - Criar",
+      "request": {
+        "description": "POST /api/v1/precificacao/promocoes\nBody:\n- id_empresa (opcional se autenticado)\n- id_filial (obrigatorio)\n- codigo_promocao (obrigatorio)\n- nome_promocao (obrigatorio)\n- tipo_promocao (obrigatorio)\n- data_inicio (obrigatorio)\n- data_fim (obrigatorio)\n- status (opcional)\n- prioridade (opcional)\n- aplicar_em_todas_filiais (opcional)",
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id_empresa\": 7,\n  \"id_filial\": 12,\n  \"codigo_promocao\": \"PROMO-0220-01\",\n  \"nome_promocao\": \"Semana do Consumidor\",\n  \"tipo_promocao\": \"desconto_percentual\",\n  \"data_inicio\": \"2026-02-20 00:00:00\",\n  \"data_fim\": \"2026-02-27 23:59:59\",\n  \"status\": \"rascunho\",\n  \"prioridade\": 1,\n  \"aplicar_em_todas_filiais\": 0\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/precificacao/promocoes",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "precificacao", "promocoes"]
+        }
+      }
+    },
+    {
+      "name": "Promocoes - Obter",
+      "request": {
+        "description": "GET /api/v1/precificacao/promocoes/{id_promocao}",
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/precificacao/promocoes/{{id_promocao}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "precificacao", "promocoes", "{{id_promocao}}"]
+        }
+      }
+    },
+    {
+      "name": "Promocoes - Atualizar",
+      "request": {
+        "description": "PUT /api/v1/precificacao/promocoes/{id_promocao}\nBody: campos da promocao a atualizar",
+        "method": "PUT",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": { "mode": "raw", "raw": "{\n  \"status\": \"pausada\"\n}" },
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/precificacao/promocoes/{{id_promocao}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "precificacao", "promocoes", "{{id_promocao}}"]
+        }
+      }
+    },
+    {
+      "name": "Promocoes - Excluir",
+      "request": {
+        "description": "DELETE /api/v1/precificacao/promocoes/{id_promocao}",
+        "method": "DELETE",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/precificacao/promocoes/{{id_promocao}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "precificacao", "promocoes", "{{id_promocao}}"]
+        }
+      }
+    },
+    {
+      "name": "Promocoes - Ativar",
+      "request": {
+        "description": "POST /api/v1/precificacao/promocoes/{id_promocao}/ativar",
+        "method": "POST",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/precificacao/promocoes/{{id_promocao}}/ativar",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "precificacao", "promocoes", "{{id_promocao}}", "ativar"]
+        }
+      }
+    },
+    {
+      "name": "Promocoes - Pausar",
+      "request": {
+        "description": "POST /api/v1/precificacao/promocoes/{id_promocao}/pausar",
+        "method": "POST",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/precificacao/promocoes/{{id_promocao}}/pausar",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "precificacao", "promocoes", "{{id_promocao}}", "pausar"]
+        }
+      }
+    },
+    {
+      "name": "Promocoes - Encerrar",
+      "request": {
+        "description": "POST /api/v1/precificacao/promocoes/{id_promocao}/encerrar",
+        "method": "POST",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/precificacao/promocoes/{{id_promocao}}/encerrar",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "precificacao", "promocoes", "{{id_promocao}}", "encerrar"]
+        }
+      }
+    },
+    {
+      "name": "Promocoes - Adicionar Produto",
+      "request": {
+        "description": "POST /api/v1/precificacao/promocoes/{id_promocao}/produtos\nBody:\n- id_produto (obrigatorio)\n- preco_normal (opcional)\n- preco_promocional (obrigatorio)\n- quantidade_minima (opcional)\n- quantidade_pague (obrigatorio para leve_pague)\n- observacao (opcional)",
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id_produto\": 96,\n  \"preco_normal\": 8.50,\n  \"preco_promocional\": 7.49,\n  \"quantidade_minima\": 1\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/precificacao/promocoes/{{id_promocao}}/produtos",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "precificacao", "promocoes", "{{id_promocao}}", "produtos"]
+        }
+      }
+    },
+    {
+      "name": "Promocoes - Atualizar Produto",
+      "request": {
+        "description": "PUT /api/v1/precificacao/promocoes/{id_promocao}/produtos/{id_promocao_produto}",
+        "method": "PUT",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": { "mode": "raw", "raw": "{\n  \"preco_promocional\": 6.99\n}" },
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/precificacao/promocoes/{{id_promocao}}/produtos/{{id_promocao_produto}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "precificacao", "promocoes", "{{id_promocao}}", "produtos", "{{id_promocao_produto}}"]
+        }
+      }
+    },
+    {
+      "name": "Promocoes - Remover Produto",
+      "request": {
+        "description": "DELETE /api/v1/precificacao/promocoes/{id_promocao}/produtos/{id_promocao_produto}",
+        "method": "DELETE",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/precificacao/promocoes/{{id_promocao}}/produtos/{{id_promocao_produto}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "precificacao", "promocoes", "{{id_promocao}}", "produtos", "{{id_promocao_produto}}"]
+        }
+      }
+    },
+    {
+      "name": "Precos Vigentes - Listar",
+      "request": {
+        "description": "GET /api/v1/precificacao/precos-vigentes\nQuery params:\n- id_empresa (opcional se autenticado)\n- id_filial (opcional)\n- id_produto (opcional)\n- em_promocao (opcional: 0|1)",
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/precificacao/precos-vigentes?id_empresa={{id_empresa}}&id_filial={{id_filial}}&id_produto={{id_produto}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "precificacao", "precos-vigentes"],
+          "query": [
+            { "key": "id_empresa", "value": "{{id_empresa}}", "description": "ID da empresa (opcional se autenticado)" },
+            { "key": "id_filial", "value": "{{id_filial}}", "description": "ID da filial (opcional)" },
+            { "key": "id_produto", "value": "{{id_produto}}", "description": "ID do produto (opcional)" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Precos Vigentes - Obter por ID",
+      "request": {
+        "description": "GET /api/v1/precificacao/precos-vigentes/{id}",
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/precificacao/precos-vigentes/{{id}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "precificacao", "precos-vigentes", "{{id}}"]
+        }
+      }
+    },
+    {
+      "name": "Precos Vigentes - Obter por Empresa/Filial/Produto",
+      "request": {
+        "description": "GET /api/v1/precificacao/precos-vigentes/empresa/{id_empresa}/filial/{id_filial}/produto/{id_produto}",
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/precificacao/precos-vigentes/empresa/{{id_empresa}}/filial/{{id_filial}}/produto/{{id_produto}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "precificacao", "precos-vigentes", "empresa", "{{id_empresa}}", "filial", "{{id_filial}}", "produto", "{{id_produto}}"]
+        }
+      }
+    },
+    {
+      "name": "Precos Vigentes - Criar/Atualizar",
+      "request": {
+        "description": "POST /api/v1/precificacao/precos-vigentes\nBody:\n- id_empresa (opcional se autenticado)\n- id_filial (obrigatorio)\n- id_produto (obrigatorio)\n- preco_base (obrigatorio)\n- preco_atual (opcional)\n- preco_promocional (opcional)\n- em_promocao (opcional)\n- id_promocao_ativa (opcional)\n- data_inicio_promocao (opcional)\n- data_fim_promocao (opcional)",
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id_empresa\": 7,\n  \"id_filial\": 12,\n  \"id_produto\": 96,\n  \"preco_base\": 8.50,\n  \"preco_atual\": 8.50,\n  \"em_promocao\": 0\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/precificacao/precos-vigentes",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "precificacao", "precos-vigentes"]
+        }
+      }
+    },
+    {
+      "name": "Precos Vigentes - Atualizar",
+      "request": {
+        "description": "PUT /api/v1/precificacao/precos-vigentes/{id}",
+        "method": "PUT",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": { "mode": "raw", "raw": "{\n  \"preco_atual\": 8.90\n}" },
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/precificacao/precos-vigentes/{{id}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "precificacao", "precos-vigentes", "{{id}}"]
+        }
+      }
+    },
+    {
+      "name": "Precos Vigentes - Excluir",
+      "request": {
+        "description": "DELETE /api/v1/precificacao/precos-vigentes/{id}",
+        "method": "DELETE",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/precificacao/precos-vigentes/{{id}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "precificacao", "precos-vigentes", "{{id}}"]
+        }
+      }
+    }
+  ]
+}

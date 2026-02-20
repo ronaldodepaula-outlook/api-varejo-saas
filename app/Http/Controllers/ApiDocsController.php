@@ -220,6 +220,9 @@ class ApiDocsController extends Controller
         if (preg_match('#^api/(estoque|estoques|movimentacoes)#', $uri)) {
             return 'Estoque';
         }
+        if (preg_match('#^api/(v1/)?precificacao#', $uri)) {
+            return 'Precificacao';
+        }
         if (preg_match('#^api/(capa-transferencias|transferencias)#', $uri)) {
             return 'Transferências';
         }
@@ -259,6 +262,7 @@ class ApiDocsController extends Controller
             'Produtos' => 'Gestão e filtros de produtos.',
             'Inventário' => 'Capas, itens de inventário e contagens.',
             'Estoque' => 'Saldos, movimentações e consultas de estoque.',
+            'Precificacao' => 'Historico, atualizacoes, promocoes e precos vigentes.',
             'Transferências' => 'Capas e transferências de estoque.',
             'NFE' => 'Módulo de NF-e/DANFE e integrações SEFAZ.',
             'PDV' => 'Caixa e vendas no ponto de venda.',
@@ -279,6 +283,7 @@ class ApiDocsController extends Controller
             'Produtos',
             'Inventário',
             'Estoque',
+            'Precificacao',
             'Transferências',
             'NFE',
             'PDV',
@@ -476,6 +481,26 @@ class ApiDocsController extends Controller
         // Compras (cotacoes, pedidos, entradas)
         if (preg_match('#^v1/.*compras.*#', $path) || preg_match('#^compras/.*#', $path)) {
             return $examples['compras'];
+        }
+
+        // Precificacao
+        if (preg_match('#^v1/precificacao/historico#', $path)) {
+            return $examples['precificacao_historico'];
+        }
+        if (preg_match('#^v1/precificacao/atualizacoes/[^/]+/itens#', $path)) {
+            return $examples['precificacao_item'];
+        }
+        if (preg_match('#^v1/precificacao/atualizacoes#', $path)) {
+            return $examples['precificacao_atualizacao'];
+        }
+        if (preg_match('#^v1/precificacao/promocoes/[^/]+/produtos#', $path)) {
+            return $examples['precificacao_promocao_produto'];
+        }
+        if (preg_match('#^v1/precificacao/promocoes#', $path)) {
+            return $examples['precificacao_promocao'];
+        }
+        if (preg_match('#^v1/precificacao/precos-vigentes#', $path)) {
+            return $examples['precificacao_preco_vigente'];
         }
 
         // Vendas assistidas
@@ -793,6 +818,56 @@ class ApiDocsController extends Controller
                     'quantidade_recebida' => 100,
                     'preco_unitario' => 12.50
                 ]
+            ],
+            'precificacao_historico' => [
+                'id_empresa' => 7,
+                'id_produto' => 96,
+                'tipo_alteracao' => 'venda',
+                'preco_anterior' => 7.90,
+                'preco_novo' => 8.50,
+                'motivo' => 'Ajuste manual'
+            ],
+            'precificacao_atualizacao' => [
+                'id_empresa' => 7,
+                'id_filial' => 12,
+                'numero_lote' => 'LOTE-20260220-01',
+                'descricao' => 'Reajuste de precos',
+                'tipo_atualizacao' => 'venda_geral',
+                'data_atualizacao' => '2026-02-20',
+                'status' => 'rascunho',
+                'observacoes' => 'Reajuste de tabela'
+            ],
+            'precificacao_item' => [
+                'id_produto' => 96,
+                'preco_custo_novo' => 5.50,
+                'preco_venda_novo' => 8.50,
+                'observacao' => 'Reajuste 5%'
+            ],
+            'precificacao_promocao' => [
+                'id_empresa' => 7,
+                'id_filial' => 12,
+                'codigo_promocao' => 'PROMO-0220-01',
+                'nome_promocao' => 'Semana do Consumidor',
+                'tipo_promocao' => 'desconto_percentual',
+                'data_inicio' => '2026-02-20 00:00:00',
+                'data_fim' => '2026-02-27 23:59:59',
+                'status' => 'rascunho',
+                'prioridade' => 1,
+                'aplicar_em_todas_filiais' => false
+            ],
+            'precificacao_promocao_produto' => [
+                'id_produto' => 96,
+                'preco_normal' => 8.50,
+                'preco_promocional' => 7.49,
+                'quantidade_minima' => 1
+            ],
+            'precificacao_preco_vigente' => [
+                'id_empresa' => 7,
+                'id_filial' => 12,
+                'id_produto' => 96,
+                'preco_base' => 8.50,
+                'preco_atual' => 8.50,
+                'em_promocao' => 0
             ],
             'capa_inventario' => [
                 'id_empresa' => 1,

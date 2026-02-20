@@ -61,6 +61,10 @@ use App\Http\Controllers\CotacaoController;
 use App\Http\Controllers\PedidoCompraController;
 use App\Http\Controllers\EntradaCompraController;
 use App\Http\Controllers\ProdutoFornecedorController;
+use App\Http\Controllers\AtualizacaoPrecoController;
+use App\Http\Controllers\PrecoHistoricoController;
+use App\Http\Controllers\PrecoVigenteController;
+use App\Http\Controllers\PromocaoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -221,6 +225,53 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::post('fornecedor-produto', [ProdutoFornecedorController::class, 'store']);
     Route::put('fornecedor-produto/fornecedor/{id_fornecedor}/produto/{id_produto}', [ProdutoFornecedorController::class, 'update']);
     Route::delete('fornecedor-produto/fornecedor/{id_fornecedor}/produto/{id_produto}', [ProdutoFornecedorController::class, 'destroy']);
+
+    // Precificacao
+    Route::prefix('precificacao')->group(function () {
+        // Historico de precos
+        Route::get('historico', [PrecoHistoricoController::class, 'index']);
+        Route::get('historico/{id}', [PrecoHistoricoController::class, 'show']);
+        Route::post('historico', [PrecoHistoricoController::class, 'store']);
+        Route::put('historico/{id}', [PrecoHistoricoController::class, 'update']);
+        Route::delete('historico/{id}', [PrecoHistoricoController::class, 'destroy']);
+
+        // Atualizacoes de precos (cabecalho)
+        Route::get('atualizacoes', [AtualizacaoPrecoController::class, 'index']);
+        Route::post('atualizacoes', [AtualizacaoPrecoController::class, 'store']);
+        Route::get('atualizacoes/{id}', [AtualizacaoPrecoController::class, 'show']);
+        Route::put('atualizacoes/{id}', [AtualizacaoPrecoController::class, 'update']);
+        Route::delete('atualizacoes/{id}', [AtualizacaoPrecoController::class, 'destroy']);
+        Route::post('atualizacoes/{id_atualizacao}/processar', [AtualizacaoPrecoController::class, 'processar']);
+        Route::post('atualizacoes/{id_atualizacao}/cancelar', [AtualizacaoPrecoController::class, 'cancelar']);
+
+        // Itens da atualizacao
+        Route::post('atualizacoes/{id_atualizacao}/itens', [AtualizacaoPrecoController::class, 'storeItem']);
+        Route::put('atualizacoes/{id_atualizacao}/itens/{id_item}', [AtualizacaoPrecoController::class, 'updateItem']);
+        Route::delete('atualizacoes/{id_atualizacao}/itens/{id_item}', [AtualizacaoPrecoController::class, 'destroyItem']);
+
+        // Promocoes
+        Route::get('promocoes', [PromocaoController::class, 'index']);
+        Route::post('promocoes', [PromocaoController::class, 'store']);
+        Route::get('promocoes/{id}', [PromocaoController::class, 'show']);
+        Route::put('promocoes/{id}', [PromocaoController::class, 'update']);
+        Route::delete('promocoes/{id}', [PromocaoController::class, 'destroy']);
+        Route::post('promocoes/{id_promocao}/ativar', [PromocaoController::class, 'ativar']);
+        Route::post('promocoes/{id_promocao}/pausar', [PromocaoController::class, 'pausar']);
+        Route::post('promocoes/{id_promocao}/encerrar', [PromocaoController::class, 'encerrar']);
+
+        // Produtos da promocao
+        Route::post('promocoes/{id_promocao}/produtos', [PromocaoController::class, 'storeProduto']);
+        Route::put('promocoes/{id_promocao}/produtos/{id_promocao_produto}', [PromocaoController::class, 'updateProduto']);
+        Route::delete('promocoes/{id_promocao}/produtos/{id_promocao_produto}', [PromocaoController::class, 'destroyProduto']);
+
+        // Precos vigentes
+        Route::get('precos-vigentes/empresa/{id_empresa}/filial/{id_filial}/produto/{id_produto}', [PrecoVigenteController::class, 'porEmpresaFilialProduto']);
+        Route::get('precos-vigentes', [PrecoVigenteController::class, 'index']);
+        Route::post('precos-vigentes', [PrecoVigenteController::class, 'store']);
+        Route::get('precos-vigentes/{id}', [PrecoVigenteController::class, 'show']);
+        Route::put('precos-vigentes/{id}', [PrecoVigenteController::class, 'update']);
+        Route::delete('precos-vigentes/{id}', [PrecoVigenteController::class, 'destroy']);
+    });
 });
 
 // =======================
