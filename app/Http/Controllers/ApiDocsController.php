@@ -80,6 +80,11 @@ class ApiDocsController extends Controller
                     ];
                 }
 
+                $queryParams = $this->queryParams($uri);
+                if ($queryParams) {
+                    $params = array_merge($params, $queryParams);
+                }
+
                 if ($params) {
                     $operation['parameters'] = $params;
                 }
@@ -138,6 +143,52 @@ class ApiDocsController extends Controller
         ];
 
         return response()->json($spec);
+    }
+
+    private function queryParams(string $uri): array
+    {
+        $uri = ltrim($uri, '/');
+
+        // Kardex reports (estoque)
+        if ($uri === 'api/estoque/relatorios/kardex' ||
+            $uri === 'api/estoque/relatorios/kardex/export' ||
+            $uri === 'api/estoque/relatorios/kardex/resumo') {
+            return [
+                [
+                    'name' => 'id_empresa',
+                    'in' => 'query',
+                    'required' => false,
+                    'schema' => ['type' => 'integer', 'example' => 7],
+                    'description' => 'Obrigatorio quando nao ha usuario autenticado.',
+                ],
+                [
+                    'name' => 'id_filial',
+                    'in' => 'query',
+                    'required' => true,
+                    'schema' => ['type' => 'integer', 'example' => 12],
+                ],
+                [
+                    'name' => 'id_produto',
+                    'in' => 'query',
+                    'required' => true,
+                    'schema' => ['type' => 'integer', 'example' => 96],
+                ],
+                [
+                    'name' => 'data_inicio',
+                    'in' => 'query',
+                    'required' => false,
+                    'schema' => ['type' => 'string', 'example' => '2025-01-01'],
+                ],
+                [
+                    'name' => 'data_fim',
+                    'in' => 'query',
+                    'required' => false,
+                    'schema' => ['type' => 'string', 'example' => '2026-12-31'],
+                ],
+            ];
+        }
+
+        return [];
     }
 
     private function resolveTag(string $uri, ?string $actionName): string

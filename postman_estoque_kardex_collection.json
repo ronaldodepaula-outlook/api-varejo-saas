@@ -1,0 +1,79 @@
+{
+  "info": {
+    "name": "Estoque - Relatorio Kardex",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "estoque-kardex-001"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost", "description": "Base da API (ex: http://localhost)" },
+    { "key": "port", "value": "8000", "description": "Porta da API (ex: 8000)" },
+    { "key": "token", "value": "", "description": "Bearer token (opcional se a rota nao estiver protegida)" },
+    { "key": "id_empresa", "value": "7", "description": "ID da empresa. Obrigatorio quando nao ha usuario autenticado." },
+    { "key": "id_filial", "value": "12", "description": "ID da filial (obrigatorio)." },
+    { "key": "id_produto", "value": "96", "description": "ID do produto (obrigatorio)." },
+    { "key": "data_inicio", "value": "2025-01-01", "description": "Data inicial do periodo (opcional). Se vazio, usa a menor data de movimentacao do produto." },
+    { "key": "data_fim", "value": "2026-12-31", "description": "Data final do periodo (opcional). Se vazio, usa a maior data de movimentacao do produto." }
+  ],
+  "item": [
+    {
+      "name": "Kardex - Detalhado",
+      "request": {
+        "description": "GET /api/estoque/relatorios/kardex - Relatorio completo de ficha de estoque (detalhado).",
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text", "description": "Token Bearer (opcional se rota publica)" }],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/estoque/relatorios/kardex?id_empresa={{id_empresa}}&id_filial={{id_filial}}&id_produto={{id_produto}}&data_inicio={{data_inicio}}&data_fim={{data_fim}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "estoque", "relatorios", "kardex"],
+          "query": [
+            { "key": "id_empresa", "value": "{{id_empresa}}", "description": "ID da empresa. Obrigatorio quando nao ha usuario autenticado." },
+            { "key": "id_filial", "value": "{{id_filial}}", "description": "ID da filial (obrigatorio)." },
+            { "key": "id_produto", "value": "{{id_produto}}", "description": "ID do produto (obrigatorio)." },
+            { "key": "data_inicio", "value": "{{data_inicio}}", "description": "Data inicial do periodo (opcional)." },
+            { "key": "data_fim", "value": "{{data_fim}}", "description": "Data final do periodo (opcional)." }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Kardex - Exportacao (Excel/CSV)",
+      "request": {
+        "description": "GET /api/estoque/relatorios/kardex/export - Versao simplificada para exportacao.",
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text", "description": "Token Bearer (opcional se rota publica)" }],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/estoque/relatorios/kardex/export?id_empresa={{id_empresa}}&id_filial={{id_filial}}&id_produto={{id_produto}}&data_inicio={{data_inicio}}&data_fim={{data_fim}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "estoque", "relatorios", "kardex", "export"],
+          "query": [
+            { "key": "id_empresa", "value": "{{id_empresa}}", "description": "ID da empresa. Obrigatorio quando nao ha usuario autenticado." },
+            { "key": "id_filial", "value": "{{id_filial}}", "description": "ID da filial (obrigatorio)." },
+            { "key": "id_produto", "value": "{{id_produto}}", "description": "ID do produto (obrigatorio)." },
+            { "key": "data_inicio", "value": "{{data_inicio}}", "description": "Data inicial do periodo (opcional)." },
+            { "key": "data_fim", "value": "{{data_fim}}", "description": "Data final do periodo (opcional)." }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Kardex - Resumo",
+      "request": {
+        "description": "GET /api/estoque/relatorios/kardex/resumo - Resumo estatistico do periodo.",
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text", "description": "Token Bearer (opcional se rota publica)" }],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/estoque/relatorios/kardex/resumo?id_empresa={{id_empresa}}&id_filial={{id_filial}}&id_produto={{id_produto}}&data_inicio={{data_inicio}}&data_fim={{data_fim}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "estoque", "relatorios", "kardex", "resumo"],
+          "query": [
+            { "key": "id_empresa", "value": "{{id_empresa}}", "description": "ID da empresa. Obrigatorio quando nao ha usuario autenticado." },
+            { "key": "id_filial", "value": "{{id_filial}}", "description": "ID da filial (obrigatorio)." },
+            { "key": "id_produto", "value": "{{id_produto}}", "description": "ID do produto (obrigatorio)." },
+            { "key": "data_inicio", "value": "{{data_inicio}}", "description": "Data inicial do periodo (opcional)." },
+            { "key": "data_fim", "value": "{{data_fim}}", "description": "Data final do periodo (opcional)." }
+          ]
+        }
+      }
+    }
+  ]
+}

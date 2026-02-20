@@ -27,6 +27,7 @@ use App\Http\Controllers\PagamentoController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PasswordUpdateController;
 use App\Http\Controllers\ProdutoController;
+use App\Http\Controllers\RelatorioKardexController;
 use App\Http\Controllers\SecaoController;
 use App\Http\Controllers\SubgrupoController;
 use App\Http\Controllers\TransferenciaController;
@@ -247,6 +248,9 @@ Route::apiResource('estoques', EstoqueController::class);
 Route::get('estoque/empresa/{id_empresa}/filial/{id_filial}/produto/{id_produto}', [EstoqueController::class, 'porFilialProduto']);
 Route::get('estoques/empresa/{id_empresa}/filial/{id_filial}/produto/{id_produto}', [EstoqueController::class, 'porFilialProduto']);
 Route::get('estoques/empresa/{id_empresa}/produto/{id_produto}/filiais', [EstoqueController::class, 'filiaisComEstoquePorEmpresaProduto']);
+Route::get('estoque/relatorios/kardex', [RelatorioKardexController::class, 'kardex']);
+Route::get('estoque/relatorios/kardex/export', [RelatorioKardexController::class, 'kardexExport']);
+Route::get('estoque/relatorios/kardex/resumo', [RelatorioKardexController::class, 'kardexResumo']);
 
 Route::apiResource('movimentacoes', MovimentacaoController::class);
 Route::get('movimentacoes/empresa/{id_empresa}/filial/{id_filial}/produto/{id_produto}', [MovimentacaoController::class, 'fichaEstoquePorProdutoEmpresaFilial']);
