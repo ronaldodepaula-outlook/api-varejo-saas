@@ -7,6 +7,7 @@ use App\Models\PasswordResetToken;
 use App\Models\PasswordReset;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Carbon;
 
 class PasswordResetController extends Controller
@@ -79,7 +80,7 @@ class PasswordResetController extends Controller
 
         // envio simplificado — o projeto tem helpers próprios para envio
         if (!class_exists('App\\Helpers\\PHPMailerHelper')) {
-            \Log::error('PHPMailerHelper nao encontrado para envio de reset de senha.');
+            Log::error('PHPMailerHelper nao encontrado para envio de reset de senha.');
             return response()->json(['erro' => 'Servico de e-mail nao configurado.'], 500);
         }
 
@@ -99,7 +100,7 @@ class PasswordResetController extends Controller
             } elseif (is_string($sendResult)) {
                 $detalhe = $sendResult;
             }
-            \Log::error('Falha ao enviar e-mail de redefinicao.', [
+            Log::error('Falha ao enviar e-mail de redefinicao.', [
                 'email' => $email,
                 'erro' => $detalhe ?? $sendResult,
             ]);

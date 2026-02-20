@@ -1,0 +1,108 @@
+{
+  "info": {
+    "name": "Fornecedores API - SaaS MultiEmpresas",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "fornecedores-collection-001"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost" },
+    { "key": "port", "value": "8000" },
+    { "key": "token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "List Fornecedores (paginated)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/fornecedores",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api","v1","fornecedores"]
+        }
+      }
+    },
+    {
+      "name": "Get Fornecedor by id",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/fornecedores/44",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api","v1","fornecedores","44"]
+        }
+      }
+    },
+    {
+      "name": "Create Fornecedor",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id_empresa\": 7,\n  \"razao_social\": \"PAINE PRODUCAO E COMERCIO DE PAES ARTESANAIS LTDA\",\n  \"nome_fantasia\": \"PAINE PRODUCAO\",\n  \"cnpj\": \"31006488000198\",\n  \"cidade\": \"Fortaleza\",\n  \"estado\": \"CE\",\n  \"status\": \"ativo\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/fornecedores",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api","v1","fornecedores"]
+        }
+      }
+    },
+    {
+      "name": "Update Fornecedor",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"razao_social\": \"PAINE PRODUCAO E COMERCIO DE PAES ARTESANAIS LTDA\",\n  \"nome_fantasia\": \"PAINE PRODUCAO\",\n  \"cidade\": \"Fortaleza\",\n  \"estado\": \"CE\",\n  \"status\": \"ativo\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/fornecedores/44",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api","v1","fornecedores","44"]
+        }
+      }
+    },
+    {
+      "name": "Delete Fornecedor",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/fornecedores/44",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api","v1","fornecedores","44"]
+        }
+      }
+    },
+    {
+      "name": "List Fornecedores by Empresa",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/fornecedores/empresa/7",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api","v1","fornecedores","empresa","7"]
+        }
+      }
+    }
+  ]
+}

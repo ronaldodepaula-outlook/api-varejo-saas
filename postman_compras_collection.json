@@ -1,0 +1,231 @@
+{
+  "info": {
+    "name": "Compras - SaaS MultiEmpresas (completo)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "compras-001-full"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost" },
+    { "key": "port", "value": "8000" },
+    { "key": "token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Cotações - Listar (paginated)",
+      "request": {
+        "description": "GET /api/v1/compras/cotacoes - Lista cotações da empresa (usa auth()->user()->id_empresa ou query id_empresa).",
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+        "url": { "raw": "{{baseUrl}}:{{port}}/api/v1/compras/cotacoes", "host": ["{{baseUrl}}:{{port}}"], "path": ["api","v1","compras","cotacoes"] }
+      }
+    },
+    {
+      "name": "Cotações - Obter (por id)",
+      "request": {
+        "description": "GET /api/v1/compras/cotacoes/{id} - Retorna cotação com itens, fornecedores e respostas.",
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+        "url": { "raw": "{{baseUrl}}:{{port}}/api/v1/compras/cotacoes/1", "host": ["{{baseUrl}}:{{port}}"], "path": ["api","v1","compras","cotacoes","1"] }
+      }
+    },
+    {
+      "name": "Cotações - Criar",
+      "request": {
+        "description": "POST /api/v1/compras/cotacoes - Cria uma nova cotação.",
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": { "mode": "raw", "raw": "{\n  \"id_empresa\":1,\n  \"id_filial\":1,\n  \"data_cotacao\":\"2026-02-19\",\n  \"data_validade\":\"2026-03-19\",\n  \"observacoes\":\"Solicitar cotações\"\n}" },
+        "url": { "raw": "{{baseUrl}}:{{port}}/api/v1/compras/cotacoes", "host": ["{{baseUrl}}:{{port}}"], "path": ["api","v1","compras","cotacoes"] }
+      }
+    },
+    {
+      "name": "Cotações - Atualizar",
+      "request": {
+        "description": "PUT /api/v1/compras/cotacoes/{id} - Atualiza campos de cotação (descricao, validade, status).",
+        "method": "PUT",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": { "mode": "raw", "raw": "{\n  \"descricao\":\"Atualizado\",\n  \"status\":\"enviada\"\n}" },
+        "url": { "raw": "{{baseUrl}}:{{port}}/api/v1/compras/cotacoes/1", "host": ["{{baseUrl}}:{{port}}"], "path": ["api","v1","compras","cotacoes","1"] }
+      }
+    },
+    {
+      "name": "Cotações - Deletar",
+      "request": {
+        "description": "DELETE /api/v1/compras/cotacoes/{id} - Remove cotação (soft delete se aplicável).",
+        "method": "DELETE",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+        "url": { "raw": "{{baseUrl}}:{{port}}/api/v1/compras/cotacoes/1", "host": ["{{baseUrl}}:{{port}}"], "path": ["api","v1","compras","cotacoes","1"] }
+      }
+    },
+    {
+      "name": "Cotação - Adicionar Item",
+      "request": {
+        "description": "POST /api/v1/compras/cotacoes/{id_cotacao}/itens - Adiciona item à cotação.",
+        "method": "POST",
+        "header": [ { "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" } ],
+        "body": { "mode": "raw", "raw": "{\n  \"id_produto\":10,\n  \"quantidade\":100,\n  \"unidade_medida\":\"UN\"\n}" },
+        "url": { "raw": "{{baseUrl}}:{{port}}/api/v1/compras/cotacoes/1/itens", "host": ["{{baseUrl}}:{{port}}"], "path": ["api","v1","compras","cotacoes","1","itens"] }
+      }
+    },
+    {
+      "name": "Cotação - Atualizar Item",
+      "request": {
+        "description": "PUT /api/v1/compras/cotacoes/{id_cotacao}/itens/{id_item} - Atualiza item da cotação.",
+        "method": "PUT",
+        "header": [ { "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" } ],
+        "body": { "mode": "raw", "raw": "{\n  \"quantidade\":120\n}" },
+        "url": { "raw": "{{baseUrl}}:{{port}}/api/v1/compras/cotacoes/1/itens/1", "host": ["{{baseUrl}}:{{port}}"], "path": ["api","v1","compras","cotacoes","1","itens","1"] }
+      }
+    },
+    {
+      "name": "Cotação - Remover Item",
+      "request": {
+        "description": "DELETE /api/v1/compras/cotacoes/{id_cotacao}/itens/{id_item}",
+        "method": "DELETE",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+        "url": { "raw": "{{baseUrl}}:{{port}}/api/v1/compras/cotacoes/1/itens/1", "host": ["{{baseUrl}}:{{port}}"], "path": ["api","v1","compras","cotacoes","1","itens","1"] }
+      }
+    },
+    {
+      "name": "Cotação - Adicionar Fornecedor",
+      "request": {
+        "description": "POST /api/v1/compras/cotacoes/{id_cotacao}/fornecedores - Inclui fornecedor na cotação.",
+        "method": "POST",
+        "header": [ { "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" } ],
+        "body": { "mode": "raw", "raw": "{\n  \"id_fornecedor\":7\n}" },
+        "url": { "raw": "{{baseUrl}}:{{port}}/api/v1/compras/cotacoes/1/fornecedores", "host": ["{{baseUrl}}:{{port}}"], "path": ["api","v1","compras","cotacoes","1","fornecedores"] }
+      }
+    },
+    {
+      "name": "Cotação - Enviar Resposta (Fornecedor)",
+      "request": {
+        "description": "POST /api/v1/compras/cotacoes/fornecedor/{id_cotacao_fornecedor}/respostas - Fornecedor responde com preços/prazos.",
+        "method": "POST",
+        "header": [ { "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" } ],
+        "body": { "mode": "raw", "raw": "{\n  \"id_produto\":10,\n  \"quantidade\":100,\n  \"preco_unitario\":12.50,\n  \"prazo_entrega_item\":5\n}" },
+        "url": { "raw": "{{baseUrl}}:{{port}}/api/v1/compras/cotacoes/fornecedor/1/respostas", "host": ["{{baseUrl}}:{{port}}"], "path": ["api","v1","compras","cotacoes","fornecedor","1","respostas"] }
+      }
+    },
+    {
+      "name": "Pedidos - Listar",
+      "request": {
+        "description": "GET /api/v1/compras/pedidos - Lista pedidos da empresa.",
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+        "url": { "raw": "{{baseUrl}}:{{port}}/api/v1/compras/pedidos", "host": ["{{baseUrl}}:{{port}}"], "path": ["api","v1","compras","pedidos"] }
+      }
+    },
+    {
+      "name": "Pedidos - Criar",
+      "request": {
+        "description": "POST /api/v1/compras/pedidos - Cria pedido (pode referenciar cotação).",
+        "method": "POST",
+        "header": [ { "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" } ],
+        "body": { "mode": "raw", "raw": "{\n  \"id_empresa\":1,\n  \"id_filial\":1,\n  \"id_fornecedor\":7,\n  \"data_pedido\":\"2026-02-19\",\n  \"valor_total\":1250.00\n}" },
+        "url": { "raw": "{{baseUrl}}:{{port}}/api/v1/compras/pedidos", "host": ["{{baseUrl}}:{{port}}"], "path": ["api","v1","compras","pedidos"] }
+      }
+    },
+    {
+      "name": "Pedidos - Obter",
+      "request": {
+        "description": "GET /api/v1/compras/pedidos/{id} - Retorna pedido com itens.",
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+        "url": { "raw": "{{baseUrl}}:{{port}}/api/v1/compras/pedidos/1", "host": ["{{baseUrl}}:{{port}}"], "path": ["api","v1","compras","pedidos","1"] }
+      }
+    },
+    {
+      "name": "Pedidos - Atualizar",
+      "request": {
+        "description": "PUT /api/v1/compras/pedidos/{id} - Atualiza pedido (status, previsao, etc).",
+        "method": "PUT",
+        "header": [ { "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" } ],
+        "body": { "mode": "raw", "raw": "{\n  \"status\":\"enviado\"\n}" },
+        "url": { "raw": "{{baseUrl}}:{{port}}/api/v1/compras/pedidos/1", "host": ["{{baseUrl}}:{{port}}"], "path": ["api","v1","compras","pedidos","1"] }
+      }
+    },
+    {
+      "name": "Pedidos - Excluir",
+      "request": {
+        "description": "DELETE /api/v1/compras/pedidos/{id}",
+        "method": "DELETE",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+        "url": { "raw": "{{baseUrl}}:{{port}}/api/v1/compras/pedidos/1", "host": ["{{baseUrl}}:{{port}}"], "path": ["api","v1","compras","pedidos","1"] }
+      }
+    },
+    {
+      "name": "Pedidos - Adicionar Item",
+      "request": {
+        "description": "POST /api/v1/compras/pedidos/{id_pedido}/itens - Adiciona item ao pedido.",
+        "method": "POST",
+        "header": [ { "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" } ],
+        "body": { "mode": "raw", "raw": "{\n  \"id_produto\":10,\n  \"quantidade\":100,\n  \"preco_unitario\":12.50\n}" },
+        "url": { "raw": "{{baseUrl}}:{{port}}/api/v1/compras/pedidos/1/itens", "host": ["{{baseUrl}}:{{port}}"], "path": ["api","v1","compras","pedidos","1","itens"] }
+      }
+    },
+    {
+      "name": "Entradas - Listar",
+      "request": {
+        "description": "GET /api/v1/compras/entradas - Lista entradas de compra.",
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+        "url": { "raw": "{{baseUrl}}:{{port}}/api/v1/compras/entradas", "host": ["{{baseUrl}}:{{port}}"], "path": ["api","v1","compras","entradas"] }
+      }
+    },
+    {
+      "name": "Entradas - Criar",
+      "request": {
+        "description": "POST /api/v1/compras/entradas - Registra recebimento (pode referenciar pedido).",
+        "method": "POST",
+        "header": [ { "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" } ],
+        "body": { "mode": "raw", "raw": "{\n  \"id_empresa\":1,\n  \"id_filial\":1,\n  \"id_fornecedor\":7,\n  \"data_entrada\":\"2026-02-19 10:00:00\",\n  \"data_recebimento\":\"2026-02-19 10:05:00\",\n  \"tipo_entrada\":\"pedido\",\n  \"valor_total\":1250.00\n}" },
+        "url": { "raw": "{{baseUrl}}:{{port}}/api/v1/compras/entradas", "host": ["{{baseUrl}}:{{port}}"], "path": ["api","v1","compras","entradas"] }
+      }
+    },
+    {
+      "name": "Entradas - Obter",
+      "request": {
+        "description": "GET /api/v1/compras/entradas/{id} - Retorna entrada com itens e histórico.",
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+        "url": { "raw": "{{baseUrl}}:{{port}}/api/v1/compras/entradas/1", "host": ["{{baseUrl}}:{{port}}"], "path": ["api","v1","compras","entradas","1"] }
+      }
+    },
+    {
+      "name": "Entradas - Atualizar",
+      "request": {
+        "description": "PUT /api/v1/compras/entradas/{id} - Atualiza status/observacoes da entrada.",
+        "method": "PUT",
+        "header": [ { "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" } ],
+        "body": { "mode": "raw", "raw": "{\n  \"status\":\"conferido\"\n}" },
+        "url": { "raw": "{{baseUrl}}:{{port}}/api/v1/compras/entradas/1", "host": ["{{baseUrl}}:{{port}}"], "path": ["api","v1","compras","entradas","1"] }
+      }
+    },
+    {
+      "name": "Entradas - Adicionar Item",
+      "request": {
+        "description": "POST /api/v1/compras/entradas/{id_entrada}/itens - Adiciona item recebido; atualiza histórico e (opcional) estoque.",
+        "method": "POST",
+        "header": [ { "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" } ],
+        "body": { "mode": "raw", "raw": "{\n  \"id_produto\":10,\n  \"quantidade_recebida\":100,\n  \"preco_unitario\":12.50\n}" },
+        "url": { "raw": "{{baseUrl}}:{{port}}/api/v1/compras/entradas/1/itens", "host": ["{{baseUrl}}:{{port}}"], "path": ["api","v1","compras","entradas","1","itens"] }
+      }
+    },
+    {
+      "name": "Entradas - Adicionar Histórico",
+      "request": {
+        "description": "POST /api/v1/compras/entradas/{id_entrada}/historico - Registra ação no histórico da entrada.",
+        "method": "POST",
+        "header": [ { "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" } ],
+        "body": { "mode": "raw", "raw": "{\n  \"acao\":\"conferencia\",\n  \"descricao\":\"Conferido itens\"\n}" },
+        "url": { "raw": "{{baseUrl}}:{{port}}/api/v1/compras/entradas/1/historico", "host": ["{{baseUrl}}:{{port}}"], "path": ["api","v1","compras","entradas","1","historico"] }
+      }
+    }
+  ]
+}

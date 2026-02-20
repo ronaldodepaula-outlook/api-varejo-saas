@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BackupController;
 use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\FornecedorController;
 use App\Http\Controllers\CapaInventarioController;
 use App\Http\Controllers\CapaTransferenciaController;
 use App\Http\Controllers\CompanyUserController;
@@ -55,6 +56,10 @@ use App\Http\Controllers\Vendas\ClienteController;
 use App\Http\Controllers\Vendas\DebitoClienteController;
 use App\Http\Controllers\Vendas\ItemVendaAssistidaController;
 use App\Http\Controllers\Vendas\VendaAssistidaController;
+use App\Http\Controllers\CotacaoController;
+use App\Http\Controllers\PedidoCompraController;
+use App\Http\Controllers\EntradaCompraController;
+use App\Http\Controllers\ProdutoFornecedorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -150,6 +155,10 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::get('subgrupos/por-grupo/{idGrupo}', [SubgrupoController::class, 'porGrupo']);
     Route::get('subgrupos/empresa/{id_empresa}/grupo/{id_grupo}', [SubgrupoController::class, 'subgruposPorEmpresaGrupo']);
 
+    // Fornecedores
+    Route::apiResource('fornecedores', FornecedorController::class);
+    Route::get('fornecedores/empresa/{id_empresa}', [FornecedorController::class, 'fornecedoresPorEmpresa']);
+
     // Produtos
     Route::get('produtos', [ProdutoController::class, 'index']);
     Route::get('produtos/{id}', [ProdutoController::class, 'show']);
@@ -165,6 +174,52 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
 
     // Utilitarios
     Route::get('rotas', [ListApiRoutes::class, 'index']);
+
+    // Compras - Cotações
+    Route::get('compras/cotacoes', [CotacaoController::class, 'index']);
+    Route::get('compras/cotacoes/todos', [CotacaoController::class, 'todosPorEmpresa']);
+    Route::post('compras/cotacoes', [CotacaoController::class, 'store']);
+    Route::get('compras/cotacoes/{id}', [CotacaoController::class, 'show']);
+    Route::put('compras/cotacoes/{id}', [CotacaoController::class, 'update']);
+    Route::delete('compras/cotacoes/{id}', [CotacaoController::class, 'destroy']);
+
+    // Cotacao items
+    Route::post('compras/cotacoes/{id_cotacao}/itens', [CotacaoController::class, 'storeItem']);
+    Route::put('compras/cotacoes/{id_cotacao}/itens/{id_item}', [CotacaoController::class, 'updateItem']);
+    Route::delete('compras/cotacoes/{id_cotacao}/itens/{id_item}', [CotacaoController::class, 'destroyItem']);
+
+    // Cotacao fornecedores/respostas
+    Route::post('compras/cotacoes/{id_cotacao}/fornecedores', [CotacaoController::class, 'addFornecedor']);
+    Route::post('compras/cotacoes/fornecedor/{id_cotacao_fornecedor}/respostas', [CotacaoController::class, 'storeResposta']);
+
+    // Pedidos de compra
+    Route::get('compras/pedidos', [PedidoCompraController::class, 'index']);
+    Route::post('compras/pedidos', [PedidoCompraController::class, 'store']);
+    Route::get('compras/pedidos/{id}', [PedidoCompraController::class, 'show']);
+    Route::put('compras/pedidos/{id}', [PedidoCompraController::class, 'update']);
+    Route::delete('compras/pedidos/{id}', [PedidoCompraController::class, 'destroy']);
+
+    Route::post('compras/pedidos/{id_pedido}/itens', [PedidoCompraController::class, 'storeItem']);
+    Route::put('compras/pedidos/{id_pedido}/itens/{id_item}', [PedidoCompraController::class, 'updateItem']);
+    Route::delete('compras/pedidos/{id_pedido}/itens/{id_item}', [PedidoCompraController::class, 'destroyItem']);
+
+    // Entradas de compra
+    Route::get('compras/entradas', [EntradaCompraController::class, 'index']);
+    Route::post('compras/entradas', [EntradaCompraController::class, 'store']);
+    Route::get('compras/entradas/{id}', [EntradaCompraController::class, 'show']);
+    Route::put('compras/entradas/{id}', [EntradaCompraController::class, 'update']);
+    Route::delete('compras/entradas/{id}', [EntradaCompraController::class, 'destroy']);
+
+    Route::post('compras/entradas/{id_entrada}/itens', [EntradaCompraController::class, 'storeItem']);
+    Route::post('compras/entradas/{id_entrada}/historico', [EntradaCompraController::class, 'storeHistorico']);
+
+    // Relação Fornecedor <-> Produto
+    Route::get('fornecedor-produto', [ProdutoFornecedorController::class, 'index']);
+    Route::get('fornecedor-produto/empresa/{id_empresa}', [ProdutoFornecedorController::class, 'listarPorEmpresa']);
+    Route::get('fornecedor-produto/fornecedor/{id_fornecedor}/produto/{id_produto}', [ProdutoFornecedorController::class, 'show']);
+    Route::post('fornecedor-produto', [ProdutoFornecedorController::class, 'store']);
+    Route::put('fornecedor-produto/fornecedor/{id_fornecedor}/produto/{id_produto}', [ProdutoFornecedorController::class, 'update']);
+    Route::delete('fornecedor-produto/fornecedor/{id_fornecedor}/produto/{id_produto}', [ProdutoFornecedorController::class, 'destroy']);
 });
 
 // =======================

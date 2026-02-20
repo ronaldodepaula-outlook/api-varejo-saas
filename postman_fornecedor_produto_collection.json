@@ -1,0 +1,108 @@
+{
+  "info": {
+    "name": "Fornecedor-Produto Relations - SaaS MultiEmpresas",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "fornecedor-produto-001"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost" },
+    { "key": "port", "value": "8000" },
+    { "key": "token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "List Relations (paginated)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/fornecedor-produto",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api","v1","fornecedor-produto"]
+        }
+      }
+    },
+    {
+      "name": "Get Relation (fornecedor+produto)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/fornecedor-produto/fornecedor/7/produto/10",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api","v1","fornecedor-produto","fornecedor","7","produto","10"]
+        }
+      }
+    },
+    {
+      "name": "Create Relation",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id_fornecedor\": 7,\n  \"id_produto\": 10,\n  \"status\": \"ativo\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/fornecedor-produto",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api","v1","fornecedor-produto"]
+        }
+      }
+    },
+    {
+      "name": "Update Relation",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"inativo\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/fornecedor-produto/fornecedor/7/produto/10",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api","v1","fornecedor-produto","fornecedor","7","produto","10"]
+        }
+      }
+    },
+    {
+      "name": "Delete Relation",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/fornecedor-produto/fornecedor/7/produto/10",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api","v1","fornecedor-produto","fornecedor","7","produto","10"]
+        }
+      }
+    },
+    {
+      "name": "List Relations by Empresa",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/fornecedor-produto/empresa/7",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api","v1","fornecedor-produto","empresa","7"]
+        }
+      }
+    }
+  ]
+}

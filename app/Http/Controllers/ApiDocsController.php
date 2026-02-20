@@ -339,6 +339,11 @@ class ApiDocsController extends Controller
             return $examples['produto'];
         }
 
+        // Fornecedores (v1)
+        if (preg_match('#^v1/fornecedores($|/[^/]+$)#', $path)) {
+            return $examples['fornecedor'];
+        }
+
         // Inventário e Contagens
         if (preg_match('#^capa-inventarios($|/[^/]+$)#', $path)) {
             return $examples['capa_inventario'];
@@ -410,6 +415,16 @@ class ApiDocsController extends Controller
         }
         if (preg_match('#^v1/empresas/[^/]+/pdv/caixas/abertura$#', $path)) {
             return $examples['pdv_abertura'];
+        }
+
+        // Fornecedor-Produto relations (v1)
+        if (preg_match('#^v1/fornecedor-produto($|/.*$)#', $path)) {
+            return $examples['fornecedor_produto'];
+        }
+
+        // Compras (cotacoes, pedidos, entradas)
+        if (preg_match('#^v1/.*compras.*#', $path) || preg_match('#^compras/.*#', $path)) {
+            return $examples['compras'];
         }
 
         // Vendas assistidas
@@ -656,6 +671,77 @@ class ApiDocsController extends Controller
                 'preco_custo' => 5.50,
                 'preco_venda' => 9.90,
                 'ativo' => true,
+            ],
+            'fornecedor' => [
+                'id_empresa' => 1,
+                'razao_social' => 'PAINE PRODUCAO E COMERCIO DE PAES ARTESANAIS LTDA',
+                'nome_fantasia' => 'PAINE PRODUCAO',
+                'cnpj' => '31006488000198',
+                'inscricao_estadual' => null,
+                'contato' => 'Nome do Contato',
+                'telefone' => '85999990000',
+                'email' => 'contato@fornecedor.com',
+                'endereco' => 'Rua Exemplo, 100',
+                'cidade' => 'Fortaleza',
+                'estado' => 'CE',
+                'cep' => '60000-000',
+                'status' => 'ativo',
+            ],
+            'fornecedor_produto' => [
+                'id_fornecedor' => 7,
+                'id_produto' => 10,
+                'status' => 'ativo'
+            ],
+            'compras' => [
+                'cotacao' => [
+                    'id_empresa' => 1,
+                    'id_filial' => 1,
+                    'data_cotacao' => '2026-02-19',
+                    'data_validade' => '2026-03-19',
+                    'observacoes' => 'Solicitar cotações para materiais'
+                ],
+                'cotacao_item' => [
+                    'id_produto' => 10,
+                    'quantidade' => 100,
+                    'unidade_medida' => 'UN'
+                ],
+                'cotacao_fornecedor' => [
+                    'id_fornecedor' => 7
+                ],
+                'cotacao_resposta' => [
+                    'id_produto' => 10,
+                    'quantidade' => 100,
+                    'preco_unitario' => 12.50,
+                    'prazo_entrega_item' => 5,
+                    'selecionado' => 0
+                ],
+                'pedido' => [
+                    'id_empresa' => 1,
+                    'id_filial' => 1,
+                    'id_fornecedor' => 7,
+                    'data_pedido' => '2026-02-19',
+                    'valor_total' => 1250.00,
+                    'status' => 'rascunho'
+                ],
+                'pedido_item' => [
+                    'id_produto' => 10,
+                    'quantidade' => 100,
+                    'preco_unitario' => 12.50
+                ],
+                'entrada' => [
+                    'id_empresa' => 1,
+                    'id_filial' => 1,
+                    'id_fornecedor' => 7,
+                    'data_entrada' => '2026-02-19 10:00:00',
+                    'data_recebimento' => '2026-02-19 10:05:00',
+                    'tipo_entrada' => 'pedido',
+                    'valor_total' => 1250.00
+                ],
+                'entrada_item' => [
+                    'id_produto' => 10,
+                    'quantidade_recebida' => 100,
+                    'preco_unitario' => 12.50
+                ]
             ],
             'capa_inventario' => [
                 'id_empresa' => 1,
