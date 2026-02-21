@@ -188,6 +188,116 @@ class ApiDocsController extends Controller
             ];
         }
 
+        if ($uri === 'api/v1/dashboard/indicadores') {
+            return [
+                [
+                    'name' => 'id_empresa',
+                    'in' => 'query',
+                    'required' => false,
+                    'schema' => ['type' => 'integer', 'example' => 7],
+                    'description' => 'Obrigatorio quando nao ha usuario autenticado.',
+                ],
+                [
+                    'name' => 'id_filial',
+                    'in' => 'query',
+                    'required' => false,
+                    'schema' => ['type' => 'integer', 'example' => 12],
+                    'description' => 'Filtro opcional por filial.',
+                ],
+                [
+                    'name' => 'filtro',
+                    'in' => 'query',
+                    'required' => false,
+                    'schema' => [
+                        'type' => 'string',
+                        'example' => 'mensal',
+                        'enum' => ['diario', 'semanal', 'mensal', 'anual', 'personalizado'],
+                    ],
+                    'description' => 'Periodo do dashboard. Se informar data_inicio/data_fim, assume personalizado.',
+                ],
+                [
+                    'name' => 'data_inicio',
+                    'in' => 'query',
+                    'required' => false,
+                    'schema' => ['type' => 'string', 'example' => '2026-02-01'],
+                    'description' => 'Obrigatorio apenas quando filtro=personalizado.',
+                ],
+                [
+                    'name' => 'data_fim',
+                    'in' => 'query',
+                    'required' => false,
+                    'schema' => ['type' => 'string', 'example' => '2026-02-20'],
+                    'description' => 'Obrigatorio apenas quando filtro=personalizado.',
+                ],
+            ];
+        }
+
+        if (preg_match('#^api/v1/dashboard/exec#', $uri)) {
+            $params = [
+                [
+                    'name' => 'id_empresa',
+                    'in' => 'query',
+                    'required' => false,
+                    'schema' => ['type' => 'integer', 'example' => 7],
+                    'description' => 'Obrigatorio quando nao ha usuario autenticado.',
+                ],
+                [
+                    'name' => 'id_filial',
+                    'in' => 'query',
+                    'required' => false,
+                    'schema' => ['type' => 'integer', 'example' => 12],
+                    'description' => 'Filtro opcional por filial.',
+                ],
+                [
+                    'name' => 'filtro',
+                    'in' => 'query',
+                    'required' => false,
+                    'schema' => [
+                        'type' => 'string',
+                        'example' => 'mensal',
+                        'enum' => ['diario', 'semanal', 'mensal', 'anual', 'personalizado'],
+                    ],
+                    'description' => 'Periodo do dashboard. Se informar data_inicio/data_fim, assume personalizado.',
+                ],
+                [
+                    'name' => 'data_inicio',
+                    'in' => 'query',
+                    'required' => false,
+                    'schema' => ['type' => 'string', 'example' => '2026-02-01'],
+                    'description' => 'Obrigatorio apenas quando filtro=personalizado.',
+                ],
+                [
+                    'name' => 'data_fim',
+                    'in' => 'query',
+                    'required' => false,
+                    'schema' => ['type' => 'string', 'example' => '2026-02-20'],
+                    'description' => 'Obrigatorio apenas quando filtro=personalizado.',
+                ],
+            ];
+
+            if (preg_match('#/(top-produtos|entradas-recentes|historico-precos|top-clientes|movimentacoes-recentes)$#', $uri)) {
+                $params[] = [
+                    'name' => 'limit',
+                    'in' => 'query',
+                    'required' => false,
+                    'schema' => ['type' => 'integer', 'example' => 10],
+                    'description' => 'Limite de registros retornados.',
+                ];
+            }
+
+            if ($uri === 'api/v1/dashboard/exec/fluxo-caixa') {
+                $params[] = [
+                    'name' => 'meses',
+                    'in' => 'query',
+                    'required' => false,
+                    'schema' => ['type' => 'integer', 'example' => 6],
+                    'description' => 'Quantidade de meses a partir do mes atual (sobrescreve o periodo).',
+                ];
+            }
+
+            return $params;
+        }
+
         return [];
     }
 
@@ -222,6 +332,9 @@ class ApiDocsController extends Controller
         }
         if (preg_match('#^api/(v1/)?precificacao#', $uri)) {
             return 'Precificacao';
+        }
+        if (preg_match('#^api/(v1/)?financeiro#', $uri)) {
+            return 'Financeiro';
         }
         if (preg_match('#^api/(capa-transferencias|transferencias)#', $uri)) {
             return 'Transferências';
@@ -263,6 +376,7 @@ class ApiDocsController extends Controller
             'Inventário' => 'Capas, itens de inventário e contagens.',
             'Estoque' => 'Saldos, movimentações e consultas de estoque.',
             'Precificacao' => 'Historico, atualizacoes, promocoes e precos vigentes.',
+            'Financeiro' => 'Contas a receber e contas a pagar.',
             'Transferências' => 'Capas e transferências de estoque.',
             'NFE' => 'Módulo de NF-e/DANFE e integrações SEFAZ.',
             'PDV' => 'Caixa e vendas no ponto de venda.',
@@ -284,6 +398,7 @@ class ApiDocsController extends Controller
             'Inventário',
             'Estoque',
             'Precificacao',
+            'Financeiro',
             'Transferências',
             'NFE',
             'PDV',
@@ -501,6 +616,14 @@ class ApiDocsController extends Controller
         }
         if (preg_match('#^v1/precificacao/precos-vigentes#', $path)) {
             return $examples['precificacao_preco_vigente'];
+        }
+
+        // Financeiro
+        if (preg_match('#^v1/financeiro/contas-receber#', $path)) {
+            return $examples['conta_receber'];
+        }
+        if (preg_match('#^v1/financeiro/contas-pagar#', $path)) {
+            return $examples['conta_pagar'];
         }
 
         // Vendas assistidas
@@ -868,6 +991,31 @@ class ApiDocsController extends Controller
                 'preco_base' => 8.50,
                 'preco_atual' => 8.50,
                 'em_promocao' => 0
+            ],
+            'conta_receber' => [
+                'id_empresa' => 7,
+                'id_filial' => 12,
+                'id_orcamento' => 5,
+                'descricao' => 'Orcamento ORC-20251109-0004',
+                'valor_total' => 4000.90,
+                'valor_recebido' => 0,
+                'data_emissao' => '2025-11-09',
+                'data_vencimento' => '2025-12-09',
+                'status' => 'aberta',
+                'forma_pagamento' => 'fiado',
+                'parcelas' => 1
+            ],
+            'conta_pagar' => [
+                'id_empresa' => 7,
+                'id_filial' => 12,
+                'id_fornecedor' => 41,
+                'descricao' => 'Compra de MDF 15mm',
+                'valor_total' => 850.00,
+                'valor_pago' => 0,
+                'data_emissao' => '2025-11-08',
+                'data_vencimento' => '2025-11-25',
+                'status' => 'aberta',
+                'categoria' => 'material'
             ],
             'capa_inventario' => [
                 'id_empresa' => 1,

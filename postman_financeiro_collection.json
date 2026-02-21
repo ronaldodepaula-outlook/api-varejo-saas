@@ -1,0 +1,202 @@
+{
+  "info": {
+    "name": "Financeiro - Contas a Receber e Contas a Pagar",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "financeiro-001"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost", "description": "Base da API (ex: http://localhost)" },
+    { "key": "port", "value": "8000", "description": "Porta da API (ex: 8000)" },
+    { "key": "token", "value": "", "description": "Bearer token (obrigatorio nas rotas /api/v1)" },
+    { "key": "id_empresa", "value": "7", "description": "ID da empresa (obrigatorio se nao houver usuario autenticado)" },
+    { "key": "id_filial", "value": "12", "description": "ID da filial" },
+    { "key": "id_orcamento", "value": "5", "description": "ID do orcamento (contas a receber)" },
+    { "key": "id_fornecedor", "value": "41", "description": "ID do fornecedor (contas a pagar)" },
+    { "key": "id_conta_receber", "value": "1", "description": "ID da conta a receber" },
+    { "key": "id_conta_pagar", "value": "1", "description": "ID da conta a pagar" },
+    { "key": "data_emissao_inicio", "value": "2025-11-01", "description": "Filtro data emissao (inicio)" },
+    { "key": "data_emissao_fim", "value": "2025-11-30", "description": "Filtro data emissao (fim)" },
+    { "key": "data_vencimento_inicio", "value": "2025-12-01", "description": "Filtro data vencimento (inicio)" },
+    { "key": "data_vencimento_fim", "value": "2025-12-31", "description": "Filtro data vencimento (fim)" }
+  ],
+  "item": [
+    {
+      "name": "Contas a Receber - Listar",
+      "request": {
+        "description": "GET /api/v1/financeiro/contas-receber\nQuery params:\n- id_empresa (opcional se autenticado)\n- id_filial (opcional)\n- id_orcamento (opcional)\n- status (opcional)\n- forma_pagamento (opcional)\n- data_emissao_inicio (opcional)\n- data_emissao_fim (opcional)\n- data_vencimento_inicio (opcional)\n- data_vencimento_fim (opcional)",
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text", "description": "Token Bearer" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/financeiro/contas-receber?id_empresa={{id_empresa}}&id_filial={{id_filial}}&id_orcamento={{id_orcamento}}&data_emissao_inicio={{data_emissao_inicio}}&data_emissao_fim={{data_emissao_fim}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "financeiro", "contas-receber"],
+          "query": [
+            { "key": "id_empresa", "value": "{{id_empresa}}", "description": "ID da empresa (opcional se autenticado)" },
+            { "key": "id_filial", "value": "{{id_filial}}", "description": "ID da filial (opcional)" },
+            { "key": "id_orcamento", "value": "{{id_orcamento}}", "description": "ID do orcamento (opcional)" },
+            { "key": "status", "value": "", "description": "aberta|parcial|quitada|atrasada|cancelada (opcional)" },
+            { "key": "forma_pagamento", "value": "", "description": "dinheiro|cartao|pix|boleto|transferencia|fiado (opcional)" },
+            { "key": "data_emissao_inicio", "value": "{{data_emissao_inicio}}", "description": "Data emissao inicio (opcional)" },
+            { "key": "data_emissao_fim", "value": "{{data_emissao_fim}}", "description": "Data emissao fim (opcional)" },
+            { "key": "data_vencimento_inicio", "value": "{{data_vencimento_inicio}}", "description": "Data vencimento inicio (opcional)" },
+            { "key": "data_vencimento_fim", "value": "{{data_vencimento_fim}}", "description": "Data vencimento fim (opcional)" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Contas a Receber - Obter",
+      "request": {
+        "description": "GET /api/v1/financeiro/contas-receber/{id_conta_receber}",
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/financeiro/contas-receber/{{id_conta_receber}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "financeiro", "contas-receber", "{{id_conta_receber}}"]
+        }
+      }
+    },
+    {
+      "name": "Contas a Receber - Criar",
+      "request": {
+        "description": "POST /api/v1/financeiro/contas-receber\nBody:\n- id_empresa (opcional se autenticado)\n- id_filial (obrigatorio)\n- id_orcamento (opcional)\n- descricao (opcional)\n- valor_total (obrigatorio)\n- valor_recebido (opcional)\n- data_emissao (opcional)\n- data_vencimento (opcional)\n- data_recebimento (opcional)\n- status (opcional)\n- forma_pagamento (opcional)\n- parcelas (opcional)\n- observacoes (opcional)",
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id_empresa\": 7,\n  \"id_filial\": 12,\n  \"id_orcamento\": 5,\n  \"descricao\": \"Orcamento ORC-20251109-0004\",\n  \"valor_total\": 4000.90,\n  \"valor_recebido\": 0,\n  \"data_emissao\": \"2025-11-09\",\n  \"data_vencimento\": \"2025-12-09\",\n  \"status\": \"aberta\",\n  \"forma_pagamento\": \"fiado\",\n  \"parcelas\": 1\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/financeiro/contas-receber",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "financeiro", "contas-receber"]
+        }
+      }
+    },
+    {
+      "name": "Contas a Receber - Atualizar",
+      "request": {
+        "description": "PUT /api/v1/financeiro/contas-receber/{id_conta_receber}",
+        "method": "PUT",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": { "mode": "raw", "raw": "{\n  \"valor_recebido\": 1000.00,\n  \"observacoes\": \"Pagamento parcial\"\n}" },
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/financeiro/contas-receber/{{id_conta_receber}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "financeiro", "contas-receber", "{{id_conta_receber}}"]
+        }
+      }
+    },
+    {
+      "name": "Contas a Receber - Excluir",
+      "request": {
+        "description": "DELETE /api/v1/financeiro/contas-receber/{id_conta_receber}",
+        "method": "DELETE",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/financeiro/contas-receber/{{id_conta_receber}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "financeiro", "contas-receber", "{{id_conta_receber}}"]
+        }
+      }
+    },
+    {
+      "name": "Contas a Pagar - Listar",
+      "request": {
+        "description": "GET /api/v1/financeiro/contas-pagar\nQuery params:\n- id_empresa (opcional se autenticado)\n- id_filial (opcional)\n- id_fornecedor (opcional)\n- status (opcional)\n- categoria (opcional)\n- data_emissao_inicio (opcional)\n- data_emissao_fim (opcional)\n- data_vencimento_inicio (opcional)\n- data_vencimento_fim (opcional)",
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text", "description": "Token Bearer" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/financeiro/contas-pagar?id_empresa={{id_empresa}}&id_filial={{id_filial}}&id_fornecedor={{id_fornecedor}}&data_emissao_inicio={{data_emissao_inicio}}&data_emissao_fim={{data_emissao_fim}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "financeiro", "contas-pagar"],
+          "query": [
+            { "key": "id_empresa", "value": "{{id_empresa}}", "description": "ID da empresa (opcional se autenticado)" },
+            { "key": "id_filial", "value": "{{id_filial}}", "description": "ID da filial (opcional)" },
+            { "key": "id_fornecedor", "value": "{{id_fornecedor}}", "description": "ID do fornecedor (opcional)" },
+            { "key": "status", "value": "", "description": "aberta|parcial|quitada|atrasada|cancelada (opcional)" },
+            { "key": "categoria", "value": "", "description": "material|mao_obra|servico_terceiro|outros (opcional)" },
+            { "key": "data_emissao_inicio", "value": "{{data_emissao_inicio}}", "description": "Data emissao inicio (opcional)" },
+            { "key": "data_emissao_fim", "value": "{{data_emissao_fim}}", "description": "Data emissao fim (opcional)" },
+            { "key": "data_vencimento_inicio", "value": "{{data_vencimento_inicio}}", "description": "Data vencimento inicio (opcional)" },
+            { "key": "data_vencimento_fim", "value": "{{data_vencimento_fim}}", "description": "Data vencimento fim (opcional)" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Contas a Pagar - Obter",
+      "request": {
+        "description": "GET /api/v1/financeiro/contas-pagar/{id_conta_pagar}",
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/financeiro/contas-pagar/{{id_conta_pagar}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "financeiro", "contas-pagar", "{{id_conta_pagar}}"]
+        }
+      }
+    },
+    {
+      "name": "Contas a Pagar - Criar",
+      "request": {
+        "description": "POST /api/v1/financeiro/contas-pagar\nBody:\n- id_empresa (opcional se autenticado)\n- id_filial (obrigatorio)\n- id_fornecedor (opcional)\n- descricao (opcional)\n- valor_total (obrigatorio)\n- valor_pago (opcional)\n- data_emissao (opcional)\n- data_vencimento (opcional)\n- data_pagamento (opcional)\n- status (opcional)\n- categoria (opcional)\n- observacoes (opcional)",
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id_empresa\": 7,\n  \"id_filial\": 12,\n  \"id_fornecedor\": 41,\n  \"descricao\": \"Compra de MDF 15mm\",\n  \"valor_total\": 850.00,\n  \"valor_pago\": 0,\n  \"data_emissao\": \"2025-11-08\",\n  \"data_vencimento\": \"2025-11-25\",\n  \"status\": \"aberta\",\n  \"categoria\": \"material\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/financeiro/contas-pagar",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "financeiro", "contas-pagar"]
+        }
+      }
+    },
+    {
+      "name": "Contas a Pagar - Atualizar",
+      "request": {
+        "description": "PUT /api/v1/financeiro/contas-pagar/{id_conta_pagar}",
+        "method": "PUT",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": { "mode": "raw", "raw": "{\n  \"valor_pago\": 850.00,\n  \"observacoes\": \"Quitado\"\n}" },
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/financeiro/contas-pagar/{{id_conta_pagar}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "financeiro", "contas-pagar", "{{id_conta_pagar}}"]
+        }
+      }
+    },
+    {
+      "name": "Contas a Pagar - Excluir",
+      "request": {
+        "description": "DELETE /api/v1/financeiro/contas-pagar/{id_conta_pagar}",
+        "method": "DELETE",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/financeiro/contas-pagar/{{id_conta_pagar}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "financeiro", "contas-pagar", "{{id_conta_pagar}}"]
+        }
+      }
+    }
+  ]
+}

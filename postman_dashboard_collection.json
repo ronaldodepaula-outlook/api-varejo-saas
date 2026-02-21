@@ -1,0 +1,76 @@
+{
+  "info": {
+    "name": "Dashboard - Indicadores",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "dashboard-001"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost", "description": "Base da API (ex: http://localhost)" },
+    { "key": "port", "value": "8000", "description": "Porta da API (ex: 8000)" },
+    { "key": "token", "value": "", "description": "Bearer token (obrigatorio nas rotas /api/v1)" },
+    { "key": "id_empresa", "value": "7", "description": "ID da empresa (obrigatorio se nao houver usuario autenticado)" },
+    { "key": "id_filial", "value": "12", "description": "ID da filial (opcional)" },
+    { "key": "filtro", "value": "mensal", "description": "diario|semanal|mensal|anual|personalizado" },
+    { "key": "data_inicio", "value": "2026-02-01", "description": "Data inicio (obrigatorio quando filtro=personalizado)" },
+    { "key": "data_fim", "value": "2026-02-20", "description": "Data fim (obrigatorio quando filtro=personalizado)" }
+  ],
+  "item": [
+    {
+      "name": "Dashboard - Resumo",
+      "request": {
+        "description": "GET /api/v1/dashboard/resumo\nRequer Bearer token.",
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/dashboard/resumo",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "dashboard", "resumo"]
+        }
+      }
+    },
+    {
+      "name": "Dashboard - Indicadores (mensal)",
+      "request": {
+        "description": "GET /api/v1/dashboard/indicadores\nQuery params:\n- id_empresa (opcional se autenticado)\n- id_filial (opcional)\n- filtro (opcional)\nObservacao: se informar data_inicio/data_fim, assume filtro=personalizado.",
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/dashboard/indicadores?id_empresa={{id_empresa}}&id_filial={{id_filial}}&filtro={{filtro}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "dashboard", "indicadores"],
+          "query": [
+            { "key": "id_empresa", "value": "{{id_empresa}}", "description": "ID da empresa (opcional se autenticado)" },
+            { "key": "id_filial", "value": "{{id_filial}}", "description": "ID da filial (opcional)" },
+            { "key": "filtro", "value": "{{filtro}}", "description": "diario|semanal|mensal|anual|personalizado (opcional)" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Dashboard - Indicadores (personalizado)",
+      "request": {
+        "description": "GET /api/v1/dashboard/indicadores\nQuery params:\n- id_empresa (opcional se autenticado)\n- id_filial (opcional)\n- filtro=personalizado\n- data_inicio (obrigatorio)\n- data_fim (obrigatorio)",
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/dashboard/indicadores?id_empresa={{id_empresa}}&id_filial={{id_filial}}&filtro=personalizado&data_inicio={{data_inicio}}&data_fim={{data_fim}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "dashboard", "indicadores"],
+          "query": [
+            { "key": "id_empresa", "value": "{{id_empresa}}", "description": "ID da empresa (opcional se autenticado)" },
+            { "key": "id_filial", "value": "{{id_filial}}", "description": "ID da filial (opcional)" },
+            { "key": "filtro", "value": "personalizado", "description": "Forca filtro personalizado" },
+            { "key": "data_inicio", "value": "{{data_inicio}}", "description": "Data inicio (YYYY-MM-DD)" },
+            { "key": "data_fim", "value": "{{data_fim}}", "description": "Data fim (YYYY-MM-DD)" }
+          ]
+        }
+      }
+    }
+  ]
+}

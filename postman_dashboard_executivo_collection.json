@@ -1,0 +1,402 @@
+{
+  "info": {
+    "name": "Dashboard Executivo - Varejo",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "dashboard-executivo-001"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost", "description": "Base da API (ex: http://localhost)" },
+    { "key": "port", "value": "8000", "description": "Porta da API (ex: 8000)" },
+    { "key": "token", "value": "", "description": "Bearer token (obrigatorio nas rotas /api/v1)" },
+    { "key": "id_empresa", "value": "7", "description": "ID da empresa (obrigatorio se nao houver usuario autenticado)" },
+    { "key": "id_filial", "value": "12", "description": "ID da filial (opcional)" },
+    { "key": "filtro", "value": "mensal", "description": "diario|semanal|mensal|anual|personalizado" },
+    { "key": "data_inicio", "value": "2026-02-01", "description": "Data inicio (obrigatorio quando filtro=personalizado)" },
+    { "key": "data_fim", "value": "2026-02-20", "description": "Data fim (obrigatorio quando filtro=personalizado)" },
+    { "key": "limit", "value": "10", "description": "Limite para listas" },
+    { "key": "meses", "value": "6", "description": "Meses para fluxo de caixa" }
+  ],
+  "item": [
+    {
+      "name": "Metricas",
+      "request": {
+        "description": "GET /api/v1/dashboard/exec/metricas\nQuery params: id_empresa, id_filial, filtro, data_inicio, data_fim",
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/dashboard/exec/metricas?id_empresa={{id_empresa}}&id_filial={{id_filial}}&filtro={{filtro}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "dashboard", "exec", "metricas"],
+          "query": [
+            { "key": "id_empresa", "value": "{{id_empresa}}" },
+            { "key": "id_filial", "value": "{{id_filial}}" },
+            { "key": "filtro", "value": "{{filtro}}" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Vendas Periodo",
+      "request": {
+        "description": "GET /api/v1/dashboard/exec/vendas-periodo\nQuery params: id_empresa, id_filial, filtro, data_inicio, data_fim",
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/dashboard/exec/vendas-periodo?id_empresa={{id_empresa}}&id_filial={{id_filial}}&filtro={{filtro}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "dashboard", "exec", "vendas-periodo"],
+          "query": [
+            { "key": "id_empresa", "value": "{{id_empresa}}" },
+            { "key": "id_filial", "value": "{{id_filial}}" },
+            { "key": "filtro", "value": "{{filtro}}" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Vendas por Filial",
+      "request": {
+        "description": "GET /api/v1/dashboard/exec/vendas-por-filial\nQuery params: id_empresa, id_filial, filtro, data_inicio, data_fim",
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/dashboard/exec/vendas-por-filial?id_empresa={{id_empresa}}&id_filial={{id_filial}}&filtro={{filtro}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "dashboard", "exec", "vendas-por-filial"],
+          "query": [
+            { "key": "id_empresa", "value": "{{id_empresa}}" },
+            { "key": "id_filial", "value": "{{id_filial}}" },
+            { "key": "filtro", "value": "{{filtro}}" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Formas de Pagamento",
+      "request": {
+        "description": "GET /api/v1/dashboard/exec/formas-pagamento\nQuery params: id_empresa, id_filial, filtro, data_inicio, data_fim",
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/dashboard/exec/formas-pagamento?id_empresa={{id_empresa}}&id_filial={{id_filial}}&filtro={{filtro}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "dashboard", "exec", "formas-pagamento"],
+          "query": [
+            { "key": "id_empresa", "value": "{{id_empresa}}" },
+            { "key": "id_filial", "value": "{{id_filial}}" },
+            { "key": "filtro", "value": "{{filtro}}" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Contas Receber Resumo",
+      "request": {
+        "description": "GET /api/v1/dashboard/exec/contas-receber-resumo\nQuery params: id_empresa, id_filial, filtro, data_inicio, data_fim",
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/dashboard/exec/contas-receber-resumo?id_empresa={{id_empresa}}&id_filial={{id_filial}}&filtro={{filtro}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "dashboard", "exec", "contas-receber-resumo"],
+          "query": [
+            { "key": "id_empresa", "value": "{{id_empresa}}" },
+            { "key": "id_filial", "value": "{{id_filial}}" },
+            { "key": "filtro", "value": "{{filtro}}" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Contas Pagar Resumo",
+      "request": {
+        "description": "GET /api/v1/dashboard/exec/contas-pagar-resumo\nQuery params: id_empresa, id_filial, filtro, data_inicio, data_fim",
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/dashboard/exec/contas-pagar-resumo?id_empresa={{id_empresa}}&id_filial={{id_filial}}&filtro={{filtro}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "dashboard", "exec", "contas-pagar-resumo"],
+          "query": [
+            { "key": "id_empresa", "value": "{{id_empresa}}" },
+            { "key": "id_filial", "value": "{{id_filial}}" },
+            { "key": "filtro", "value": "{{filtro}}" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Fluxo Caixa",
+      "request": {
+        "description": "GET /api/v1/dashboard/exec/fluxo-caixa\nQuery params: id_empresa, id_filial, filtro, data_inicio, data_fim, meses",
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/dashboard/exec/fluxo-caixa?id_empresa={{id_empresa}}&id_filial={{id_filial}}&filtro={{filtro}}&meses={{meses}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "dashboard", "exec", "fluxo-caixa"],
+          "query": [
+            { "key": "id_empresa", "value": "{{id_empresa}}" },
+            { "key": "id_filial", "value": "{{id_filial}}" },
+            { "key": "filtro", "value": "{{filtro}}" },
+            { "key": "meses", "value": "{{meses}}" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Top Produtos",
+      "request": {
+        "description": "GET /api/v1/dashboard/exec/top-produtos\nQuery params: id_empresa, id_filial, filtro, data_inicio, data_fim, limit",
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/dashboard/exec/top-produtos?id_empresa={{id_empresa}}&id_filial={{id_filial}}&filtro={{filtro}}&limit={{limit}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "dashboard", "exec", "top-produtos"],
+          "query": [
+            { "key": "id_empresa", "value": "{{id_empresa}}" },
+            { "key": "id_filial", "value": "{{id_filial}}" },
+            { "key": "filtro", "value": "{{filtro}}" },
+            { "key": "limit", "value": "{{limit}}" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Estoque Critico",
+      "request": {
+        "description": "GET /api/v1/dashboard/exec/estoque-critico\nQuery params: id_empresa, id_filial",
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/dashboard/exec/estoque-critico?id_empresa={{id_empresa}}&id_filial={{id_filial}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "dashboard", "exec", "estoque-critico"],
+          "query": [
+            { "key": "id_empresa", "value": "{{id_empresa}}" },
+            { "key": "id_filial", "value": "{{id_filial}}" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Pedidos Pendentes",
+      "request": {
+        "description": "GET /api/v1/dashboard/exec/pedidos-pendentes\nQuery params: id_empresa, id_filial",
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/dashboard/exec/pedidos-pendentes?id_empresa={{id_empresa}}&id_filial={{id_filial}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "dashboard", "exec", "pedidos-pendentes"],
+          "query": [
+            { "key": "id_empresa", "value": "{{id_empresa}}" },
+            { "key": "id_filial", "value": "{{id_filial}}" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Entradas Recentes",
+      "request": {
+        "description": "GET /api/v1/dashboard/exec/entradas-recentes\nQuery params: id_empresa, id_filial, filtro, data_inicio, data_fim, limit",
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/dashboard/exec/entradas-recentes?id_empresa={{id_empresa}}&id_filial={{id_filial}}&filtro={{filtro}}&limit={{limit}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "dashboard", "exec", "entradas-recentes"],
+          "query": [
+            { "key": "id_empresa", "value": "{{id_empresa}}" },
+            { "key": "id_filial", "value": "{{id_filial}}" },
+            { "key": "filtro", "value": "{{filtro}}" },
+            { "key": "limit", "value": "{{limit}}" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Promocoes Ativas",
+      "request": {
+        "description": "GET /api/v1/dashboard/exec/promocoes-ativas\nQuery params: id_empresa, id_filial",
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/dashboard/exec/promocoes-ativas?id_empresa={{id_empresa}}&id_filial={{id_filial}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "dashboard", "exec", "promocoes-ativas"],
+          "query": [
+            { "key": "id_empresa", "value": "{{id_empresa}}" },
+            { "key": "id_filial", "value": "{{id_filial}}" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Produtos Promocao",
+      "request": {
+        "description": "GET /api/v1/dashboard/exec/produtos-promocao\nQuery params: id_empresa, id_filial",
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/dashboard/exec/produtos-promocao?id_empresa={{id_empresa}}&id_filial={{id_filial}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "dashboard", "exec", "produtos-promocao"],
+          "query": [
+            { "key": "id_empresa", "value": "{{id_empresa}}" },
+            { "key": "id_filial", "value": "{{id_filial}}" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Historico Precos",
+      "request": {
+        "description": "GET /api/v1/dashboard/exec/historico-precos\nQuery params: id_empresa, filtro, data_inicio, data_fim, limit",
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/dashboard/exec/historico-precos?id_empresa={{id_empresa}}&filtro={{filtro}}&limit={{limit}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "dashboard", "exec", "historico-precos"],
+          "query": [
+            { "key": "id_empresa", "value": "{{id_empresa}}" },
+            { "key": "filtro", "value": "{{filtro}}" },
+            { "key": "limit", "value": "{{limit}}" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Top Clientes",
+      "request": {
+        "description": "GET /api/v1/dashboard/exec/top-clientes\nQuery params: id_empresa, id_filial, filtro, data_inicio, data_fim, limit",
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/dashboard/exec/top-clientes?id_empresa={{id_empresa}}&id_filial={{id_filial}}&filtro={{filtro}}&limit={{limit}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "dashboard", "exec", "top-clientes"],
+          "query": [
+            { "key": "id_empresa", "value": "{{id_empresa}}" },
+            { "key": "id_filial", "value": "{{id_filial}}" },
+            { "key": "filtro", "value": "{{filtro}}" },
+            { "key": "limit", "value": "{{limit}}" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Vendas Assistidas Status",
+      "request": {
+        "description": "GET /api/v1/dashboard/exec/vendas-assistidas-status\nQuery params: id_empresa, id_filial, filtro, data_inicio, data_fim",
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/dashboard/exec/vendas-assistidas-status?id_empresa={{id_empresa}}&id_filial={{id_filial}}&filtro={{filtro}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "dashboard", "exec", "vendas-assistidas-status"],
+          "query": [
+            { "key": "id_empresa", "value": "{{id_empresa}}" },
+            { "key": "id_filial", "value": "{{id_filial}}" },
+            { "key": "filtro", "value": "{{filtro}}" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Debitos Clientes",
+      "request": {
+        "description": "GET /api/v1/dashboard/exec/debitos-clientes\nQuery params: id_empresa, id_filial, filtro, data_inicio, data_fim",
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/dashboard/exec/debitos-clientes?id_empresa={{id_empresa}}&id_filial={{id_filial}}&filtro={{filtro}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "dashboard", "exec", "debitos-clientes"],
+          "query": [
+            { "key": "id_empresa", "value": "{{id_empresa}}" },
+            { "key": "id_filial", "value": "{{id_filial}}" },
+            { "key": "filtro", "value": "{{filtro}}" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Movimentacoes Recentes",
+      "request": {
+        "description": "GET /api/v1/dashboard/exec/movimentacoes-recentes\nQuery params: id_empresa, id_filial, filtro, data_inicio, data_fim, limit",
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/dashboard/exec/movimentacoes-recentes?id_empresa={{id_empresa}}&id_filial={{id_filial}}&filtro={{filtro}}&limit={{limit}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "dashboard", "exec", "movimentacoes-recentes"],
+          "query": [
+            { "key": "id_empresa", "value": "{{id_empresa}}" },
+            { "key": "id_filial", "value": "{{id_filial}}" },
+            { "key": "filtro", "value": "{{filtro}}" },
+            { "key": "limit", "value": "{{limit}}" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Movimentacoes Resumo",
+      "request": {
+        "description": "GET /api/v1/dashboard/exec/movimentacoes-resumo\nQuery params: id_empresa, id_filial, filtro, data_inicio, data_fim",
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}:{{port}}/api/v1/dashboard/exec/movimentacoes-resumo?id_empresa={{id_empresa}}&id_filial={{id_filial}}&filtro={{filtro}}",
+          "host": ["{{baseUrl}}:{{port}}"],
+          "path": ["api", "v1", "dashboard", "exec", "movimentacoes-resumo"],
+          "query": [
+            { "key": "id_empresa", "value": "{{id_empresa}}" },
+            { "key": "id_filial", "value": "{{id_filial}}" },
+            { "key": "filtro", "value": "{{filtro}}" }
+          ]
+        }
+      }
+    }
+  ]
+}

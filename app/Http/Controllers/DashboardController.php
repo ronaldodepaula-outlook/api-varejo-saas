@@ -93,4 +93,5 @@ class DashboardController extends Controller
             'alertas' => $alertas,
         ]);
     }
+
 }

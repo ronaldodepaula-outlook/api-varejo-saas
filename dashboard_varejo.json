@@ -1,0 +1,481 @@
+{
+  "dashboard": "varejo",
+  "version": "1.0.0",
+  "endpoint": "/api/v1/dashboard/indicadores",
+  "auth": {
+    "type": "bearer"
+  },
+  "filters": {
+    "default": "mensal",
+    "allowed": ["diario", "semanal", "mensal", "anual", "personalizado"],
+    "custom_required_fields": ["data_inicio", "data_fim"]
+  },
+  "query_params": {
+    "id_empresa": "integer (required when no auth user)",
+    "id_filial": "integer (optional)",
+    "filtro": "string (optional)",
+    "data_inicio": "date YYYY-MM-DD (required when filtro=personalizado)",
+    "data_fim": "date YYYY-MM-DD (required when filtro=personalizado)"
+  },
+  "sections": [
+    {
+      "id": "vendas",
+      "title": "Vendas",
+      "kpis": [
+        {
+          "id": "vendas_total_valor",
+          "label": "Total de vendas",
+          "value_path": "vendas.total.valor",
+          "format": "currency"
+        },
+        {
+          "id": "vendas_total_qtd",
+          "label": "Quantidade de vendas",
+          "value_path": "vendas.total.quantidade",
+          "format": "number"
+        },
+        {
+          "id": "ticket_medio",
+          "label": "Ticket medio",
+          "value_path": "vendas.total.ticket_medio",
+          "format": "currency"
+        }
+      ],
+      "cards": [
+        {
+          "id": "vendas_pdv",
+          "label": "PDV",
+          "value_path": "vendas.pdv.valor",
+          "format": "currency"
+        },
+        {
+          "id": "vendas_assistidas",
+          "label": "Assistidas",
+          "value_path": "vendas.assistidas.valor",
+          "format": "currency"
+        },
+        {
+          "id": "fiado_pdv",
+          "label": "Fiado PDV",
+          "value_path": "vendas.fiado.pdv.valor",
+          "format": "currency"
+        },
+        {
+          "id": "fiado_assistidas",
+          "label": "Fiado Assistidas",
+          "value_path": "vendas.fiado.assistidas.valor",
+          "format": "currency"
+        }
+      ]
+    },
+    {
+      "id": "pagamentos",
+      "title": "Pagamentos",
+      "kpis": [
+        {
+          "id": "total_recebido",
+          "label": "Total recebido",
+          "value_path": "pagamentos.total_recebido",
+          "format": "currency"
+        }
+      ],
+      "charts": [
+        {
+          "id": "pagamentos_por_forma",
+          "label": "Por forma de pagamento",
+          "type": "pie",
+          "data_path": "pagamentos.por_forma"
+        }
+      ]
+    },
+    {
+      "id": "compras",
+      "title": "Compras",
+      "kpis": [
+        {
+          "id": "cotacoes",
+          "label": "Cotacoes",
+          "value_path": "compras.cotacoes",
+          "format": "number"
+        },
+        {
+          "id": "pedidos",
+          "label": "Pedidos",
+          "value_path": "compras.pedidos.quantidade",
+          "format": "number"
+        },
+        {
+          "id": "pedidos_valor",
+          "label": "Valor pedidos",
+          "value_path": "compras.pedidos.valor",
+          "format": "currency"
+        },
+        {
+          "id": "entradas",
+          "label": "Entradas",
+          "value_path": "compras.entradas.quantidade",
+          "format": "number"
+        },
+        {
+          "id": "entradas_valor",
+          "label": "Valor entradas",
+          "value_path": "compras.entradas.valor",
+          "format": "currency"
+        }
+      ],
+      "charts": [
+        {
+          "id": "pedidos_status",
+          "label": "Pedidos por status",
+          "type": "bar",
+          "data_path": "compras.pedidos.por_status"
+        }
+      ]
+    },
+    {
+      "id": "estoque",
+      "title": "Estoque",
+      "kpis": [
+        {
+          "id": "estoque_valor_custo",
+          "label": "Valor estoque custo",
+          "value_path": "estoque.valor_custo",
+          "format": "currency"
+        },
+        {
+          "id": "estoque_valor_venda",
+          "label": "Valor estoque venda",
+          "value_path": "estoque.valor_venda",
+          "format": "currency"
+        },
+        {
+          "id": "estoque_itens",
+          "label": "Itens com estoque",
+          "value_path": "estoque.itens_com_estoque",
+          "format": "number"
+        },
+        {
+          "id": "estoque_quantidade_total",
+          "label": "Quantidade total",
+          "value_path": "estoque.quantidade_total",
+          "format": "number"
+        },
+        {
+          "id": "estoque_reservado",
+          "label": "Reservado",
+          "value_path": "estoque.reservado",
+          "format": "number"
+        },
+        {
+          "id": "estoque_pendencia",
+          "label": "Pendencia de compra",
+          "value_path": "estoque.pendencia_compra",
+          "format": "number"
+        }
+      ]
+    },
+    {
+      "id": "movimentacoes",
+      "title": "Movimentacoes",
+      "kpis": [
+        {
+          "id": "mov_total",
+          "label": "Total",
+          "value_path": "movimentacoes.total",
+          "format": "number"
+        },
+        {
+          "id": "mov_entradas",
+          "label": "Entradas",
+          "value_path": "movimentacoes.entradas",
+          "format": "number"
+        },
+        {
+          "id": "mov_saidas",
+          "label": "Saidas",
+          "value_path": "movimentacoes.saidas",
+          "format": "number"
+        }
+      ]
+    },
+    {
+      "id": "transferencias",
+      "title": "Transferencias",
+      "kpis": [
+        {
+          "id": "transferencias_total",
+          "label": "Total",
+          "value_path": "transferencias.total",
+          "format": "number"
+        }
+      ],
+      "charts": [
+        {
+          "id": "transferencias_status",
+          "label": "Por status",
+          "type": "bar",
+          "data_path": "transferencias.por_status"
+        }
+      ]
+    },
+    {
+      "id": "inventario",
+      "title": "Inventario",
+      "kpis": [
+        {
+          "id": "inventario_capas",
+          "label": "Capas",
+          "value_path": "inventario.capas.total",
+          "format": "number"
+        },
+        {
+          "id": "inventario_itens",
+          "label": "Itens",
+          "value_path": "inventario.itens.total",
+          "format": "number"
+        },
+        {
+          "id": "inventario_divergencias",
+          "label": "Divergencias",
+          "value_path": "inventario.itens.divergencias",
+          "format": "number"
+        }
+      ],
+      "charts": [
+        {
+          "id": "inventario_status",
+          "label": "Capas por status",
+          "type": "bar",
+          "data_path": "inventario.capas.por_status"
+        }
+      ]
+    },
+    {
+      "id": "financeiro",
+      "title": "Financeiro",
+      "kpis": [
+        {
+          "id": "receber_em_aberto",
+          "label": "A receber em aberto",
+          "value_path": "financeiro.contas_receber.valor_em_aberto",
+          "format": "currency"
+        },
+        {
+          "id": "pagar_em_aberto",
+          "label": "A pagar em aberto",
+          "value_path": "financeiro.contas_pagar.valor_em_aberto",
+          "format": "currency"
+        }
+      ],
+      "cards": [
+        {
+          "id": "receber_abertas",
+          "label": "Receber abertas",
+          "value_path": "financeiro.contas_receber.abertas",
+          "format": "number"
+        },
+        {
+          "id": "receber_atrasadas",
+          "label": "Receber atrasadas",
+          "value_path": "financeiro.contas_receber.atrasadas",
+          "format": "number"
+        },
+        {
+          "id": "pagar_abertas",
+          "label": "Pagar abertas",
+          "value_path": "financeiro.contas_pagar.abertas",
+          "format": "number"
+        },
+        {
+          "id": "pagar_atrasadas",
+          "label": "Pagar atrasadas",
+          "value_path": "financeiro.contas_pagar.atrasadas",
+          "format": "number"
+        }
+      ]
+    },
+    {
+      "id": "precificacao",
+      "title": "Precificacao",
+      "kpis": [
+        {
+          "id": "promocoes_ativas",
+          "label": "Promocoes ativas",
+          "value_path": "precificacao.promocoes_ativas",
+          "format": "number"
+        },
+        {
+          "id": "produtos_em_promocao",
+          "label": "Produtos em promocao",
+          "value_path": "precificacao.produtos_em_promocao",
+          "format": "number"
+        },
+        {
+          "id": "reajustes_periodo",
+          "label": "Reajustes no periodo",
+          "value_path": "precificacao.reajustes_periodo",
+          "format": "number"
+        },
+        {
+          "id": "lotes_processados",
+          "label": "Lotes processados",
+          "value_path": "precificacao.lotes_processados",
+          "format": "number"
+        }
+      ]
+    },
+    {
+      "id": "cadastros",
+      "title": "Cadastros",
+      "kpis": [
+        {
+          "id": "produtos_ativos",
+          "label": "Produtos ativos",
+          "value_path": "cadastros.produtos_ativos",
+          "format": "number"
+        },
+        {
+          "id": "produtos_novos",
+          "label": "Produtos novos",
+          "value_path": "cadastros.produtos_novos",
+          "format": "number"
+        },
+        {
+          "id": "clientes_ativos",
+          "label": "Clientes ativos",
+          "value_path": "cadastros.clientes_ativos",
+          "format": "number"
+        },
+        {
+          "id": "clientes_novos",
+          "label": "Clientes novos",
+          "value_path": "cadastros.clientes_novos",
+          "format": "number"
+        },
+        {
+          "id": "fornecedores_ativos",
+          "label": "Fornecedores ativos",
+          "value_path": "cadastros.fornecedores_ativos",
+          "format": "number"
+        },
+        {
+          "id": "fornecedores_novos",
+          "label": "Fornecedores novos",
+          "value_path": "cadastros.fornecedores_novos",
+          "format": "number"
+        }
+      ]
+    }
+  ],
+  "example_params": {
+    "id_empresa": 7,
+    "id_filial": 12,
+    "filtro": "mensal"
+  },
+  "example_response": {
+    "success": true,
+    "params": {
+      "id_empresa": 7,
+      "id_filial": 12,
+      "filtro": "mensal",
+      "data_inicio": "2026-02-01 00:00:00",
+      "data_fim": "2026-02-28 23:59:59"
+    },
+    "vendas": {
+      "total": {
+        "quantidade": 0,
+        "valor": 0,
+        "ticket_medio": 0
+      },
+      "pdv": {
+        "quantidade": 0,
+        "valor": 0
+      },
+      "assistidas": {
+        "quantidade": 0,
+        "valor": 0
+      },
+      "fiado": {
+        "pdv": {
+          "quantidade": 0,
+          "valor": 0
+        },
+        "assistidas": {
+          "quantidade": 0,
+          "valor": 0
+        }
+      }
+    },
+    "pagamentos": {
+      "total_recebido": 0,
+      "por_forma": []
+    },
+    "compras": {
+      "cotacoes": 0,
+      "pedidos": {
+        "quantidade": 0,
+        "valor": 0,
+        "por_status": []
+      },
+      "entradas": {
+        "quantidade": 0,
+        "valor": 0
+      }
+    },
+    "estoque": {
+      "valor_custo": 0,
+      "valor_venda": 0,
+      "quantidade_total": 0,
+      "itens_com_estoque": 0,
+      "reservado": 0,
+      "pendencia_compra": 0
+    },
+    "movimentacoes": {
+      "total": 0,
+      "entradas": 0,
+      "saidas": 0
+    },
+    "transferencias": {
+      "total": 0,
+      "por_status": []
+    },
+    "inventario": {
+      "capas": {
+        "total": 0,
+        "por_status": []
+      },
+      "itens": {
+        "total": 0,
+        "divergencias": 0
+      }
+    },
+    "financeiro": {
+      "contas_receber": {
+        "abertas": 0,
+        "atrasadas": 0,
+        "quitadas": 0,
+        "valor_em_aberto": 0
+      },
+      "contas_pagar": {
+        "abertas": 0,
+        "atrasadas": 0,
+        "quitadas": 0,
+        "valor_em_aberto": 0
+      }
+    },
+    "precificacao": {
+      "promocoes_ativas": 0,
+      "produtos_em_promocao": 0,
+      "reajustes_periodo": 0,
+      "lotes_processados": 0
+    },
+    "cadastros": {
+      "produtos_ativos": 0,
+      "produtos_novos": 0,
+      "clientes_ativos": 0,
+      "clientes_novos": 0,
+      "fornecedores_ativos": 0,
+      "fornecedores_novos": 0
+    }
+  }
+}

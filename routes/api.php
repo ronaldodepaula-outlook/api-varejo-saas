@@ -13,6 +13,8 @@ use App\Http\Controllers\CapaTransferenciaController;
 use App\Http\Controllers\CompanyUserController;
 use App\Http\Controllers\ContagemInventarioController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DashboardIndicadoresController;
+use App\Http\Controllers\DashboardExecutivoController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\EstoqueController;
 use App\Http\Controllers\FilialController;
@@ -65,6 +67,8 @@ use App\Http\Controllers\AtualizacaoPrecoController;
 use App\Http\Controllers\PrecoHistoricoController;
 use App\Http\Controllers\PrecoVigenteController;
 use App\Http\Controllers\PromocaoController;
+use App\Http\Controllers\ContaReceberController;
+use App\Http\Controllers\ContaPagarController;
 
 /*
 |--------------------------------------------------------------------------
@@ -137,6 +141,49 @@ Route::post('backup/executar', [BackupController::class, 'executar']);
 // =======================
 Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::get('dashboard/resumo', [DashboardController::class, 'resumo']);
+    Route::get('dashboard/indicadores', [DashboardIndicadoresController::class, 'indicadores']);
+    Route::prefix('dashboard/exec')->group(function () {
+        Route::get('metricas', [DashboardExecutivoController::class, 'metricas']);
+        Route::get('vendas-periodo', [DashboardExecutivoController::class, 'vendasPeriodo']);
+        Route::get('vendas-por-filial', [DashboardExecutivoController::class, 'vendasPorFilial']);
+        Route::get('formas-pagamento', [DashboardExecutivoController::class, 'formasPagamento']);
+        Route::get('contas-receber-resumo', [DashboardExecutivoController::class, 'contasReceberResumo']);
+        Route::get('contas-pagar-resumo', [DashboardExecutivoController::class, 'contasPagarResumo']);
+        Route::get('fluxo-caixa', [DashboardExecutivoController::class, 'fluxoCaixa']);
+        Route::get('top-produtos', [DashboardExecutivoController::class, 'topProdutos']);
+        Route::get('estoque-critico', [DashboardExecutivoController::class, 'estoqueCritico']);
+        Route::get('pedidos-pendentes', [DashboardExecutivoController::class, 'pedidosPendentes']);
+        Route::get('entradas-recentes', [DashboardExecutivoController::class, 'entradasRecentes']);
+        Route::get('promocoes-ativas', [DashboardExecutivoController::class, 'promocoesAtivas']);
+        Route::get('produtos-promocao', [DashboardExecutivoController::class, 'produtosPromocao']);
+        Route::get('historico-precos', [DashboardExecutivoController::class, 'historicoPrecos']);
+        Route::get('top-clientes', [DashboardExecutivoController::class, 'topClientes']);
+        Route::get('vendas-assistidas-status', [DashboardExecutivoController::class, 'vendasAssistidasStatus']);
+        Route::get('debitos-clientes', [DashboardExecutivoController::class, 'debitosClientes']);
+        Route::get('movimentacoes-recentes', [DashboardExecutivoController::class, 'movimentacoesRecentes']);
+        Route::get('movimentacoes-resumo', [DashboardExecutivoController::class, 'movimentacoesResumo']);
+    });
+    Route::prefix('dashboard/exec')->group(function () {
+        Route::get('metricas', [DashboardExecutivoController::class, 'metricas']);
+        Route::get('vendas-periodo', [DashboardExecutivoController::class, 'vendasPeriodo']);
+        Route::get('vendas-por-filial', [DashboardExecutivoController::class, 'vendasPorFilial']);
+        Route::get('formas-pagamento', [DashboardExecutivoController::class, 'formasPagamento']);
+        Route::get('contas-receber-resumo', [DashboardExecutivoController::class, 'contasReceberResumo']);
+        Route::get('contas-pagar-resumo', [DashboardExecutivoController::class, 'contasPagarResumo']);
+        Route::get('fluxo-caixa', [DashboardExecutivoController::class, 'fluxoCaixa']);
+        Route::get('top-produtos', [DashboardExecutivoController::class, 'topProdutos']);
+        Route::get('estoque-critico', [DashboardExecutivoController::class, 'estoqueCritico']);
+        Route::get('pedidos-pendentes', [DashboardExecutivoController::class, 'pedidosPendentes']);
+        Route::get('entradas-recentes', [DashboardExecutivoController::class, 'entradasRecentes']);
+        Route::get('promocoes-ativas', [DashboardExecutivoController::class, 'promocoesAtivas']);
+        Route::get('produtos-promocao', [DashboardExecutivoController::class, 'produtosPromocao']);
+        Route::get('historico-precos', [DashboardExecutivoController::class, 'historicoPrecos']);
+        Route::get('top-clientes', [DashboardExecutivoController::class, 'topClientes']);
+        Route::get('vendas-assistidas-status', [DashboardExecutivoController::class, 'vendasAssistidasStatus']);
+        Route::get('debitos-clientes', [DashboardExecutivoController::class, 'debitosClientes']);
+        Route::get('movimentacoes-recentes', [DashboardExecutivoController::class, 'movimentacoesRecentes']);
+        Route::get('movimentacoes-resumo', [DashboardExecutivoController::class, 'movimentacoesResumo']);
+    });
 
     Route::apiResource('empresas', EmpresaController::class);
     Route::apiResource('filiais', FilialController::class);
@@ -271,6 +318,12 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
         Route::get('precos-vigentes/{id}', [PrecoVigenteController::class, 'show']);
         Route::put('precos-vigentes/{id}', [PrecoVigenteController::class, 'update']);
         Route::delete('precos-vigentes/{id}', [PrecoVigenteController::class, 'destroy']);
+    });
+
+    // Financeiro - Contas a Receber/Pagar
+    Route::prefix('financeiro')->group(function () {
+        Route::apiResource('contas-receber', ContaReceberController::class);
+        Route::apiResource('contas-pagar', ContaPagarController::class);
     });
 });
 
