@@ -107,6 +107,52 @@ class ApiDocsController extends Controller
                     }
                 }
 
+        if ($uri === 'api/v1/fornecedores/importar' && $method === 'POST') {
+            $operation['requestBody'] = [
+                        'required' => true,
+                        'content' => [
+                            'multipart/form-data' => [
+                                'schema' => [
+                                    'type' => 'object',
+                                    'required' => ['arquivo'],
+                                    'properties' => [
+                                        'id_empresa' => ['type' => 'integer', 'example' => 7],
+                                        'arquivo' => ['type' => 'string', 'format' => 'binary'],
+                                        'modo' => ['type' => 'string', 'example' => 'upsert', 'enum' => ['upsert', 'skip', 'update']],
+                                        'delimiter' => ['type' => 'string', 'example' => ';'],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ];
+                }
+
+                if ($uri === 'api/v1/produtos/importar' && $method === 'POST') {
+                    $operation['requestBody'] = [
+                        'required' => true,
+                        'content' => [
+                            'multipart/form-data' => [
+                                'schema' => [
+                                    'type' => 'object',
+                                    'required' => ['arquivo'],
+                                    'properties' => [
+                                        'arquivo' => ['type' => 'string', 'format' => 'binary'],
+                                        'modo' => ['type' => 'string', 'example' => 'upsert', 'enum' => ['upsert', 'skip', 'update']],
+                                        'delimiter' => ['type' => 'string', 'example' => ';'],
+                                        'detalhado' => ['type' => 'boolean', 'example' => true],
+                                        'id_categoria' => ['type' => 'integer', 'example' => 1],
+                                        'id_secao' => ['type' => 'integer', 'example' => 1],
+                                        'id_grupo' => ['type' => 'integer', 'example' => 1],
+                                        'id_subgrupo' => ['type' => 'integer', 'example' => 1],
+                                        'unidade_medida' => ['type' => 'string', 'example' => 'UN'],
+                                        'ativo' => ['type' => 'boolean', 'example' => true],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ];
+                }
+
                 if ($tag === 'Senha') {
                     $operation['description'] = ($operation['description'] ?? '') . ' Token com validade de 24 horas.';
                     $operation['responses'] = $this->senhaResponses($uri, $operation['responses']);
@@ -228,6 +274,18 @@ class ApiDocsController extends Controller
                     'required' => false,
                     'schema' => ['type' => 'string', 'example' => '2026-02-20'],
                     'description' => 'Obrigatorio apenas quando filtro=personalizado.',
+                ],
+            ];
+        }
+
+        if ($uri === 'api/v1/categorias/empresa/{id_empresa}/produtos') {
+            return [
+                [
+                    'name' => 'id_categoria',
+                    'in' => 'query',
+                    'required' => true,
+                    'schema' => ['type' => 'integer', 'example' => 1],
+                    'description' => 'ID da categoria',
                 ],
             ];
         }

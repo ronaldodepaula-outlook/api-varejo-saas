@@ -1,8 +1,8 @@
 {
   "info": {
-    "name": "Fornecedores API - SaaS MultiEmpresas",
+    "name": "Produtos API - SaaS MultiEmpresas",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_postman_id": "fornecedores-collection-001"
+    "_postman_id": "produtos-collection-001"
   },
   "variable": [
     { "key": "baseUrl", "value": "http://localhost" },
@@ -12,39 +12,39 @@
     { "key": "modo", "value": "upsert" },
     { "key": "delimiter", "value": ";" },
     { "key": "detalhado", "value": "true" },
-    { "key": "arquivo", "value": "C:/caminho/fornecedores.xlsx" }
+    { "key": "arquivo", "value": "C:/caminho/produtos.xlsx" }
   ],
   "item": [
     {
-      "name": "List Fornecedores (paginated)",
+      "name": "List Produtos (paginated)",
       "request": {
         "method": "GET",
         "header": [
           { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
         ],
         "url": {
-          "raw": "{{baseUrl}}:{{port}}/api/v1/fornecedores",
+          "raw": "{{baseUrl}}:{{port}}/api/v1/produtos",
           "host": ["{{baseUrl}}:{{port}}"],
-          "path": ["api","v1","fornecedores"]
+          "path": ["api","v1","produtos"]
         }
       }
     },
     {
-      "name": "Get Fornecedor by id",
+      "name": "Get Produto by id",
       "request": {
         "method": "GET",
         "header": [
           { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
         ],
         "url": {
-          "raw": "{{baseUrl}}:{{port}}/api/v1/fornecedores/44",
+          "raw": "{{baseUrl}}:{{port}}/api/v1/produtos/96",
           "host": ["{{baseUrl}}:{{port}}"],
-          "path": ["api","v1","fornecedores","44"]
+          "path": ["api","v1","produtos","96"]
         }
       }
     },
     {
-      "name": "Create Fornecedor",
+      "name": "Create Produto",
       "request": {
         "method": "POST",
         "header": [
@@ -53,17 +53,17 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"id_empresa\": 7,\n  \"razao_social\": \"PAINE PRODUCAO E COMERCIO DE PAES ARTESANAIS LTDA\",\n  \"nome_fantasia\": \"PAINE PRODUCAO\",\n  \"cnpj\": \"31006488000198\",\n  \"cidade\": \"Fortaleza\",\n  \"estado\": \"CE\",\n  \"status\": \"ativo\"\n}"
+          "raw": "{\n  \"id_empresa\": 7,\n  \"descricao\": \"DETERG YPE 500ML NEUTRO\",\n  \"codigo_barras\": \"7896098900208\",\n  \"unidade_medida\": \"LT\",\n  \"preco_custo\": 1.78,\n  \"preco_venda\": 2.31,\n  \"ativo\": 1\n}"
         },
         "url": {
-          "raw": "{{baseUrl}}:{{port}}/api/v1/fornecedores",
+          "raw": "{{baseUrl}}:{{port}}/api/v1/produtos",
           "host": ["{{baseUrl}}:{{port}}"],
-          "path": ["api","v1","fornecedores"]
+          "path": ["api","v1","produtos"]
         }
       }
     },
     {
-      "name": "Update Fornecedor",
+      "name": "Update Produto",
       "request": {
         "method": "PUT",
         "header": [
@@ -72,47 +72,33 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"razao_social\": \"PAINE PRODUCAO E COMERCIO DE PAES ARTESANAIS LTDA\",\n  \"nome_fantasia\": \"PAINE PRODUCAO\",\n  \"cidade\": \"Fortaleza\",\n  \"estado\": \"CE\",\n  \"status\": \"ativo\"\n}"
+          "raw": "{\n  \"descricao\": \"DETERG YPE 500ML NEUTRO\",\n  \"preco_venda\": 2.50\n}"
         },
         "url": {
-          "raw": "{{baseUrl}}:{{port}}/api/v1/fornecedores/44",
+          "raw": "{{baseUrl}}:{{port}}/api/v1/produtos/96",
           "host": ["{{baseUrl}}:{{port}}"],
-          "path": ["api","v1","fornecedores","44"]
+          "path": ["api","v1","produtos","96"]
         }
       }
     },
     {
-      "name": "Delete Fornecedor",
+      "name": "Delete Produto",
       "request": {
         "method": "DELETE",
         "header": [
           { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
         ],
         "url": {
-          "raw": "{{baseUrl}}:{{port}}/api/v1/fornecedores/44",
+          "raw": "{{baseUrl}}:{{port}}/api/v1/produtos/96",
           "host": ["{{baseUrl}}:{{port}}"],
-          "path": ["api","v1","fornecedores","44"]
+          "path": ["api","v1","produtos","96"]
         }
       }
     },
     {
-      "name": "List Fornecedores by Empresa",
+      "name": "Importar Produtos",
       "request": {
-        "method": "GET",
-        "header": [
-          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
-        ],
-        "url": {
-          "raw": "{{baseUrl}}:{{port}}/api/v1/fornecedores/empresa/7",
-          "host": ["{{baseUrl}}:{{port}}"],
-          "path": ["api","v1","fornecedores","empresa","7"]
-        }
-      }
-    },
-    {
-      "name": "Importar Fornecedores",
-      "request": {
-        "description": "POST /api/v1/fornecedores/importar\nForm-data: arquivo (xls/xlsx/csv/txt), id_empresa, modo=upsert|skip|update, delimiter, detalhado",
+        "description": "POST /api/v1/produtos/importar\nForm-data: arquivo (xls/xlsx/csv/txt), modo=upsert|skip|update, delimiter, detalhado, id_categoria/id_secao/id_grupo/id_subgrupo/unidade_medida/ativo",
         "method": "POST",
         "header": [
           { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
@@ -120,17 +106,22 @@
         "body": {
           "mode": "formdata",
           "formdata": [
-            { "key": "id_empresa", "value": "{{id_empresa}}", "type": "text" },
             { "key": "modo", "value": "{{modo}}", "type": "text" },
             { "key": "delimiter", "value": "{{delimiter}}", "type": "text" },
             { "key": "detalhado", "value": "{{detalhado}}", "type": "text" },
+            { "key": "id_categoria", "value": "", "type": "text" },
+            { "key": "id_secao", "value": "", "type": "text" },
+            { "key": "id_grupo", "value": "", "type": "text" },
+            { "key": "id_subgrupo", "value": "", "type": "text" },
+            { "key": "unidade_medida", "value": "", "type": "text" },
+            { "key": "ativo", "value": "1", "type": "text" },
             { "key": "arquivo", "type": "file", "src": "{{arquivo}}" }
           ]
         },
         "url": {
-          "raw": "{{baseUrl}}:{{port}}/api/v1/fornecedores/importar",
+          "raw": "{{baseUrl}}:{{port}}/api/v1/produtos/importar",
           "host": ["{{baseUrl}}:{{port}}"],
-          "path": ["api","v1","fornecedores","importar"]
+          "path": ["api","v1","produtos","importar"]
         }
       }
     }

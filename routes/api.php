@@ -194,6 +194,7 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::apiResource('categorias', CategoriaController::class);
     Route::get('categorias/{id}/secoes', [CategoriaController::class, 'secoes']);
     Route::get('categorias/empresa/{id_empresa}', [CategoriaController::class, 'categoriasPorEmpresa']);
+    Route::get('categorias/empresa/{id_empresa}/produtos', [ProdutoController::class, 'listarPorEmpresaCategoria']);
 
     Route::apiResource('secoes', SecaoController::class);
     Route::get('secoes/por-categoria/{idCategoria}', [SecaoController::class, 'porCategoria']);
@@ -208,10 +209,12 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::get('subgrupos/empresa/{id_empresa}/grupo/{id_grupo}', [SubgrupoController::class, 'subgruposPorEmpresaGrupo']);
 
     // Fornecedores
+    Route::post('fornecedores/importar', [FornecedorController::class, 'importar']);
     Route::apiResource('fornecedores', FornecedorController::class);
     Route::get('fornecedores/empresa/{id_empresa}', [FornecedorController::class, 'fornecedoresPorEmpresa']);
 
     // Produtos
+    Route::post('produtos/importar', [ProdutoController::class, 'importar']);
     Route::get('produtos', [ProdutoController::class, 'index']);
     Route::get('produtos/{id}', [ProdutoController::class, 'show']);
     Route::post('produtos', [ProdutoController::class, 'store']);
