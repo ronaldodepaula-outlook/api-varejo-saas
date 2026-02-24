@@ -78,6 +78,8 @@ use App\Http\Controllers\RestricaoFilialUsuarioController;
 use App\Http\Controllers\CampoVisivelPerfilController;
 use App\Http\Controllers\AuditoriaController;
 use App\Http\Controllers\SessaoAtivaController;
+use App\Http\Controllers\TarefaContagemController;
+use App\Http\Controllers\TarefaContagemProdutoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -391,6 +393,29 @@ Route::put('contagens/{id}', [ContagemInventarioController::class, 'update']);
 Route::delete('contagens/{id}', [ContagemInventarioController::class, 'destroy']);
 Route::get('contagens/inventario/{id_inventario}', [ContagemInventarioController::class, 'listarPorInventario']);
 Route::get('contagens/inventario/{id_inventario}/produtos', [ContagemInventarioController::class, 'listarProdutosPorInventario']);
+
+// =======================
+// Tarefas de Contagem (protegido)
+// =======================
+Route::prefix('inventario')->middleware('auth:sanctum')->group(function () {
+    Route::get('tarefas', [TarefaContagemController::class, 'index']);
+    Route::get('tarefas/inventario/{id_capa}', [TarefaContagemController::class, 'porInventario']);
+    Route::get('tarefas/usuario/{id_usuario}', [TarefaContagemController::class, 'porUsuario']);
+    Route::get('tarefas/{id}/historico', [TarefaContagemController::class, 'historico']);
+
+    Route::get('tarefas/{id_tarefa}/produtos', [TarefaContagemProdutoController::class, 'index']);
+    Route::post('tarefas/{id_tarefa}/produtos', [TarefaContagemProdutoController::class, 'store']);
+    Route::put('tarefas/{id_tarefa}/produtos/{id_produto}', [TarefaContagemProdutoController::class, 'update']);
+    Route::delete('tarefas/{id_tarefa}/produtos/{id_produto}', [TarefaContagemProdutoController::class, 'destroy']);
+
+    Route::get('tarefas/{id}', [TarefaContagemController::class, 'show']);
+    Route::post('tarefas', [TarefaContagemController::class, 'store']);
+    Route::put('tarefas/{id}/iniciar', [TarefaContagemController::class, 'iniciar']);
+    Route::put('tarefas/{id}/pausar', [TarefaContagemController::class, 'pausar']);
+    Route::put('tarefas/{id}/retomar', [TarefaContagemController::class, 'retomar']);
+    Route::put('tarefas/{id}/concluir', [TarefaContagemController::class, 'concluir']);
+    Route::put('tarefas/{id}/cancelar', [TarefaContagemController::class, 'cancelar']);
+});
 
 // =======================
 // Estoque, Movimentacoes e Transferencias

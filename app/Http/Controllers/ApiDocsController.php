@@ -194,6 +194,47 @@ class ApiDocsController extends Controller
     {
         $uri = ltrim($uri, '/');
 
+        if ($uri === 'api/inventario/tarefas') {
+            return [
+                [
+                    'name' => 'status',
+                    'in' => 'query',
+                    'required' => false,
+                    'schema' => ["type" => 'string', 'example' => 'pendente'],
+                ],
+                [
+                    'name' => 'id_capa_inventario',
+                    'in' => 'query',
+                    'required' => false,
+                    'schema' => ['type' => 'integer', 'example' => 35],
+                ],
+                [
+                    'name' => 'id_usuario',
+                    'in' => 'query',
+                    'required' => false,
+                    'schema' => ['type' => 'integer', 'example' => 7],
+                ],
+                [
+                    'name' => 'data_inicio',
+                    'in' => 'query',
+                    'required' => false,
+                    'schema' => ['type' => 'string', 'example' => '2026-02-01'],
+                ],
+                [
+                    'name' => 'data_fim',
+                    'in' => 'query',
+                    'required' => false,
+                    'schema' => ['type' => 'string', 'example' => '2026-02-20'],
+                ],
+                [
+                    'name' => 'per_page',
+                    'in' => 'query',
+                    'required' => false,
+                    'schema' => ['type' => 'integer', 'example' => 15],
+                ],
+            ];
+        }
+
         // Kardex reports (estoque)
         if ($uri === 'api/estoque/relatorios/kardex' ||
             $uri === 'api/estoque/relatorios/kardex/export' ||
@@ -388,7 +429,9 @@ class ApiDocsController extends Controller
         if (preg_match('#^api/v1/.*produtos#', $uri)) {
             return 'Produtos';
         }
-        if (preg_match('#^api/(capa-inventarios|inventarios|contagens)#', $uri) || preg_match('#^api/v1/(capas-inventario|inventarios)#', $uri)) {
+        if (preg_match('#^api/(capa-inventarios|inventarios|contagens)#', $uri) ||
+            preg_match('#^api/v1/(capas-inventario|inventarios)#', $uri) ||
+            preg_match('#^api/inventario/tarefas#', $uri)) {
             return 'InventÃ¡rio';
         }
         if (preg_match('#^api/(estoque|estoques|movimentacoes)#', $uri)) {
@@ -616,6 +659,31 @@ class ApiDocsController extends Controller
         }
         if (preg_match('#^contagens($|/[^/]+$)#', $path)) {
             return $examples['contagem'];
+        }
+
+        if (preg_match('#^inventario/tarefas$#', $path)) {
+            return $examples['tarefa_contagem'];
+        }
+        if (preg_match('#^inventario/tarefas/[^/]+/iniciar$#', $path)) {
+            return $examples['tarefa_contagem_iniciar'];
+        }
+        if (preg_match('#^inventario/tarefas/[^/]+/pausar$#', $path)) {
+            return $examples['tarefa_contagem_pausar'];
+        }
+        if (preg_match('#^inventario/tarefas/[^/]+/retomar$#', $path)) {
+            return $examples['tarefa_contagem_retomar'];
+        }
+        if (preg_match('#^inventario/tarefas/[^/]+/concluir$#', $path)) {
+            return $examples['tarefa_contagem_concluir'];
+        }
+        if (preg_match('#^inventario/tarefas/[^/]+/cancelar$#', $path)) {
+            return $examples['tarefa_contagem_cancelar'];
+        }
+        if (preg_match('#^inventario/tarefas/[^/]+/produtos$#', $path)) {
+            return $examples['tarefa_contagem_produtos'];
+        }
+        if (preg_match('#^inventario/tarefas/[^/]+/produtos/[^/]+$#', $path)) {
+            return $examples['tarefa_contagem_produto_update'];
         }
 
         // Estoque e MovimentaÃ§Ãµes
@@ -1193,6 +1261,37 @@ class ApiDocsController extends Controller
                 'quantidade' => 2,
                 'observacao' => 'Contagem manual',
                 'id_usuario' => 1,
+            ],
+            'tarefa_contagem' => [
+                'id_capa_inventario' => 35,
+                'id_usuario' => 7,
+                'id_supervisor' => 7,
+                'tipo_tarefa' => 'contagem_inicial',
+                'observacoes' => 'Contagem inicial do invent?rio',
+                'produtos' => [191, 192, 193],
+            ],
+            'tarefa_contagem_iniciar' => [
+                'observacoes' => 'Iniciando contagem',
+            ],
+            'tarefa_contagem_pausar' => [
+                'motivo' => 'Pausa para almo?o',
+            ],
+            'tarefa_contagem_retomar' => [
+                'observacoes' => 'Retomando contagem',
+            ],
+            'tarefa_contagem_concluir' => [
+                'observacoes' => 'Contagem finalizada',
+                'forcar_conclusao' => false,
+            ],
+            'tarefa_contagem_cancelar' => [
+                'motivo' => 'Invent?rio cancelado',
+            ],
+            'tarefa_contagem_produtos' => [
+                'produtos' => [191, 192, 193],
+            ],
+            'tarefa_contagem_produto_update' => [
+                'quantidade_contada' => 50.0,
+                'observacao' => 'Conferido',
             ],
             'estoque' => [
                 'id_empresa' => 1,
