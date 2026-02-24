@@ -69,6 +69,15 @@ use App\Http\Controllers\PrecoVigenteController;
 use App\Http\Controllers\PromocaoController;
 use App\Http\Controllers\ContaReceberController;
 use App\Http\Controllers\ContaPagarController;
+use App\Http\Controllers\ModuloSistemaController;
+use App\Http\Controllers\PermissaoAcaoController;
+use App\Http\Controllers\PerfilAcessoController;
+use App\Http\Controllers\PermissaoUsuarioController;
+use App\Http\Controllers\UsuarioPerfilController;
+use App\Http\Controllers\RestricaoFilialUsuarioController;
+use App\Http\Controllers\CampoVisivelPerfilController;
+use App\Http\Controllers\AuditoriaController;
+use App\Http\Controllers\SessaoAtivaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -119,6 +128,41 @@ Route::get('filiais/empresa/{id_empresa}', [FilialController::class, 'filiaisPor
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('usuarios', UsuarioController::class);
     Route::get('usuarios/empresa/{id_empresa}', [UsuarioController::class, 'usuariosPorEmpresa']);
+
+    // Gestao de acesso (RBAC)
+    Route::get('modulos/arvore', [ModuloSistemaController::class, 'arvore']);
+    Route::apiResource('modulos', ModuloSistemaController::class);
+
+    Route::apiResource('permissoes-acoes', PermissaoAcaoController::class);
+    Route::apiResource('perfis', PerfilAcessoController::class);
+    Route::get('perfis/{id}/permissoes', [PerfilAcessoController::class, 'permissoes']);
+    Route::put('perfis/{id}/permissoes', [PerfilAcessoController::class, 'atualizarPermissoes']);
+
+    Route::get('perfis/{id}/campos', [CampoVisivelPerfilController::class, 'index']);
+    Route::post('perfis/{id}/campos', [CampoVisivelPerfilController::class, 'store']);
+    Route::delete('perfis/{id}/campos/{id_campo}', [CampoVisivelPerfilController::class, 'destroy']);
+
+    Route::get('usuarios/{id_usuario}/permissoes', [PermissaoUsuarioController::class, 'index']);
+    Route::post('usuarios/{id_usuario}/permissoes', [PermissaoUsuarioController::class, 'store']);
+    Route::put('usuarios/{id_usuario}/permissoes/{id_permissao}', [PermissaoUsuarioController::class, 'update']);
+    Route::delete('usuarios/{id_usuario}/permissoes/{id_permissao}', [PermissaoUsuarioController::class, 'destroy']);
+
+    Route::get('usuarios/{id_usuario}/perfis', [UsuarioPerfilController::class, 'index']);
+    Route::post('usuarios/{id_usuario}/perfis/{id_perfil}', [UsuarioPerfilController::class, 'store']);
+    Route::delete('usuarios/{id_usuario}/perfis/{id_perfil}', [UsuarioPerfilController::class, 'destroy']);
+
+    Route::get('usuarios/{id_usuario}/filiais', [RestricaoFilialUsuarioController::class, 'index']);
+    Route::post('usuarios/{id_usuario}/filiais/{id_filial}', [RestricaoFilialUsuarioController::class, 'store']);
+    Route::delete('usuarios/{id_usuario}/filiais/{id_filial}', [RestricaoFilialUsuarioController::class, 'destroy']);
+
+    Route::get('auditoria', [AuditoriaController::class, 'index']);
+    Route::get('auditoria/usuario/{id_usuario}', [AuditoriaController::class, 'porUsuario']);
+    Route::get('auditoria/modulo/{modulo}', [AuditoriaController::class, 'porModulo']);
+    Route::get('auditoria/data/{data}', [AuditoriaController::class, 'porData']);
+
+    Route::get('sessoes-ativas', [SessaoAtivaController::class, 'index']);
+    Route::get('usuarios/{id_usuario}/sessoes', [SessaoAtivaController::class, 'porUsuario']);
+    Route::delete('sessoes-ativas/{id}', [SessaoAtivaController::class, 'destroy']);
 });
 
 Route::apiResource('licencas', LicencaController::class);

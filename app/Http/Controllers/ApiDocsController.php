@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -65,9 +64,9 @@ class ApiDocsController extends Controller
 
                 if (in_array('auth:sanctum', $middlewares, true)) {
                     $operation['security'] = [['bearerAuth' => []]];
-                    $operation['description'] = 'Requer autenticação via Bearer token (Sanctum).';
+                    $operation['description'] = 'Requer autenticaÃ§Ã£o via Bearer token (Sanctum).';
                 } else {
-                    $operation['description'] = 'Acesso público (sem autenticação).';
+                    $operation['description'] = 'Acesso pÃºblico (sem autenticaÃ§Ã£o).';
                 }
 
                 $params = [];
@@ -366,6 +365,13 @@ class ApiDocsController extends Controller
         if (preg_match('#^api/(registrar|login|token|verificar-email|user)#', $uri)) {
             return 'Auth';
         }
+        if (
+            preg_match('#^api/(modulos|perfis|permissoes-acoes|auditoria|sessoes-ativas)#', $uri) ||
+            preg_match('#^api/usuarios/[^/]+/(perfis|permissoes|filiais|sessoes)#', $uri) ||
+            preg_match('#^api/perfis/[^/]+/(permissoes|campos)#', $uri)
+        ) {
+            return 'Administracao';
+        }
         if (strpos($uri, 'password') !== false || strpos($uri, 'esqueci-senha') !== false || strpos($uri, 'redefinir-senha') !== false) {
             return 'Senha';
         }
@@ -377,13 +383,13 @@ class ApiDocsController extends Controller
             return 'Dashboard';
         }
         if (preg_match('#^api/v1/(categorias|secoes|grupos|subgrupos)#', $uri)) {
-            return 'Catálogo';
+            return 'CatÃ¡logo';
         }
         if (preg_match('#^api/v1/.*produtos#', $uri)) {
             return 'Produtos';
         }
         if (preg_match('#^api/(capa-inventarios|inventarios|contagens)#', $uri) || preg_match('#^api/v1/(capas-inventario|inventarios)#', $uri)) {
-            return 'Inventário';
+            return 'InventÃ¡rio';
         }
         if (preg_match('#^api/(estoque|estoques|movimentacoes)#', $uri)) {
             return 'Estoque';
@@ -395,7 +401,7 @@ class ApiDocsController extends Controller
             return 'Financeiro';
         }
         if (preg_match('#^api/(capa-transferencias|transferencias)#', $uri)) {
-            return 'Transferências';
+            return 'TransferÃªncias';
         }
         if (preg_match('#^api/(nfe|sefaz)#', $uri)) {
             return 'NFE';
@@ -407,13 +413,13 @@ class ApiDocsController extends Controller
             return 'Vendas';
         }
         if (preg_match('#^api/(notificacoes|backup)#', $uri)) {
-            return 'Notificações';
+            return 'NotificaÃ§Ãµes';
         }
         if (preg_match('#^api/v1/rotas#', $uri)) {
-            return 'Utilitários';
+            return 'UtilitÃ¡rios';
         }
         if (preg_match('#^api/diagnostico#', $uri)) {
-            return 'Diagnóstico';
+            return 'DiagnÃ³stico';
         }
         if (preg_match('#^api/(debug|teste-)#', $uri)) {
             return 'Debug/Testes';
@@ -425,45 +431,47 @@ class ApiDocsController extends Controller
     private function buildTags(array $usedTags): array
     {
         $tagDescriptions = [
-            'Auth' => 'Fluxo de autenticação e ativação de conta (cadastro, verificação de e-mail e login).',
-            'Senha' => 'Fluxo de recuperação e redefinição de senha.',
-            'Core' => 'Cadastros principais: empresas, filiais, usuários, licenças, assinaturas e pagamentos.',
+            'Auth' => 'Fluxo de autenticaÃ§Ã£o e ativaÃ§Ã£o de conta (cadastro, verificaÃ§Ã£o de e-mail e login).',
+            'Senha' => 'Fluxo de recuperaÃ§Ã£o e redefiniÃ§Ã£o de senha.',
+            'Core' => 'Cadastros principais: empresas, filiais, usuÃ¡rios, licenÃ§as, assinaturas e pagamentos.',
+            'Administracao' => 'Gestao de acessos: perfis, permissoes, modulos, auditoria e sessoes.',
             'Dashboard' => 'Resumo operacional do sistema.',
-            'Catálogo' => 'Catálogo hierárquico: categorias, seções, grupos e subgrupos.',
-            'Produtos' => 'Gestão e filtros de produtos.',
-            'Inventário' => 'Capas, itens de inventário e contagens.',
-            'Estoque' => 'Saldos, movimentações e consultas de estoque.',
+            'CatÃ¡logo' => 'CatÃ¡logo hierÃ¡rquico: categorias, seÃ§Ãµes, grupos e subgrupos.',
+            'Produtos' => 'GestÃ£o e filtros de produtos.',
+            'InventÃ¡rio' => 'Capas, itens de inventÃ¡rio e contagens.',
+            'Estoque' => 'Saldos, movimentaÃ§Ãµes e consultas de estoque.',
             'Precificacao' => 'Historico, atualizacoes, promocoes e precos vigentes.',
             'Financeiro' => 'Contas a receber e contas a pagar.',
-            'Transferências' => 'Capas e transferências de estoque.',
-            'NFE' => 'Módulo de NF-e/DANFE e integrações SEFAZ.',
+            'TransferÃªncias' => 'Capas e transferÃªncias de estoque.',
+            'NFE' => 'MÃ³dulo de NF-e/DANFE e integraÃ§Ãµes SEFAZ.',
             'PDV' => 'Caixa e vendas no ponto de venda.',
-            'Vendas' => 'Vendas assistidas, clientes e débitos.',
-            'Notificações' => 'Alertas e execução de backup.',
-            'Utilitários' => 'Listagem de rotas e utilidades do sistema.',
-            'Diagnóstico' => 'Diagnósticos e validações de dados.',
-            'Debug/Testes' => 'Rotas de depuração e testes internos.',
-            'Outros' => 'Endpoints não categorizados.',
+            'Vendas' => 'Vendas assistidas, clientes e dÃ©bitos.',
+            'NotificaÃ§Ãµes' => 'Alertas e execuÃ§Ã£o de backup.',
+            'UtilitÃ¡rios' => 'Listagem de rotas e utilidades do sistema.',
+            'DiagnÃ³stico' => 'DiagnÃ³sticos e validaÃ§Ãµes de dados.',
+            'Debug/Testes' => 'Rotas de depuraÃ§Ã£o e testes internos.',
+            'Outros' => 'Endpoints nÃ£o categorizados.',
         ];
 
         $order = [
             'Auth',
             'Senha',
             'Core',
+            'Administracao',
             'Dashboard',
-            'Catálogo',
+            'CatÃ¡logo',
             'Produtos',
-            'Inventário',
+            'InventÃ¡rio',
             'Estoque',
             'Precificacao',
             'Financeiro',
-            'Transferências',
+            'TransferÃªncias',
             'NFE',
             'PDV',
             'Vendas',
-            'Notificações',
-            'Utilitários',
-            'Diagnóstico',
+            'NotificaÃ§Ãµes',
+            'UtilitÃ¡rios',
+            'DiagnÃ³stico',
             'Debug/Testes',
             'Outros',
         ];
@@ -551,7 +559,33 @@ class ApiDocsController extends Controller
             return $examples['pagamento'];
         }
 
-        // Catálogo e Produtos (v1)
+        // Administracao (RBAC)
+        if (preg_match('#^modulos($|/[^/]+$)#', $path)) {
+            return $examples['modulo'];
+        }
+        if (preg_match('#^permissoes-acoes($|/[^/]+$)#', $path)) {
+            return $examples['acao_permissao'];
+        }
+        if (preg_match('#^perfis($|/[^/]+$)#', $path)) {
+            return $examples['perfil'];
+        }
+        if (preg_match('#^perfis/[^/]+/permissoes$#', $path)) {
+            return $examples['permissoes_perfil'];
+        }
+        if (preg_match('#^perfis/[^/]+/campos$#', $path)) {
+            return $examples['campos_perfil'];
+        }
+        if (preg_match('#^usuarios/[^/]+/permissoes($|/[^/]+$)#', $path)) {
+            return $examples['permissao_usuario'];
+        }
+        if (preg_match('#^usuarios/[^/]+/perfis/[^/]+$#', $path)) {
+            return $examples['usuario_perfil'];
+        }
+        if (preg_match('#^usuarios/[^/]+/filiais/[^/]+$#', $path)) {
+            return $examples['restricao_filial'];
+        }
+
+        // CatÃ¡logo e Produtos (v1)
         if (preg_match('#^v1/categorias($|/[^/]+$)#', $path)) {
             return $examples['categoria'];
         }
@@ -573,7 +607,7 @@ class ApiDocsController extends Controller
             return $examples['fornecedor'];
         }
 
-        // Inventário e Contagens
+        // InventÃ¡rio e Contagens
         if (preg_match('#^capa-inventarios($|/[^/]+$)#', $path)) {
             return $examples['capa_inventario'];
         }
@@ -584,7 +618,7 @@ class ApiDocsController extends Controller
             return $examples['contagem'];
         }
 
-        // Estoque e Movimentações
+        // Estoque e MovimentaÃ§Ãµes
         if (preg_match('#^estoques($|/[^/]+$)#', $path)) {
             return $examples['estoque'];
         }
@@ -592,7 +626,7 @@ class ApiDocsController extends Controller
             return $examples['movimentacao'];
         }
 
-        // Transferências
+        // TransferÃªncias
         if (preg_match('#^capa-transferencias($|/[^/]+$)#', $path)) {
             return $examples['capa_transferencia'];
         }
@@ -805,12 +839,12 @@ class ApiDocsController extends Controller
                     'website' => 'https://empresa.com',
                     'endereco' => 'Rua Exemplo, 100',
                     'cep' => '01000-000',
-                    'cidade' => 'São Paulo',
+                    'cidade' => 'SÃ£o Paulo',
                     'estado' => 'SP',
                     'segmento' => 'varejo',
                 ],
                 'usuario' => [
-                    'nome' => 'João Silva',
+                    'nome' => 'JoÃ£o Silva',
                     'email' => 'joao@empresa.com',
                     'senha' => '123456',
                     'aceitou_termos' => true,
@@ -847,7 +881,7 @@ class ApiDocsController extends Controller
                 'website' => 'https://empresa.com',
                 'endereco' => 'Rua Exemplo, 100',
                 'cep' => '01000-000',
-                'cidade' => 'São Paulo',
+                'cidade' => 'SÃ£o Paulo',
                 'estado' => 'SP',
                 'segmento' => 'varejo',
                 'status' => 'ativa',
@@ -856,22 +890,77 @@ class ApiDocsController extends Controller
                 'id_empresa' => 1,
                 'nome_filial' => 'Filial Centro',
                 'endereco' => 'Rua Central, 200',
-                'cidade' => 'São Paulo',
+                'cidade' => 'SÃ£o Paulo',
                 'estado' => 'SP',
                 'cep' => '01000-000',
                 'data_cadastro' => '2025-10-05 12:00:00',
             ],
             'usuario' => [
                 'id_empresa' => 1,
-                'nome' => 'João Silva',
+                'nome' => 'JoÃ£o Silva',
                 'email' => 'joao@empresa.com',
                 'senha' => '123456',
                 'perfil' => 'usuario',
                 'ativo' => true,
                 'aceitou_termos' => true,
                 'newsletter' => false,
+                'perfis' => [1],
             ],
-            'licenca' => [
+            'modulo' => [
+                'id_modulo_pai' => 10,
+                'nome_modulo' => 'Usuarios',
+                'descricao' => 'Gestao de usuarios',
+                'icone' => 'users',
+                'rota' => '/admin/usuarios',
+                'ordem' => 1,
+                'ativo' => true,
+            ],
+            'acao_permissao' => [
+                'nome_acao' => 'Visualizar',
+                'codigo_acao' => 'visualizar',
+                'descricao' => 'Permite visualizar registros',
+            ],
+            'perfil' => [
+                'nome_perfil' => 'Operador',
+                'descricao' => 'Operacoes basicas do sistema',
+                'nivel' => 300,
+                'is_default' => false,
+            ],
+            'permissoes_perfil' => [
+                'permissoes' => [
+                    [
+                        'id_modulo' => 30,
+                        'id_acao' => 1,
+                        'permitido' => true,
+                    ],
+                    [
+                        'id_modulo' => 30,
+                        'id_acao' => 2,
+                        'permitido' => false,
+                    ],
+                ],
+            ],
+            'permissao_usuario' => [
+                'id_modulo' => 30,
+                'id_acao' => 1,
+                'permitido' => true,
+            ],
+            'usuario_perfil' => [
+                'motivo_revogacao' => 'Mudanca de funcao',
+            ],
+            'restricao_filial' => [
+                'pode_acessar' => true,
+            ],
+            'campos_perfil' => [
+                'campos' => [
+                    [
+                        'tabela' => 'tb_usuarios',
+                        'campo' => 'email',
+                        'visivel' => true,
+                        'editavel' => false,
+                    ],
+                ],
+            ],            'licenca' => [
                 'id_empresa' => 1,
                 'plano' => 'trial',
                 'data_inicio' => '2025-01-01',
@@ -896,13 +985,13 @@ class ApiDocsController extends Controller
             'categoria' => [
                 'id_empresa' => 1,
                 'nome_categoria' => 'Alimentos',
-                'descricao' => 'Produtos alimentícios',
+                'descricao' => 'Produtos alimentÃ­cios',
             ],
             'secao' => [
                 'id_empresa' => 1,
                 'id_categoria' => 1,
                 'nome_secao' => 'Bebidas',
-                'descricao' => 'Seção de bebidas',
+                'descricao' => 'SeÃ§Ã£o de bebidas',
             ],
             'grupo' => [
                 'id_empresa' => 1,
@@ -955,7 +1044,7 @@ class ApiDocsController extends Controller
                     'id_filial' => 1,
                     'data_cotacao' => '2026-02-19',
                     'data_validade' => '2026-03-19',
-                    'observacoes' => 'Solicitar cotações para materiais'
+                    'observacoes' => 'Solicitar cotaÃ§Ãµes para materiais'
                 ],
                 'cotacao_item' => [
                     'id_produto' => 10,
@@ -1078,10 +1167,10 @@ class ApiDocsController extends Controller
             'capa_inventario' => [
                 'id_empresa' => 1,
                 'id_filial' => 1,
-                'descricao' => 'Inventário Mensal - Janeiro',
+                'descricao' => 'InventÃ¡rio Mensal - Janeiro',
                 'data_inicio' => '2025-01-10',
                 'status' => 'em_andamento',
-                'observacao' => 'Inventário mensal',
+                'observacao' => 'InventÃ¡rio mensal',
                 'id_usuario' => 1,
             ],
             'inventario' => [
@@ -1133,7 +1222,7 @@ class ApiDocsController extends Controller
                 'id_filial_destino' => 2,
                 'data_transferencia' => '2025-01-15',
                 'status' => 'pendente',
-                'observacao' => 'Transferência entre filiais',
+                'observacao' => 'TransferÃªncia entre filiais',
                 'id_usuario' => 1,
             ],
             'transferencia' => [
@@ -1143,7 +1232,7 @@ class ApiDocsController extends Controller
                 'id_produto' => 10,
                 'quantidade' => 5,
                 'status' => 'pendente',
-                'observacao' => 'Reposição',
+                'observacao' => 'ReposiÃ§Ã£o',
             ],
             'nfe_cabecalho' => [
                 'id_empresa' => 1,
@@ -1182,7 +1271,7 @@ class ApiDocsController extends Controller
                 'nro' => '100',
                 'xBairro' => 'Centro',
                 'cMun' => '3550308',
-                'xMun' => 'São Paulo',
+                'xMun' => 'SÃ£o Paulo',
                 'UF' => 'SP',
                 'CEP' => '01000-000',
                 'cPais' => '1058',
@@ -1199,7 +1288,7 @@ class ApiDocsController extends Controller
                 'nro' => '50',
                 'xBairro' => 'Bairro',
                 'cMun' => '3550308',
-                'xMun' => 'São Paulo',
+                'xMun' => 'SÃ£o Paulo',
                 'UF' => 'SP',
                 'CEP' => '01000-000',
                 'cPais' => '1058',
@@ -1242,7 +1331,7 @@ class ApiDocsController extends Controller
                 'xNome' => 'Transportadora Exemplo',
                 'IE' => '123456789',
                 'xEnder' => 'Rua Transporte, 10',
-                'xMun' => 'São Paulo',
+                'xMun' => 'SÃ£o Paulo',
                 'UF' => 'SP',
                 'esp' => 'CX',
                 'pesoL' => 10.5,
@@ -1269,7 +1358,7 @@ class ApiDocsController extends Controller
             ],
             'nfe_informacoes' => [
                 'id_nfe' => 1,
-                'infCpl' => 'Informações complementares da NF-e',
+                'infCpl' => 'InformaÃ§Ãµes complementares da NF-e',
             ],
             'pdv_abertura' => [
                 'id_empresa' => 1,
@@ -1306,7 +1395,7 @@ class ApiDocsController extends Controller
                 'telefone' => '11999999999',
                 'whatsapp' => '11999999999',
                 'endereco' => 'Rua Cliente, 50',
-                'cidade' => 'São Paulo',
+                'cidade' => 'SÃ£o Paulo',
                 'estado' => 'SP',
                 'cep' => '01000-000',
                 'document_type' => 'cpf',
@@ -1325,7 +1414,7 @@ class ApiDocsController extends Controller
                 'tipo_venda' => 'venda',
                 'forma_pagamento' => 'cartao',
                 'valor_total' => 150.00,
-                'observacao' => 'Venda balcão',
+                'observacao' => 'Venda balcÃ£o',
                 'itens' => [
                     [
                         'id_produto' => 10,
@@ -1349,3 +1438,7 @@ class ApiDocsController extends Controller
         ];
     }
 }
+
+
+
+

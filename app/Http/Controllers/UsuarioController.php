@@ -10,10 +10,19 @@ class UsuarioController extends Controller
     /**
      * Display a listing of the resource.
      */
-    // Listar todos os usuários
+    // Listar todos os usuÃ¡rios
     public function index()
     {
-        $usuarios = Usuario::with('empresa')->get();
+        $query = Usuario::with('empresa');
+
+        if (request()->boolean('with_perfis')) {
+            $query->with('perfis');
+        }
+        if (request()->boolean('with_acessos')) {
+            $query->with(['permissoesEspeciais', 'restricoesFiliais']);
+        }
+
+        $usuarios = $query->get();
         return response()->json($usuarios);
     }
 
@@ -28,7 +37,7 @@ class UsuarioController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    // Criar novo usuário
+    // Criar novo usuÃ¡rio
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -40,21 +49,43 @@ class UsuarioController extends Controller
             'ativo' => 'boolean',
             'aceitou_termos' => 'boolean',
             'newsletter' => 'boolean',
+            'perfis' => 'nullable|array',
+            'perfis.*' => 'integer|exists:tb_perfis_acesso,id_perfil',
         ]);
         $validated['senha'] = bcrypt($validated['senha']);
         $usuario = Usuario::create($validated);
+
+        if (!empty($validated['perfis'])) {
+            foreach ($validated['perfis'] as $idPerfil) {
+                \App\Models\UsuarioPerfil::create([
+                    'id_usuario' => $usuario->id_usuario,
+                    'id_perfil' => $idPerfil,
+                    'data_atribuicao' => now(),
+                    'id_usuario_atribuidor' => optional(auth()->user())->id_usuario,
+                ]);
+            }
+        }
+
         return response()->json($usuario, 201);
     }
 
     /**
      * Display the specified resource.
      */
-    // Consultar usuário por ID
+    // Consultar usuÃ¡rio por ID
     public function show($id)
     {
-        $usuario = Usuario::with('empresa')->find($id);
+        $query = Usuario::with('empresa');
+        if (request()->boolean('with_perfis')) {
+            $query->with('perfis');
+        }
+        if (request()->boolean('with_acessos')) {
+            $query->with(['permissoesEspeciais', 'restricoesFiliais']);
+        }
+
+        $usuario = $query->find($id);
         if (!$usuario) {
-            return response()->json(['message' => 'Usuário não encontrado'], 404);
+            return response()->json(['message' => 'UsuÃ¡rio nÃ£o encontrado'], 404);
         }
         return response()->json($usuario);
     }
@@ -70,12 +101,12 @@ class UsuarioController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    // Atualizar usuário por ID
+    // Atualizar usuÃ¡rio por ID
     public function update(Request $request, $id)
     {
         $usuario = Usuario::find($id);
         if (!$usuario) {
-            return response()->json(['message' => 'Usuário não encontrado'], 404);
+            return response()->json(['message' => 'UsuÃ¡rio nÃ£o encontrado'], 404);
         }
         $validated = $request->validate([
             'nome' => 'sometimes|string|max:100',
@@ -96,18 +127,18 @@ class UsuarioController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    // Remover usuário por ID
+    // Remover usuÃ¡rio por ID
     public function destroy($id)
     {
         $usuario = Usuario::find($id);
         if (!$usuario) {
-            return response()->json(['message' => 'Usuário não encontrado'], 404);
+            return response()->json(['message' => 'UsuÃ¡rio nÃ£o encontrado'], 404);
         }
         $usuario->delete();
         return response()->json(null, 204);
     }
 
-    // Listar usuários de uma empresa
+    // Listar usuÃ¡rios de uma empresa
     public function usuariosPorEmpresa($id_empresa)
     {
         $usuarios = Usuario::where('id_empresa', $id_empresa)->with('empresa')->get();

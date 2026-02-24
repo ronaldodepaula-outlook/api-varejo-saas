@@ -1,0 +1,951 @@
+{
+  "info": {
+    "name": "RBAC / Gestao de Usuarios - SaaS MultiEmpresas",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "rbac-collection-001",
+    "description": "Regras de negocio agrupadas por pasta (RN01..RN10).\n\nFluxo: Gestao de perfis\n```\nflowchart TD\n    A[Inicio] --> B{Usuario e Admin?}\n    B -->|Nao| C[Acesso negado]\n    B -->|Sim| D[Criar/Editar Perfil]\n    D --> E[Definir nome e nivel]\n    E --> F[Selecionar modulos]\n    F --> G[Definir acoes por modulo]\n    G --> H[Salvar perfil]\n    H --> I{Validar regras}\n    I -->|Valido| J[Perfil salvo]\n    I -->|Invalido| K[Mostrar erros]\n    K --> F\n    J --> L[Registrar em auditoria]\n    L --> M[Fim]\n```\n\nFluxo: Permissoes especiais\n```\nflowchart TD\n    A[Selecionar usuario] --> B[Visualizar permissoes atuais]\n    B --> C{Permissao por perfil e suficiente?}\n    C -->|Sim| D[Manter perfil]\n    C -->|Nao| E[Criar permissao especial]\n    E --> F[Selecionar modulo]\n    F --> G[Selecionar acao]\n    G --> H[Definir permitido/negado]\n    H --> I[Salvar]\n    I --> J{Permissao sobrescreve perfil?}\n    J -->|Sim| K[Permissao especial ativa]\n    J -->|Nao| L[Conflito detectado]\n    L --> M[Resolver prioridade]\n    M --> K\n    K --> N[Registrar em auditoria]\n    N --> O[Fim]\n```\n\nFluxo: Verificacao de acesso\n```\nflowchart TD\n    A[Solicitacao de acesso] --> B{Usuario e Super Admin?}\n    B -->|Sim| C[CONCEDIDO]\n    B -->|Nao| D{Possui permissao direta?}\n    D -->|Sim| E{Permissao = 1?}\n    E -->|Sim| C\n    E -->|Nao| F[NEGADO]\n    D -->|Nao| G{Possui perfil com permissao?}\n    G -->|Sim| H{Perfil permite?}\n    H -->|Sim| C\n    H -->|Nao| F\n    G -->|Nao| F\n```\n\nEntidade-Relacionamento\n```\nerDiagram\n    tb_usuarios ||--o{ tb_usuarios_perfis : possui\n    tb_perfis_acesso ||--o{ tb_usuarios_perfis : atribuido\n    tb_perfis_acesso ||--o{ tb_permissoes_perfil : define\n    tb_usuarios ||--o{ tb_permissoes_usuario : tem\n    tb_modulos_sistema ||--o{ tb_permissoes_perfil : contem\n    tb_modulos_sistema ||--o{ tb_permissoes_usuario : contem\n    tb_permissoes_acoes ||--o{ tb_permissoes_perfil : relaciona\n    tb_permissoes_acoes ||--o{ tb_permissoes_usuario : relaciona\n    tb_usuarios ||--o{ tb_restricoes_filiais_usuario : restringe\n    tb_filiais ||--o{ tb_restricoes_filiais_usuario : pertence\n    tb_usuarios ||--o{ tb_log_acoes_usuarios : gera\n    tb_usuarios ||--o{ tb_sessoes_ativas : possui\n```\n"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost"
+    },
+    {
+      "key": "port",
+      "value": "8000"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "id_empresa",
+      "value": "7"
+    },
+    {
+      "key": "id_usuario",
+      "value": "7"
+    },
+    {
+      "key": "id_perfil",
+      "value": "1"
+    },
+    {
+      "key": "id_modulo",
+      "value": "30"
+    },
+    {
+      "key": "id_acao",
+      "value": "1"
+    },
+    {
+      "key": "id_filial",
+      "value": "12"
+    },
+    {
+      "key": "id_campo",
+      "value": "1"
+    },
+    {
+      "key": "id_permissao_usuario",
+      "value": "1"
+    },
+    {
+      "key": "id_sessao",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "00 - Auth",
+      "item": [
+        {
+          "name": "Login (token Sanctum)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@empresa.com\",\n  \"senha\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}:{{port}}/api/login",
+              "host": [
+                "{{baseUrl}}:{{port}}"
+              ],
+              "path": [
+                "api",
+                "login"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "RN01 - Separacao de Perfis (multiplos perfis por usuario)",
+      "item": [
+        {
+          "name": "Listar perfis",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}:{{port}}/api/perfis",
+              "host": [
+                "{{baseUrl}}:{{port}}"
+              ],
+              "path": [
+                "api",
+                "perfis"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Listar perfis do usuario",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}:{{port}}/api/usuarios/{{id_usuario}}/perfis",
+              "host": [
+                "{{baseUrl}}:{{port}}"
+              ],
+              "path": [
+                "api",
+                "usuarios",
+                "{{id_usuario}}",
+                "perfis"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Atribuir perfil ao usuario",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}:{{port}}/api/usuarios/{{id_usuario}}/perfis/{{id_perfil}}",
+              "host": [
+                "{{baseUrl}}:{{port}}"
+              ],
+              "path": [
+                "api",
+                "usuarios",
+                "{{id_usuario}}",
+                "perfis",
+                "{{id_perfil}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Revogar perfil do usuario",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"motivo_revogacao\": \"Mudanca de funcao\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}:{{port}}/api/usuarios/{{id_usuario}}/perfis/{{id_perfil}}",
+              "host": [
+                "{{baseUrl}}:{{port}}"
+              ],
+              "path": [
+                "api",
+                "usuarios",
+                "{{id_usuario}}",
+                "perfis",
+                "{{id_perfil}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "RN02 - Sobrescrita de Permissoes (permissao direta do usuario)",
+      "item": [
+        {
+          "name": "Listar permissoes diretas do usuario",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}:{{port}}/api/usuarios/{{id_usuario}}/permissoes",
+              "host": [
+                "{{baseUrl}}:{{port}}"
+              ],
+              "path": [
+                "api",
+                "usuarios",
+                "{{id_usuario}}",
+                "permissoes"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Criar permissao direta (permitir ou negar)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_modulo\": {{id_modulo}},\n  \"id_acao\": {{id_acao}},\n  \"permitido\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}:{{port}}/api/usuarios/{{id_usuario}}/permissoes",
+              "host": [
+                "{{baseUrl}}:{{port}}"
+              ],
+              "path": [
+                "api",
+                "usuarios",
+                "{{id_usuario}}",
+                "permissoes"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Atualizar permissao direta",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"permitido\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}:{{port}}/api/usuarios/{{id_usuario}}/permissoes/{{id_permissao_usuario}}",
+              "host": [
+                "{{baseUrl}}:{{port}}"
+              ],
+              "path": [
+                "api",
+                "usuarios",
+                "{{id_usuario}}",
+                "permissoes",
+                "{{id_permissao_usuario}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Excluir permissao direta",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}:{{port}}/api/usuarios/{{id_usuario}}/permissoes/{{id_permissao_usuario}}",
+              "host": [
+                "{{baseUrl}}:{{port}}"
+              ],
+              "path": [
+                "api",
+                "usuarios",
+                "{{id_usuario}}",
+                "permissoes",
+                "{{id_permissao_usuario}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Consultar permissoes do perfil",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}:{{port}}/api/perfis/{{id_perfil}}/permissoes",
+              "host": [
+                "{{baseUrl}}:{{port}}"
+              ],
+              "path": [
+                "api",
+                "perfis",
+                "{{id_perfil}}",
+                "permissoes"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "RN03 - Acesso por Filial",
+      "item": [
+        {
+          "name": "Listar filiais permitidas do usuario",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}:{{port}}/api/usuarios/{{id_usuario}}/filiais",
+              "host": [
+                "{{baseUrl}}:{{port}}"
+              ],
+              "path": [
+                "api",
+                "usuarios",
+                "{{id_usuario}}",
+                "filiais"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Adicionar acesso a filial",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pode_acessar\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}:{{port}}/api/usuarios/{{id_usuario}}/filiais/{{id_filial}}",
+              "host": [
+                "{{baseUrl}}:{{port}}"
+              ],
+              "path": [
+                "api",
+                "usuarios",
+                "{{id_usuario}}",
+                "filiais",
+                "{{id_filial}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Remover acesso a filial",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}:{{port}}/api/usuarios/{{id_usuario}}/filiais/{{id_filial}}",
+              "host": [
+                "{{baseUrl}}:{{port}}"
+              ],
+              "path": [
+                "api",
+                "usuarios",
+                "{{id_usuario}}",
+                "filiais",
+                "{{id_filial}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "RN04 - Hierarquia de Perfis (nivel)",
+      "item": [
+        {
+          "name": "Criar perfil",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome_perfil\": \"Supervisor\",\n  \"descricao\": \"Supervisao de equipe\",\n  \"nivel\": 500,\n  \"is_default\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}:{{port}}/api/perfis",
+              "host": [
+                "{{baseUrl}}:{{port}}"
+              ],
+              "path": [
+                "api",
+                "perfis"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Atualizar perfil",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"descricao\": \"Supervisor - atualizado\",\n  \"nivel\": 500\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}:{{port}}/api/perfis/{{id_perfil}}",
+              "host": [
+                "{{baseUrl}}:{{port}}"
+              ],
+              "path": [
+                "api",
+                "perfis",
+                "{{id_perfil}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Excluir perfil",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}:{{port}}/api/perfis/{{id_perfil}}",
+              "host": [
+                "{{baseUrl}}:{{port}}"
+              ],
+              "path": [
+                "api",
+                "perfis",
+                "{{id_perfil}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "RN05 - Auditoria Obrigatoria",
+      "item": [
+        {
+          "name": "Listar logs (paginado)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}:{{port}}/api/auditoria",
+              "host": [
+                "{{baseUrl}}:{{port}}"
+              ],
+              "path": [
+                "api",
+                "auditoria"
+              ],
+              "query": [
+                {
+                  "key": "per_page",
+                  "value": "50"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Logs por usuario",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}:{{port}}/api/auditoria/usuario/{{id_usuario}}",
+              "host": [
+                "{{baseUrl}}:{{port}}"
+              ],
+              "path": [
+                "api",
+                "auditoria",
+                "usuario",
+                "{{id_usuario}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Logs por modulo",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}:{{port}}/api/auditoria/modulo/PRODUTOS",
+              "host": [
+                "{{baseUrl}}:{{port}}"
+              ],
+              "path": [
+                "api",
+                "auditoria",
+                "modulo",
+                "PRODUTOS"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Logs por data (YYYY-MM-DD)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}:{{port}}/api/auditoria/data/2026-02-24",
+              "host": [
+                "{{baseUrl}}:{{port}}"
+              ],
+              "path": [
+                "api",
+                "auditoria",
+                "data",
+                "2026-02-24"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "RN06 - Minimo Privilegio (permissoes explicitamente concedidas)",
+      "item": [
+        {
+          "name": "Listar modulos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}:{{port}}/api/modulos",
+              "host": [
+                "{{baseUrl}}:{{port}}"
+              ],
+              "path": [
+                "api",
+                "modulos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Arvore de modulos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}:{{port}}/api/modulos/arvore",
+              "host": [
+                "{{baseUrl}}:{{port}}"
+              ],
+              "path": [
+                "api",
+                "modulos",
+                "arvore"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Listar acoes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}:{{port}}/api/permissoes-acoes",
+              "host": [
+                "{{baseUrl}}:{{port}}"
+              ],
+              "path": [
+                "api",
+                "permissoes-acoes"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "RN07 - Seguranca de Interface (campos visiveis/ editaveis)",
+      "item": [
+        {
+          "name": "Listar campos do perfil",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}:{{port}}/api/perfis/{{id_perfil}}/campos",
+              "host": [
+                "{{baseUrl}}:{{port}}"
+              ],
+              "path": [
+                "api",
+                "perfis",
+                "{{id_perfil}}",
+                "campos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Salvar campos do perfil",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"campos\": [\n    {\n      \"tabela\": \"tb_usuarios\",\n      \"campo\": \"email\",\n      \"visivel\": true,\n      \"editavel\": false\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}:{{port}}/api/perfis/{{id_perfil}}/campos",
+              "host": [
+                "{{baseUrl}}:{{port}}"
+              ],
+              "path": [
+                "api",
+                "perfis",
+                "{{id_perfil}}",
+                "campos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Remover campo do perfil",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}:{{port}}/api/perfis/{{id_perfil}}/campos/{{id_campo}}",
+              "host": [
+                "{{baseUrl}}:{{port}}"
+              ],
+              "path": [
+                "api",
+                "perfis",
+                "{{id_perfil}}",
+                "campos",
+                "{{id_campo}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "RN08 - Controle de Sessoes",
+      "item": [
+        {
+          "name": "Listar sessoes ativas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}:{{port}}/api/sessoes-ativas",
+              "host": [
+                "{{baseUrl}}:{{port}}"
+              ],
+              "path": [
+                "api",
+                "sessoes-ativas"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Listar sessoes do usuario",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}:{{port}}/api/usuarios/{{id_usuario}}/sessoes",
+              "host": [
+                "{{baseUrl}}:{{port}}"
+              ],
+              "path": [
+                "api",
+                "usuarios",
+                "{{id_usuario}}",
+                "sessoes"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Encerrar sessao",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}:{{port}}/api/sessoes-ativas/{{id_sessao}}",
+              "host": [
+                "{{baseUrl}}:{{port}}"
+              ],
+              "path": [
+                "api",
+                "sessoes-ativas",
+                "{{id_sessao}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "RN09 - Bloqueio por Tentativas",
+      "item": [
+        {
+          "name": "Notificacoes de tentativas de login",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}:{{port}}/api/notificacoes/tentativas-login",
+              "host": [
+                "{{baseUrl}}:{{port}}"
+              ],
+              "path": [
+                "api",
+                "notificacoes",
+                "tentativas-login"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "RN10 - Log de Acoes Sensiveis",
+      "item": [
+        {
+          "name": "Auditoria com filtros (acao + modulo)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}:{{port}}/api/auditoria",
+              "host": [
+                "{{baseUrl}}:{{port}}"
+              ],
+              "path": [
+                "api",
+                "auditoria"
+              ],
+              "query": [
+                {
+                  "key": "acao",
+                  "value": "UPDATE"
+                },
+                {
+                  "key": "modulo",
+                  "value": "PRODUTOS"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
