@@ -568,8 +568,33 @@ class TarefaContagemController extends Controller
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
-            $totalProdutos = $tarefa->produtos()->count();
-            $produtosContados = $tarefa->produtos()->whereNotNull('quantidade_contada')->count();
+            $produtosVinculados = $tarefa->produtos()->pluck('id_produto')->all();
+            $inventarioIdsQuery = DB::table('tb_inventario')
+                ->where('id_capa_inventario', $tarefa->id_capa_inventario);
+
+            if (!empty($produtosVinculados)) {
+                $inventarioIdsQuery->whereIn('id_produto', $produtosVinculados);
+            }
+
+            $inventarioIds = $inventarioIdsQuery->pluck('id_inventario')->all();
+            $totalProdutos = count($inventarioIds);
+
+            $produtosContados = 0;
+            if ($totalProdutos > 0) {
+                $subQuery = DB::table('tb_contagem_inventario')
+                    ->select('id_inventario', DB::raw('MAX(id_contagem) as max_id'))
+                    ->whereIn('id_inventario', $inventarioIds)
+                    ->groupBy('id_inventario');
+
+                $produtosContados = DB::table('tb_contagem_inventario as c')
+                    ->joinSub($subQuery, 'u', function ($join) {
+                        $join->on('c.id_inventario', '=', 'u.id_inventario')
+                            ->on('c.id_contagem', '=', 'u.max_id');
+                    })
+                    ->whereIn('c.id_inventario', $inventarioIds)
+                    ->where('c.tipo_operacao', '<>', 'Excluir')
+                    ->count();
+            }
             $forcar = (bool) $request->get('forcar_conclusao', false);
 
             if ($totalProdutos > 0 && $produtosContados < $totalProdutos && !$forcar) {
